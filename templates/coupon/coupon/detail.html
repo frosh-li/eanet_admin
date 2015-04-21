@@ -1,0 +1,591 @@
+<!-- div 层样式  -->
+<link rel="stylesheet" href="__PUBLIC__/css/draggable.css">
+<style>
+#checkCategoriesBox {
+	display: none;
+	background: none repeat scroll 0 0 #fff;
+	margin: 0 auto;
+	padding-bottom: 20px;
+	position: relative;
+	width: 598px;
+}
+#closeCheckCategoriesBox {
+    color: black;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    height: 40px;
+    line-height: 40px;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 0;
+    width: 40px;
+    z-index: 2;
+}
+.mmgPg {text-align: right;}
+</style>
+<script src="__PUBLIC__/jquery-ui/jquery.js"></script>
+<script src="__PUBLIC__/js/jquery-ui-1.10.3.min.js"></script>
+<!-- 引入小工具函数  -->
+<script type="text/javascript" src="__PUBLIC__/js/libs/handy.js"></script>
+<!-- 本地存储库 -->
+<script type="text/javascript" src="__PUBLIC__/js/store.min.js"></script>
+<script type="text/javascript">
+var couponId = '{=$couponId=}';
+
+//variables for local storage data
+var localStorageKeyInitialed = false;
+var storeKey = '';
+var stores = [];
+var commodityKey = '';
+var commodities = {};
+var skuKey = '';
+var skus = [];
+var ticketKey = '';
+var tickets = {};
+var settlementKey = '';
+var settlement = 0;
+var storeSettlementKey = '';
+var storeSettlement = {};
+
+var selectedCategories = {=$selectedCategoriesJsonStr=};
+var categoryList = {};
+
+if((typeof(categoryLevelFetched)).toLowerCase() == 'undefined') {
+	var allCategory    = []; // 树形展开所需数据
+	var categoryLevel  = [];
+	var categoryLevel1 = categoryLeve2 = categoryLeve3 = []; // 联动筛选所需数据
+	var categoryLevelFetched = false;	
+} else {
+	categoryLevelFetched = true;
+}
+$(function() {
+
+	initLocalStorageKey();
+	initLocalStorage();
+	
+	categoryLevelFetched = true;
+	$.ajax({
+		type:"GET",
+		url:"/category/category_system/ajax_get_categorylevel?categoryLevel=3",
+		data:{categoryLevel: 3},
+		dataType:'json',
+		success:function(json){
+			// TODO 需要优化，这部分逻辑要和数据获取分离
+			categoryLevel1 = json.data.level1;
+			categoryLevel2 = json.data.level2;
+			categoryLevel3 = json.data.level3;
+
+			var categoryId1 = '{=$couponDetail.categoryId1=}';
+			var categoryId2 = '{=$couponDetail.categoryId2=}';
+			var categoryId3 = '{=$couponDetail.categoryId3=}';
+			
+			categoryLevel = categoryLevel1.concat(categoryLevel2).concat(categoryLevel3);
+			
+			var categoryId1Name = categoryId2Name = categoryId3Name = '';
+			var len = categoryLevel.length;
+			for(var i = 0; i < len; i++) {
+				if(categoryId1 == categoryLevel[i].categoryId) {
+					categoryId1Name = categoryLevel[i].categoryName;
+					continue;
+				}
+				if(categoryId2 == categoryLevel[i].categoryId) {
+					categoryId2Name = categoryLevel[i].categoryName;
+					continue;
+				}
+				if(categoryId3 == categoryLevel[i].categoryId) {
+					categoryId3Name = categoryLevel[i].categoryName;
+					continue;
+				}
+			}
+			var html = '(无)';
+			if(categoryId1Name) {
+				html = categoryId1Name;
+			}
+			if(categoryId2Name != '') {
+				html += ' > ' + categoryId2Name;
+			}
+			if(categoryId3Name != '') {
+				html += ' > ' + categoryId3Name;
+			}
+			$('#categoryText').html(html);
+		}
+	});
+
+	$("#checkCategoryList").on("click", ".showIframe", function(){ 
+			$("#popBoxCheckCategories").find("#category").attr({"src":$(this).attr("url")});
+			$('#popTitleForIframe').html($(this).html() + $(this).data('object'));
+			$("#brg").show();
+			$("#popBoxCheckCategories").css({"min-width":"1000px"}).show().position({my:"center",at:"center",of:window,collision:"flipfit"}).draggable();
+	});
+	$("#popBoxCheckCategories #close").click(function(){ 
+		$("#popBoxCheckCategories").find("#category").attr("src","");
+		$("#popBoxCheckCategories").hide();
+		$("#brg").hide();
+	});
+	$("#closeCheckCategoriesBox").click(function(){
+		$("#checkCategoriesBox").hide();
+		$("#brg").hide();
+	});
+
+	$('#showStores').click(function() {
+		// show the pop
+		if(couponId) {
+			var url = '/database/store_component/showSelect/subject/coupon/subjectId/' + couponId + '/readOnly/yes';
+			$("#popBoxCheckCategories").find("#category").attr({"src":url});
+			$('#popTitleForIframe').html('查看门店');
+			$("#brg").show();
+			$("#popBoxCheckCategories").css({"min-width":"1000px"}).show().position({my:"center",at:"center",of:window,collision:"flipfit"}).draggable();
+		} else {
+			alert('获取券ID失败，无法查看门店');
+			return false;
+		}
+	});
+	
+	$('#checkCategories').click(showCheckCategoriesBox);
+
+	function showCheckCategoriesBox() {
+		if(couponId) {
+			// showbox
+//			$(this).attr("disabled",true);
+			var cnt = selectedCategories.length;
+			if(cnt < 1) {
+				alert('尚未选择类目');
+				return false;
+			}
+	
+			initCategoryList(categoryLevel);
+			
+			var CategoryTable = $('#checkCategoryList');
+//			var headRow = '<tr><th>一级类目</th><th>二级类目</th><th>三级类目</th><th>商品数量</th><th>选择商品</th><th>选择票商品</th><th>删除类目</th></tr>';
+			var headRow = '<tr><th>一级类目</th><th>二级类目</th><th>商品数量</th><th>选择商品</th><th>选择票商品</th></tr>';
+			var row = '';
+			var category1 = category2 = category3 = '';
+			CategoryTable.empty().append(headRow);
+
+			dumpLocalStorage();
+			
+			var productNoCnt = '';
+			var commodityCheckLink = commodityAddLink = commoditySelectLink = ticketCheckLink = ticketAddLink = ticketCheckLink = '#';
+			var outlets = stores.join(',');
+			for(var i = 0; i < cnt; i++) {
+				categoryId = selectedCategories[i];
+				
+				if(categoryList[categoryId].categoryLevel == 1) {
+					category3 = '(无)';
+					category2 = '(无)';
+					category1 = categoryList[categoryId].name;
+					categoryIds = categoryId;
+				} else if(categoryList[categoryId].categoryLevel == 2) {
+					if(!categoryList[categoryId].isLeaf) {
+					}
+					category3 = '(无)';
+					category2 = categoryList[categoryId].name;
+					category1 = categoryList[categoryList[categoryId].pId].name;
+					categoryIds = categoryList[categoryId].pId + ',' + categoryId;
+				} else if(categoryList[categoryId].categoryLevel == 3) {
+					category3 = categoryList[categoryId].name;
+					category2 = categoryList[categoryList[categoryId].pId].name;
+					category1 = categoryList[categoryList[categoryList[categoryId].pId].pId].name;
+					categoryIds = categoryList[categoryList[categoryId].pId].pId + ',' + categoryList[categoryId].pId + ',' + categoryId;
+				} else {
+					category1 = category2 = category3 = '-';
+					categoryIds = '-1';
+				}
+				
+				productNoCnt = 0;
+				if((typeof commodities[categoryId]) !== 'undefined' && (typeof commodities[categoryId].length) !== 'undefined') {
+					productNoCnt += commodities[categoryId].length;
+				}
+				if((typeof tickets[categoryId]) !== 'undefined' && (typeof tickets[categoryId].length) !== 'undefined') {
+					productNoCnt += tickets[categoryId].length;
+				}
+				productNoCnt = productNoCnt || '(空)';
+				
+				commodityCheckLink  = '/goods/goods_component/showSelect/subject/coupon/subjectId/' + couponId + '/categoryIds/' + categoryIds + '/readOnly/yes';
+				commodityLinks = '';
+				commodityLinks += ' <a class="showIframe" url="' + commodityCheckLink + '" data-object="商品">查看</a>';
+
+				ticketCheckLink  = '/ticketcenter/show_component/showSelect/subject/coupon/subjectId/' + couponId + '/categoryIds/' + categoryIds + '/readOnly/yes';;
+				ticketLinks = '';
+				ticketLinks += ' <a class="showIframe" url="' + ticketCheckLink + '" data-object="票">查看</a>';
+				
+//				row = '<tr><td>'+ category1 +'</td><td>'+ category2 +'</td><td>'+ category3 +'</td><td>' + productNoCnt + '</td>';
+				row = '<tr><td>'+ category1 +'</td><td>'+ category2 +'</td><td>' + productNoCnt + '</td>';
+				row += '<td>' + commodityLinks + '</td><td>' + ticketLinks + '</td></tr>';
+				
+				CategoryTable.append(row);
+
+				$("#brg").show();
+				$("#checkCategoriesBox").css({"min-width":"500px"}).show().position({my:"center",at:"center",of:window,collision:"flipfit"}).draggable();
+			}
+		} else {
+			alert('获取券ID失败，无法查看类目');
+		}
+		
+		return false;
+	}
+
+	$('#showSettlement').click(function() {
+		// show the pop
+		if(couponId) {
+			var url = '/database/store_component/showStoreSettlement/subject/coupon/subjectId/' + couponId + '/readOnly/yes';
+			$("#popBoxCheckCategories").find("#category").attr({"src":url});
+			$('#popTitleForIframe').html('查看结算价');
+			$("#brg").show();
+			$("#popBoxCheckCategories").css({"min-width":"1000px"}).show().position({my:"center",at:"center",of:window,collision:"flipfit"}).draggable();
+		} else {
+			alert('获取券ID失败，无法查看结算价');
+			return false;
+		}
+	});
+
+	$('#preview').click(function() {
+		this.href = $(this).attr('url') + couponId;
+	});
+	
+	$(".update_status").click(function(){	
+
+		var classval = $(this).attr("class");
+		if(classval.indexOf('apply') > 0) { 
+	   		var couponUrl = "/coupon/coupon/apply/id/{=$couponId=}"; //提交
+	   		var tipmsg = "提交成功";
+	   	} else if(classval.indexOf('approve') > 0){ 
+	   		var couponUrl = "/coupon/coupon/approve/id/{=$couponId=}"; //审核
+	   		var tipmsg = "审核成功";
+	   	} else if(classval.indexOf('repeal') > 0){ 
+	   		var couponUrl = "/coupon/coupon/repeal/id/{=$couponId=}"; //撤回
+	   		var tipmsg = "撤回成功";
+	   	} else if(classval.indexOf('reject') > 0){ 
+	   		var couponUrl = "/coupon/coupon/reject/id/{=$couponId=}"; //驳回
+	   		var tipmsg = "驳回成功";
+	   	} else if(classval.indexOf('onsale') > 0){ 
+	   		var couponUrl = "/coupon/coupon/onSale/id/{=$couponId=}"; //上架
+	   		var tipmsg = "上架成功";
+	   	} else if(classval.indexOf('offsale') > 0){ 
+	   		var couponUrl = "/coupon/coupon/offSale/id/{=$couponId=}"; //下架
+	   		var tipmsg = "下架成功";
+		}
+
+		$.ajax({
+			type:"post",
+			dataType:'json',
+			url: couponUrl,
+			//data:{=$couponId=},
+			success:function(data){
+				var couponMsg = translateNotice(data.msg);
+				if(data.status==200){
+					alert(tipmsg);
+					window.location.href = "/coupon/coupon/detail/id/{=$couponId=}";
+				} else if(data.status==400){
+					alert(couponMsg);
+					window.location.href = "/coupon/coupon/detail/id/{=$couponId=}";
+				} else {
+					alert(data.msg);
+					window.location.href = "/coupon/coupon/detail/id/{=$couponId=}";
+				}
+			}
+		});
+
+		return false;
+	});
+
+	function translateNotice(message)
+	{
+		message = message.replace("origPrice","面值");
+		message = message.replace("parkingTime","停车时间");
+		message = message.replace("merchantNo","商户编号");
+		message = message.replace("merchantName","商户名称");
+		message = message.replace("operatorId","操作员ID");
+		message = message.replace("operatorName","操作员名");
+		message = message.replace("vendibility","发放方式");
+		message = message.replace("createCertificateType","券生成方式");
+		message = message.replace("stockNum","库存");
+		message = message.replace("couponNos","导入的券码");
+		message = message.replace("validStartTime","有效期起始时间");
+		message = message.replace("validEndTime","有效期结束时间");
+		message = message.replace("validRelativeTime","相对有效期");
+		message = message.replace("remark","备注");
+		message = message.replace("thresholdOrder","可用券订单所需额度");
+		message = message.replace("useNumLimitPerOrder","订单最大使用数量");
+		message = message.replace("useNumLimitPerTotal","单品每满一定额度可使用数量");
+		message = message.replace("limitStores","限制门店");
+		message = message.replace("limitProducts","限制票商品");
+		message = message.replace("limitCommondities","限制商品(实物商品)");
+		message = message.replace("limitCategories","限制品类");
+		message = message.replace("settlement","默认结算价格");
+		message = message.replace("storeSettlement","门店结算价格");
+		message = message.replace("subTitle","券副标题");
+		message = message.replace("salePrice","现金售价");
+		message = message.replace("salePricePoint","积分售价");
+		message = message.replace("category1","一级类目");
+		message = message.replace("category2","二级类目");
+		message = message.replace("category3","三级类目");
+		message = message.replace("topics","商品图片");
+		message = message.replace("buyNotify","购买须知");
+		message = message.replace("webDetail","WEB端商品详情");
+		message = message.replace("appDetail","APP端商品详情");
+		message = message.replace("saleStartTime","销售起始时间");
+		message = message.replace("saleEndTime","销售结束时间");
+		message = message.replace("memberType","会员类型");
+		message = message.replace("limitPerMember","每人购买限制");
+		message = message.replace("limitPerOrder","每单购买限制");
+		
+
+		return message;
+	}
+	
+	function initLocalStorageKey()
+	{
+		if(!localStorageKeyInitialed) {
+			storeKey = 'store_for_coupon_' + couponId;
+			commodityKey = 'commodity_for_coupon_' + couponId;
+			ticketKey = 'ticket_for_coupon_' + couponId;
+			settlementKey = 'settlement_for_coupon_' + couponId;
+			storeSettlementKey = 'storeSettlement_for_coupon_' + couponId;
+			skuKey        = 'sku_for_coupon_' + couponId;
+			
+			localStorageKeyInitialed = true;
+		}
+	}
+
+	function initLocalStorage()
+	{
+		stores = {=$storesJsonStr=};
+		store.set(storeKey, stores);
+		
+		commodities = {=$commoditiesJsonStr=};
+		store.set(commodityKey, commodities);
+		
+		tickets = {=$ticketsJsonStr=};
+		store.set(ticketKey, tickets);
+		
+		settlement = '{=$couponDetail.settlement=}';
+		store.set(settlementKey, settlement);
+		
+		storeSettlement = {=$storeSettlementJsonStr=};
+		store.set(storeSettlementKey, storeSettlement);
+		
+		skus = {=$skusJsonStr=};
+		store.set(skuKey, skus);
+	}
+
+
+	function initCategoryList(categoryLevel) {
+		var cnt = categoryLevel.length;
+		var categroy = {};
+		for(var i = 0; i < cnt; i++) {
+			category = {
+					id: categoryLevel[i].categoryId,
+					categoryLevel: categoryLevel[i].categoryLevel,
+					pId: categoryLevel[i].parent,
+					name: categoryLevel[i].categoryName,
+					sort: categoryLevel[i]['sort'],
+					isLeaf: categoryLevel[i].isLeaf 
+			};
+			categoryList[category.id] = category;
+		}
+	}
+
+	// refresh the value of the variables for data stored in localstroage 
+	function dumpLocalStorage()
+	{
+		stores = store.get(storeKey) || [];
+		commodities = store.get(commodityKey) || {};
+		skus = store.get(skuKey) || [];
+		tickets = store.get(ticketKey) || {};
+		settlement = parseFloat(store.get(settlementKey)) || 0;
+		storeSettlement = store.get(storeSettlementKey) || {};
+	}
+});
+</script>
+{=include file="../../AbstractGrid/mmgrids4log_js.html"=}
+<div id="brg"></div>
+<div id="checkCategoriesBox" class="lg popBox divcenter" style="position:absolute;display:none" >
+  <div class="popBg">
+    <h1 id="popTitle" class="popTitle">查看类目</h1>
+    <div id="closeCheckCategoriesBox">X</div>
+  </div>
+  <div id="inputdiv" style="overflow:auto;height:400px;">
+  	<table id="checkCategoryList" class="table-bordered qulist"></table>
+  </div>
+</div>
+<div class="popBox" style="position:absolute;display:none" id="popBoxCheckCategories">
+  <div class="popBg">
+    <h1 id="popTitleForIframe" class="popTitle"></h1>
+    <div id="close">X</div>
+  </div>
+  <div class="inputdiv">
+	  <iframe id="category" style="overflow:auto;width:998px;height:400px;"></iframe>
+   </div>
+</div>
+
+ <h2 class="boxTitle">基本信息</h2>
+  <table class="table table-bordered comTable"> 
+    <tr>
+	  <td width="20%">发券主体</td>
+	  <td width="80%">{=$couponDetail.publisherName=}</td>
+    </tr>
+{=if $smarty.const.IS_MERCHANT=}
+    <tr>
+	  <td width="20%">商户名称</td>
+	  <td width="80%">{=$couponDetail.merchantName=}</td>
+    </tr>
+{=/if=}
+    <tr>
+	  <td>券类型</td>
+	  <td>{=$couponTypeText=}</td>
+    </tr>
+ 	{=if $couponDetail.productType == 1001=}
+    <tr>
+	  <td>面值<font color="red">*</font></td>
+	  <td>{=$couponDetail.origPrice=}元</td>
+    </tr>
+    {=/if=}
+    {=if $couponDetail.productType == 1004=}
+	<tr>
+	  <td>停车时长<font color="red">*</font></td>
+	  <td>{=$couponDetail.parkingTime=}分钟</td>
+    </tr>
+    {=/if=}
+	<tr>
+	  <td>券名称<font color="red">*</font></td>
+	  <td>{=$couponDetail.title=}</td>
+    </tr>
+	<tr>
+	  <td>当前状态</td>
+	  <td>{=$couponStatusText=}</td>
+    </tr>
+  </table>
+  <h2 class="boxTitle">发放规则</h2>
+  <table class="table table-bordered comTable"> 
+    <tr>
+	  <td width="20%">发放方式</td>
+	  <td width="80%">{=$vendibilityText=}</td>
+    </tr>	
+    <tr>
+	  <td>券码生成方式</td>
+	  <td>{=$createCertificateTypeText=}</td>
+    </tr>
+    <tr>
+	  <td>发放总数量</td>
+	  <td>{=$couponDetail.totalNum=}</td>
+    </tr>
+  </table>
+  <h2 class="boxTitle">使用规则</h2>
+  <table class="table table-bordered comTable"> 
+    <tr>
+	  <td width="20%">券有效期<font color="red">*</font></td>
+	  <td width="80%">{=$validPeriod=}</td>
+    </tr>
+	<tr>
+	  <td>备注说明</td>
+	  <td>{=if $couponDetail.remark=}{=$couponDetail.remark=}{=else=}(无){=/if=}</td>
+    </tr>
+	<tr>
+	  <td>使用条件<font color="red">*</font></td>
+	  <td>{=if $thresholdOrderLimitless=}不限制{=else=}订单金额每满{=$couponDetail.ruleOrderAmount=}元，可以使用{=$couponDetail.rulePerTotal=}张券，一个订单最多可使用{=$couponDetail.rulePerOrder=}张券 {=/if=}</td>
+    </tr>
+	<tr>
+	  <td>使用门店范围<font color="red">*</font></td>
+	  <td><a id="showStores">查看</a></td>
+    </tr>
+	<tr>
+	  <td>其它使用范围<font color="red">*</font></td>
+	  <td>{=if $limitedProducts=}<a id="checkCategories">查看</a>{=else=}适用于所有品类和商品{=/if=}</td>
+    </tr>
+{=if $couponDetail.vendibility == $smarty.const.COUPON_VENDIBLE_YES && $couponDetail.createCertificateType == $smarty.const.COUPON_CERTIFICATE_TYPE_AUTO=}
+	<tr>
+	  <td>结算价<font color="red">*</font></td>
+	  <td><a id="showSettlement">查看结算价</a></td>
+    </tr>
+{=/if=}
+  </table>
+  <h2 class="boxTitle">商品信息</h2>
+  <table class="table table-bordered comTable"> 
+    <tr>
+	  <td width="20%">券副标题<font color="red">*</font></td>
+	  <td width="80%">{=if $couponDetail.subTitle=}{=$couponDetail.subTitle=}{=else=}(无){=/if=}</td>
+    </tr>
+{=if $couponDetail.vendibility == 1=}
+	<tr>
+	  <td>售价<font color="red">*</font></td>
+	  <td>{=$salePrice=}</td>
+    </tr>
+{=/if=}
+	<tr>
+	  <td>商品类目<font color="red">*</font></td>
+	  <td id="categoryText">{=$categoryText=}</td>
+    </tr>
+	<tr>
+	  <td>商品图片<font color="red">*</font></td>
+	  <td>
+
+	{=if $couponDetail.topPics=}
+	    <ul class="imgList clearfix">	    
+		{=foreach from=$couponDetail.topPics item=filename key=index=}
+		  	<li>
+			    <img src="http://img1.wanhui.cn/orig/{=$filename=}">
+				{=if $index==0=}<label>主图</label>{=/if=}
+			</li>	
+		{=/foreach=}
+		</ul>
+	{=else=}(无){=/if=}
+	  </td>
+    </tr>
+	<tr>
+	  <td>购买须知OR商品卖点</td>
+	  <td>{=if $couponDetail.buyNotify=}{=$couponDetail.buyNotify=}{=else=}(无){=/if=}</td>
+    </tr>
+	<tr>
+	  <td>WEB端商品详情<font color="red">*</font></td>
+	  <td>{=if $couponDetail.webDetail=}{=$couponDetail.webDetail=}{=else=}(无){=/if=}</td>
+    </tr>
+	<tr>
+	  <td>APP端商品详情<font color="red">*</font></td>
+	  <td>{=if $couponDetail.appDetail=}{=$couponDetail.appDetail=}{=else=}(无){=/if=}</td>
+    </tr>
+{=if $couponDetail.vendibility == 1=}
+	<tr>
+	  <td>上架时间<font color="red">*</font></td>
+	  <td>{=$saleStartTime=}</td>
+    </tr>
+	<tr>
+	  <td>下架时间<font color="red">*</font></td>
+	  <td>{=$saleEndTime=}</td>
+    </tr>
+<!-- 
+	<tr>
+	  <td>会员类型<font color="red">*</font></td>
+	  <td>{=$memberTypeText=}</td>
+    </tr>
+-->
+	<tr>
+	  <td>每人购买限制</td>
+	  <td>{=if $couponDetail.limitPerMember==0=}不限制{=else=}{=$couponDetail.limitPerMember=}张{=/if=}</td>
+    </tr>
+	<tr>
+	  <td>每单购买限制</td>
+	  <td>{=if $couponDetail.limitPerOrder==0=}不限制{=else=}{=$couponDetail.limitPerOrder=}张{=/if=}</td>
+    </tr>
+{=/if=}
+	<tr>
+	 <td align="center" colspan="2" style="background-color: #f7f7f7; text-align: center;">
+	   <a id="preview" href="" url="/coupon/coupon/preview/productType/coupon/productNo/" class="btn btn-danger upBtn" target="_blank">预览</a>
+	   {=if $buttons.edit=}<a class="btn btn-danger upBtn edit" href="/coupon/coupon/edit/id/{=$couponId=}">编辑</a>{=/if=}
+	   {=if $buttons.priorEdit=}<a class="btn btn-danger upBtn edit" href="/coupon/coupon/priorEdit/id/{=$couponId=}">编辑</a>{=/if=}
+	   {=if $buttons.apply=}<a class="btn btn-danger upBtn apply update_status" href="#">提交</a>{=/if=}
+	   {=if $buttons.approve=}<a class="btn btn-danger upBtn approve update_status" href="#">审核</a>{=/if=}
+	   {=if $buttons.repeal=}<a class="btn btn-danger upBtn repeal update_status" href="#">撤回</a>{=/if=}
+	   {=if $buttons.reject=}<a class="btn btn-danger upBtn reject update_status" href="#">驳回</a>{=/if=}
+	   {=if $buttons.onsale=}<a class="btn btn-danger upBtn onsale update_status" href="#">上架</a>{=/if=}
+	   {=if $buttons.offsale=}<a class="btn btn-danger upBtn offsale update_status" href="#">下架</a>{=/if=}
+	 </td>
+   </tr>
+  </table>
+<div class="tableBox">
+   <h2 class="boxTitle">操作日志</h2>
+   <table id="operationLogTable" class="mmg"></table>
+   <div id="operationLogPg" class="mmgPg"></div>
+</div>

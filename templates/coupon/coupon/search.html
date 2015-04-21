@@ -1,0 +1,209 @@
+<!--时间插件-->
+<link rel="stylesheet" href="__PUBLIC__/jquery-ui/themes/base/all.css">
+<style>
+	#ResetLocalLayout {display:none;}
+	#btnResetLocal {display:none;}
+	#mindLisPlaza {left: 66px; top: 268px;}
+	#search_store {left: 339px; top: 268px;}
+</style>
+<script src="__PUBLIC__/jquery-ui/jquery.js"></script>
+<script src="__PUBLIC__/jquery-ui/ui/core.js"></script>
+<script src="__PUBLIC__/jquery-ui/ui/widget.js"></script>
+<script src="__PUBLIC__/jquery-ui/ui/datepicker.js"></script>
+<script>
+$(function() {
+	$(".datepicker").datepicker();
+	
+	$('#validStartTimee').on("input propertychange change",function() {
+		$("div#error").remove();
+		var validStartTime = $(this).val();
+		if(validStartTime != '' && !/^\d{4}-\d{2}\-\d{2}$/.test(validStartTime)) {
+			$('<div id="error" style="position:absolute;width:100%"><span id="validStartTime_em" class="error" style="position:absolute;padding:3px;border:1px #cccccc solid;border-radius:3px;background:white"><img src="/public/img/error.png" style="width:15px;margin-top:-4px">录入的时间格式不正确，请重新选择时间范围。</span><span id="caret1" style="font-size:13px;color:white">▼</span><span id="caret2" style="font-size:15px;color:#ccc">▼</span></div>').insertAfter(this).position({my:"left bottom",at:"left+30 top-15",of:this});
+			$("#caret1").position({my:"center",at:"left+30 bottom+2",of:"#validStartTime_em"}).css("z-index","10");
+			$("#caret2").position({my:"center",at:"left+30 bottom+3",of:"#validStartTime_em"});
+		}else{ 
+			$("div#error").remove();
+		}
+	});
+	
+	$('#validEndTimee').on("input propertychange change",function() {
+		$("div#error").remove();
+		var validEndTime = $(this).val();
+		if(validEndTime != '' && !/^\d{4}-\d{2}\-\d{2}$/.test(validEndTime)) {
+			$('<div id="error" style="position:absolute;width:100%"><span id="validEndTime_em" class="error" style="position:absolute;padding:3px;border:1px #cccccc solid;border-radius:3px;background:white"><img src="/public/img/error.png" style="width:15px;margin-top:-4px">录入的时间格式不正确，请重新选择时间范围。</span><span id="caret1" style="font-size:13px;color:white">▼</span><span id="caret2" style="font-size:15px;color:#ccc">▼</span></div>').insertAfter(this).position({my:"left bottom",at:"left+30 top-15",of:this, collision: "none"});
+			$("#caret1").position({my:"center",at:"left+30 bottom+2",of:"#validEndTime_em"}).css("z-index","10");
+			$("#caret2").position({my:"center",at:"left+30 bottom+3",of:"#validEndTime_em"});
+		}else{ 
+			$("div#error").remove();
+		}
+	});
+
+	$('#productNo').on("input propertychange change",function() {
+		$("div#error").remove();
+		var productNo = $(this).val();
+		if(productNo != '' && !/^[\w]+$/.test(productNo)) {
+			$('<div id="error" style="position:absolute;width:100%"><span id="productNo_em" class="error" style="position:absolute;padding:3px;border:1px #cccccc solid;border-radius:3px;background:white"><img src="/public/img/error.png" style="width:15px;margin-top:-4px">只能输入字母或数字！</span><span id="caret1" style="font-size:13px;color:white">▼</span><span id="caret2" style="font-size:15px;color:#ccc">▼</span></div>').insertAfter(this).position({my:"left bottom",at:"left+30 top-15",of:this, collision: "none"});
+			$("#caret1").position({my:"center",at:"left+30 bottom+2",of:"#productNo_em"}).css("z-index","10");
+			$("#caret2").position({my:"center",at:"left+30 bottom+3",of:"#productNo_em"});
+		}else{ 
+			$("div#error").remove();
+		}
+	});
+
+	$("#plazaName").on("input propertychange",function(){
+		$(".mindLis").remove();
+
+		$("#plazaId").val("");
+
+		if($(this).val() != ""){
+			var $this = $(this);
+
+			wait(500).done(function(){
+				$.ajax({
+					type:"get",
+					url: "{=SmartyU url='/database/plaza/ajax_get_plaza'=}",
+					data:{plazaName:$this.val()}
+				}).done(function(res){
+					$(".mindLis").remove();
+					if(res != ""){
+						var html = "<ul id='mindLisPlaza' class='mindLis' forid='plazaId' forname='plazaName'>";
+						$(res).each(function(i,d){
+							html += "<li value='"+d.plazaId+"' provinceId='"+d.provinceId+"'  provinceName='"+d.provinceName+"' countyId='"+d.countyId+"' countyName='"+d.countyName+"' cityID='"+d.cityId+"' cityname='"+d.cityName+"'>"+d.plazaName+"</li>"
+						});
+						html += "</ul>";
+					}
+					$this.after(html);
+					$(".mindLis").position({my:"left top",at:"left bottom",of:$this});
+				});
+			});
+		} else {
+			$(".mindLis").remove();
+		}
+	});	
+
+
+	$("#_CustomizedQueryForm").on("click", "#mindLisPlaza li", function(){
+        $("#plazaId").val($(this).attr("value"));
+        $("#plazaName").val($(this).html());
+        $("#storeId").val('');
+        $("#storeName").val('');
+
+        $(".mindLis").remove();  	
+  	});
+
+	$("#storeName").on("input propertychange", function(){
+		$("#storeId").val("");
+		$(".storeLis").remove();
+
+		var plazaId = $("#plazaId").val();
+		if($(this).val() != ""){ 
+			var $this = $(this);
+
+			wait(500).done(function(){
+				$.ajax({
+					type:"get",
+					url: "{=SmartyU url='/database/store/ajax_get_store'=}",
+					data:{storeName:$this.val(),plazaId:plazaId}
+				}).done(function(res){
+					$(".storeLis").remove();
+					if(res != ""){
+						var html = "<ul class='mindLis' id='search_store' forid='storeId' forname='storeName' style='min-width: 219px;max-width: 250px;width: 220px;'>";
+						$(res).each(function(i,d){
+							html += "<li value='"+d.storeId+"'>"+d.storeName+"</li>"
+						});
+						html += "</ul>";
+					}
+					$this.after(html);
+					$(".mindLis").position({my:"left top",at:"left bottom",of:$this});
+				});
+			});
+		} else {
+			$(".mindLis").remove();
+		}
+	});
+
+    $("#_CustomizedQueryForm").on("click", "#search_store li", function(){
+    	$("#storeId").val($(this).attr("value"));
+    	$("#storeName").val($(this).html());
+
+        $(".mindLis").remove(); 
+    });
+    
+	$(document).click(function(){ 
+		$(".mindLis").remove();
+	});
+});
+
+function validateCustomizedQueryForm()
+{
+	var validStartTime = $('#validStartTime').val();
+	var validEndTime = $('#validEndTime').val();
+	if((validStartTime == '' && validEndTime != '')
+	   || (validStartTime != '' && validEndTime == '')
+	   || (validStartTime > validEndTime)) {
+		alert('录入的时间范围不正确，请重新录入时间范围。');
+		return false
+	}
+	
+	if(validStartTime != '' && !/^\d{4}-\d{2}\-\d{2}$/.test(validStartTime)
+	   || (validEndTime != '' && !/^\d{4}-\d{2}\-\d{2}$/.test(validEndTime))) {
+		alert('录入的时间格式不正确，请重新选择时间范围。');
+		return false;
+	}
+	
+	return true;
+}
+</script>
+<div class="searchDiv">
+<h2 class="boxTitle">查询条件</h2>
+	<form id="_CustomizedQueryForm" onsubmit="javascript:return false;" class="searchForm">
+		<input type="hidden" name="source" value="2" />
+		<input type="hidden" value="{=$publisherType=}" name="publisherType" />
+		<input type="hidden" value="{=$publisherId=}" name="publisherId" />
+		{=if $showMerchentFiled=}
+		商户名称：<input name="merchantName" type="text" id="merchantName">
+		优惠券ID：<input name="productNo" type="text" id="productNo">
+		优惠券名称：<input name="productName" type="text"><br /><br />
+		优惠券类型：<select name="productType">
+			{=foreach from=$couponTypes item=type key=code=}
+				<option value="{=$code=}">{=$type=}</option>
+			{=/foreach=}
+		</select>
+		优惠券有效期：<input type='text' id="validStartTime" class='datepicker' name='validStartTime' readonly style="cursor:pointer">
+		至&nbsp; <input type='text' id="validEndTime" class='datepicker' name='validEndTime' readonly style="cursor:pointer"><br /><br />
+		优惠券状态：<select name="productStatus">
+			{=foreach from=$couponStatusList item=status key=code=}
+				<option value="{=$code=}">{=$status=}</option>
+			{=/foreach=}
+		</select>
+		{=else=}
+				优惠券ID：<input name="productNo" type="text" id="productNo">
+		优惠券名称：<input name="productName" type="text">
+		优惠券状态：<select name="productStatus">
+			{=foreach from=$couponStatusList item=status key=code=}
+				<option value="{=$code=}">{=$status=}</option>
+			{=/foreach=}
+		</select><br /><br />
+		优惠券类型：<select name="productType">
+			{=foreach from=$couponTypes item=type key=code=}
+				<option value="{=$code=}">{=$type=}</option>
+			{=/foreach=}
+		</select>
+		优惠券有效期：<input type='text' id="validStartTime" class='datepicker' name='validStartTime' readonly style="cursor:pointer">
+		至&nbsp; <input type='text' id="validEndTime" class='datepicker' name='validEndTime' readonly style="cursor:pointer">
+		{=/if=}
+{=if !$smarty.const.IS_MERCHANT && $showMoreFilter=}
+		<br /><br />
+	 	商圈：<input type="hidden" value="" class="plazaId" name="plazaId" id="plazaId">
+	 	<input type="text" value="" class="plazaName" id="plazaName">
+	  	
+    	门店：<input type='text' value="" id="storeName">
+	 	<input type='hidden' value="" name="storeId"  id="storeId">
+{=/if=}
+		<input type='button' value='查询' id="_CustomizedQueryFormSubmit" class='btn btn-info'>
+		<input type='reset' value='重置' class='btn btn-info'>
+	</form>
+</div>
+<input type='button' value='新建优惠券' onclick="window.location.href='/coupon/coupon/input'" class='btn btn-info'>
+<h2 class="boxTitle">{=$pageTitle=}</h2>
+

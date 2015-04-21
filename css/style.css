@@ -1,0 +1,79 @@
+body {
+    font-family: '微软雅黑',Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    line-height: 1.6;
+    margin: 0;
+    background: #F9F9F9;
+}
+
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+a {
+    color: #CCC;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #CCC;
+}
+
+#ajaxLoading{
+    height:30px;
+    line-height: 30px;
+    background-color: green;
+    color:white;
+    position: absolute;
+    left: 0;
+    top:0;
+    display: none;
+    padding:0 20px;
+    z-index: 1000;
+}
+
+
+.ng-table {
+    border: 1px solid #000;
+}
+#mainMenu *{
+    color:white;
+    font-size:16px;
+    background-color:#505050;
+}
+#mainMenu a{
+    display:block;
+    height:50px;
+    line-height: 50px;
+    padding:0 40px;
+    background-color: #333;
+    border-bottom: 1px solid #3c3c3c;
+    border-left:solid 4px #2294ae;
+}
+#mainMenu .module a:first-child{
+    padding-left:30px;
+    background-color:#505050;
+    border-left-color: #505050;
+}
+#mainMenu h2, #mainMenu h3{
+    height:30px;
+    line-height: 30px;
+}
+.header .pull-right{
+    position: absolute;
+    height: 30px;
+    color:white;
+    top: 30px;
+}
+.header .pull-right a{
+    color:white;
+}
+.header .user-name{
+    right:100px;
+}
+.header .sign-out{
+    right:30px;
+}

@@ -1,0 +1,2402 @@
+<style>
+<!--
+.comTable {display: none;}
+#couponBasic {display: block;}
+.orHide {display: none;}
+#category3Id {display: none;}
+#xlsUploadBox {display: none;}
+#preview {display: none;}
+
+#xlsUploadBox iframe {width: 96px; height: 44px; border: none;}
+#checkCategoriesBox {
+	display: none;
+	background: none repeat scroll 0 0 #fff;
+	margin: 0 auto;
+	padding-bottom: 20px;
+	position: relative;
+	width: 598px;
+}
+#closeCheckCategoriesBox {
+    color: black;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    height: 40px;
+    line-height: 40px;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 0;
+    width: 40px;
+    z-index: 2;
+}
+-->
+</style>
+<!-- div 层样式  -->
+<link rel="stylesheet" href="__PUBLIC__/css/draggable.css">
+<link rel="stylesheet" href="__PUBLIC__/jquery-ui/themes/base/all.css">
+<link rel="stylesheet" href="__PUBLIC__/jquery-ui/demos/demos.css">
+<!--时间插件-->
+<script src="__PUBLIC__/jquery-ui/jquery.js"></script>
+<script src="__PUBLIC__/js/jquery-ui-1.10.3.min.js"></script>
+<script src="__PUBLIC__/jquery-ui/ui/datepicker.js"></script>
+<!-- 无刷新上传文件 -->
+<script src="__PUBLIC__/js/ajaxfileupload.js"></script>
+<!-- 表单验证 -->
+<script src="__PUBLIC__/js/jquery.validate.min.js"></script>
+<script src="__PUBLIC__/js/validate-message.js"></script>
+<script src="__PUBLIC__/js/validate-addmethod.js"></script>
+<!--编辑器-->
+<link rel="stylesheet" href="__PUBLIC__/editor/themes/default/default.css" />
+<script charset="utf-8" src="__PUBLIC__/editor/kindeditor.js"></script>
+<script charset="utf-8" src="__PUBLIC__/editor/lang/zh_CN.js"></script>
+<!--弹层-->
+<script src="__PUBLIC__/dialog/XY_Base.js"></script>
+<link rel="stylesheet" href="__PUBLIC__/dialog/core.css" type="text/css" />
+<!-- 树形插件 -->
+<link rel="stylesheet" href="__PUBLIC__/js/ztree/css/zTreeStyle/zTreeStyle.css" type="text/css">
+<script type="text/javascript" src="__PUBLIC__/js/ztree/js/jquery.ztree.core-3.5.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/ztree/js/jquery.ztree.excheck-3.5.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/ztree/demo/treecheckbox.js"></script>
+<!-- 生成类目联动下拉选项菜单 -->
+<script type="text/javascript" src="__PUBLIC__/js/libs/buildCategorySelections.js"></script>
+<!-- 引入小工具函数  -->
+<script type="text/javascript" src="__PUBLIC__/js/libs/handy.js"></script>
+<!-- 本地存储库 -->
+<script type="text/javascript" src="__PUBLIC__/js/store.min.js"></script>
+<script type="text/javascript">
+var currentTabIndex = 0;
+var preTabIndex = 0;
+var afterSubmit = false;
+var inProcess = false;
+
+var couponId = '{=$couponId=}';
+var selectedCategories = {=$selectedCategoriesJsonStr=};
+var categoryList = {};
+
+var merchantCategories = {=$merchantCategoriesJsonStr=};
+var couponCategoryAttrInitialed = false;
+
+var selectedItems = [];
+var selectedCategoryParents = [];
+
+var couponCodes = []; // 已导入的券码
+var couponImported = false; // 是否已导入券码，券码只能导入一次
+
+// variables for local storage data
+var localStorageKeyInitialed = false;
+var storeKey = '';
+var stores = [];
+var commodityKey = '';
+var commodities = {};
+var ticketKey = '';
+var tickets = {};
+var settlementKey = '';
+var settlement = 0;
+var storeSettlementKey = '';
+var storeSettlement = {};
+var skuKey = '';
+var skus = [];
+
+// variables for data post to server
+var limitCommodities = [];
+var limitCommodityCategories = [];
+var limitTickets = [];
+var limitTicketCategories = [];
+
+var selectedCategories_temp = [];
+var categoryTreeClicked = false;
+
+// 编辑器容器
+var edit1;
+function imgupload(a, b, c, d) { // debug
+//	console.log(a, b, c, d);
+}
+$(function() {
+	initPage();
+
+	$( "#validStartDate" ).datepicker({
+		//minDate: +0,
+	    changeMonth: true,
+      	onSelect: function( selectedDate ) {
+        	$("#validEndDate").datepicker( "option", "minDate", selectedDate );
+      	}
+    });
+	$( "#validEndDate" ).datepicker({
+		minDate: +0,
+      	changeMonth: true,
+      	onSelect: function( selectedDate ) {
+        	$("#validStartDate").datepicker( "option", "maxDate", selectedDate );
+      	}
+    });		
+    
+    $( "#saleStartDate" ).datepicker({
+		//minDate: +0,
+		changeMonth: true,
+      	onSelect: function( selectedDate ) {
+        	$("#saleEndDate").datepicker( "option", "minDate", selectedDate );
+      	}
+    });
+    $( "#saleEndDate" ).datepicker({
+		minDate: +0,
+      	changeMonth: true,
+      	onSelect: function( selectedDate ) {
+        	$("#saleStartDate").datepicker( "option", "maxDate", selectedDate );
+      	}
+    });
+
+	// 选项卡的切换，注意只能点击当前选项卡之前的条目
+	$('.tabUl a').each(function(tabIndex, Tab) {
+		$(Tab).click(tabIndex, function() {
+			if(tabIndex >= currentTabIndex && !afterSubmit) {
+				return false;
+			}
+			
+			afterSubmit = false;
+			
+			preTabIndex = currentTabIndex;
+			currentTabIndex = tabIndex;
+
+			$('.tabUl a').eq(preTabIndex).removeClass('cur');
+			$('.comTable').eq(preTabIndex).hide();
+			
+			$(this).addClass('cur');
+			$('.comTable').eq(currentTabIndex).show();
+			
+			return false;
+		});
+	});
+
+	$("#origPrice").on("keyup",function(){ 
+		if($(this).val() != ""){
+			if(! /^([0-9.]+)$/.test($(this).val())){ 
+				alert("只能输入数字和小数点！");
+			}
+		}
+	});
+	
+	// 根据所选的券类型调整表单的内容的显示和 input 的属性
+	$('.productType').each(function(index, Item) {
+		if($(Item).attr('checked')) {
+			if(index == 2) {
+				$('#limitedProducts1').attr('disabled', 'disabled');
+			} else {
+				$('#limitedProducts1').removeAttr('disabled');
+			}
+			updateForm(index);
+		}
+		
+		$(Item).click(index, function() {
+			if(index == 2) {
+				$('#limitedProducts0').attr('checked', 'checked');
+				$('#limitedProducts1').attr('disabled', 'disabled');
+			} else {
+				$('#limitedProducts1').removeAttr('disabled');
+			}
+
+			updateForm(index, true);
+		});
+	});
+	
+	function updateForm(index, newCoupon) {
+		var classNames = ['coupon1', 'coupon2', 'coupon4'];
+		$.each(classNames, function(i, className) {
+			if(index == i) {
+				$('.' + className).each(function() {
+					if($(this).hasClass('orHide')) {
+						$(this).show();
+					} else if($(this).hasClass('orDisable')) {
+						$(this).removeAttr('disabled');
+					}
+					
+					if($(this).hasClass('required')) {
+						$(this).attr('required', 'required');
+					}
+					
+					if(newCoupon && $(this).hasClass('checked')) {
+ 						_this = this;
+ 						setTimeout(function() {
+ 							$(_this).click();
+ 	 	 				}, 30);
+					}
+				});
+			} else {
+				$('.' + className).each(function() {
+					if(!$(this).hasClass(classNames[index])) {
+						if($(this).hasClass('orHide')) {
+							$(this).hide();
+						} else if($(this).hasClass('orDisable')) {
+							$(this).attr('disabled', 'disabled');
+							$(this).removeAttr('checked');
+						}
+						
+						if(newCoupon && $(this).hasClass('checked')) {
+							$(this).removeAttr('checked');
+						}
+						
+						if($(this).hasClass('required')) {
+							$(this).removeAttr('required');
+						}
+					}
+				});
+			}
+		});
+	}
+	
+	$("#couponBasicForm").validate({
+		errorElement:"em",
+		rules: {
+			title: {
+				required: true,
+		   		textLimit:[$("#couponTitle").attr("end"),$("#couponTitle").attr("start")]
+		   }
+		},
+		messages: {
+	  	},
+		errorPlacement: function(error, element) {
+			if (element.is(':radio')) {
+				error.appendTo(element.parent().parent());
+			} else if(element.attr("alias") == "next"){
+				error.appendTo(element.parent());
+			} else if(element.is(":checkbox")) {
+				error.insertAfter(element.next());
+			}else { 
+				error.insertAfter(element); 
+			} 
+		}
+	});		
+
+	$('#couponBasicForm').submit(function() {
+
+		if($("#origPrice").val() >= 100000){ 
+			alert("面值不能大于99999.99元！");
+			return false;
+		}
+
+		if(inProcess) {
+			alert('表单提交中，请勿反复提交');
+			return false;
+		}
+		
+		// 先验证表单
+		if($(this).valid()) {
+			// submit
+			var postData = {
+					title: $('#couponTitle').val(),
+					type:  $('.productType:checked').val(),
+					origPrice:   $('#origPrice').val(),
+					parkingTime: $('#parkingTime').val()
+			};
+			
+			var url = '';
+			if(!!couponId) {
+				url = '/coupon/coupon/update_basic' // update
+				postData.productNo = couponId;
+			} else {
+				url = '/coupon/coupon/{=$action=}_basic'; // insert
+			}
+			
+			inProcess = true;
+			$.post(url, postData, function(response) {
+				if(response.status == 200) {
+					if(response.data) { // for add only
+						couponId = response.data;
+						initLocalStorageKey();
+					}
+
+					// lock the type option
+					$('.productType').attr('disabled', 'disabled');
+
+					goNextTab();
+					
+					inProcess = false;
+
+					if(!couponCategoryAttrInitialed) {
+						// 只执行一次
+						initCouponCategoryAttr(); // 初始化限制了适用范围的类目
+						initSelect(true);
+					}
+				} else {
+					inProcess = false;
+					if(response.message.indexOf('request timeout') > -1) {
+						response.message += "请求超时。";
+					}
+
+					response.message = translateNotice(response.message);
+					
+					alert('优惠券基本信息保存失败：' + response.message);
+				}
+			});
+		} else {
+			// ..
+		}
+		
+		return false;
+	});
+	
+	$('#createCertificateType1').click(createCertificateTypeUpdate);
+	$('#createCertificateType2').click(createCertificateTypeUpdate);
+
+	function createCertificateTypeUpdate() {
+		var editMode = arguments[0] === true ? true : false; // jQuery 会传一个默认参数进来，只有为 true 时才确定为编辑模式
+
+		var createCertificateType = $('input[name=createCertificateType]:checked').val();
+		if(createCertificateType == '1') {
+{=if $couponDetail.createCertificateType == 0=}
+			$('#stockNum').removeAttr('disabled');
+{=/if=}
+			if($('input[name=vendibility]:checked').val() == '1') {
+				$("#settlementRow").show();
+//				$('#submitInfo').show(); // for submit info
+			}
+			$('#xlsUploadBox').hide();
+		} else if(createCertificateType == '2') {
+			$('#stockNum').attr('disabled', 'disabled');
+			$("#settlementRow").hide();
+//			$('#submitInfo').hide(); // for submit info
+			if(!couponImported) {
+				$('#xlsUploadBox').show();
+			}
+	
+			if(!editMode) {
+				$("#stockNum").val('');
+			}
+		}
+	}
+	
+	$('#vendibility1').click(vendibililty1update);
+	$('#vendibility2').click(vendibililty0update);
+
+	function vendibililty1update()
+	{
+		$('#salePrice_box').show();
+		$('#salePrice_box input').each(function() {
+			$(this).removeAttr('disabled');
+		});
+		$(".vendible").show();
+		if($('input[name=createCertificateType]:checked').val() == '1') {
+//			$('#submitInfo').hide(); // for submit info
+			$('#settlementRow').show();
+		}
+
+		$("#validRelativeTimeType_div").show();
+	}
+	
+	function vendibililty0update(){
+		$('#salePrice_box').hide();
+		$('#salePrice_box input').each(function() {
+			$(this).attr('disabled', 'disabled');
+		});
+		$(".vendible").hide();
+		$('#settlementRow').hide();
+//		$('#submitInfo').show();  // for submit info
+
+		$("#validRelativeTimeType_div").hide();
+	}
+
+	$("#couponSaleRuleForm").validate({
+		errorElement:"em",
+		rules: {
+		},
+		messages: {
+	  	},
+		errorPlacement: function(error, element) {
+			if (element.is(':radio')) {
+				error.appendTo(element.parent().parent());
+			} else if(element.attr("alias") == "next"){
+				error.appendTo(element.parent());
+			} else if(element.is(":checkbox")) {
+				error.insertAfter(element.next());
+			}else { 
+				error.insertAfter(element); 
+			} 
+		}
+	});	
+	$('#couponSaleRuleForm').submit(function() {
+		//submit
+		if($(this).valid()) {
+			var postData = {};
+			var createCertificateType = parseInt($('input[name=createCertificateType]:checked').val());
+
+			if($("#stockNum").val() && !/^\d{0,9}$/.test($("#stockNum").val())){ 
+				alert("请输入不大于9位数的整数！");
+				return false;
+			}
+			var stockNum = $('#stockNum').val();
+{=if !$readMode=}
+			if(createCertificateType == 2) {
+				if(JSON.stringify(couponCodes) == '[]') {
+					alert('已选择导入方式生成券码，必须提交券码有效的券码excel文件。');
+					return false;
+				}
+			}
+{=/if=}
+			var vendibility = $('input[name=vendibility]:checked').val();
+			if(vendibility == '1') {
+				vendibililty1update();
+			} else {
+				vendibililty0update();
+			}
+			postData = {
+				productNo: couponId,
+				vendibility: vendibility,
+				createCertificateType: createCertificateType,
+				couponNos: JSON.stringify(couponCodes),
+				stockNum:  stockNum,
+			}
+
+			if(inProcess) {
+				alert('表单提交中，请勿反复提交');
+				return false;
+			}
+			inProcess = true;
+			$.post('/coupon/coupon/{=$action=}_salerule', postData, function(response) {
+				if(response.status == 200) {
+					$('input[name=createCertificateType]').attr('disabled', 'disabled');
+					$('input[name=vendibility]').attr('disabled', 'disabled');
+					$('#stockNum').attr('disabled', 'disabled');
+
+					couponImported = true;
+
+					goNextTab();
+					
+					inProcess = false;
+				} else {
+					inProcess = false;
+					if(response.message.indexOf('request timeout') > -1) {
+						response.message += "请求超时。";
+					}
+
+					response.message = translateNotice(response.message);
+					
+					alert('优惠券发放规则保存失败：' + response.message);
+				}
+			});
+		} else {
+			// ..
+		}
+		
+		return false;
+	});
+
+	$("#popBoxSelectCategories #close").click(function(){
+		$("#popBoxSelectCategories").find("#category").html("");
+		$("#popBoxSelectCategories").hide();
+		$("#brg").hide();
+	});
+	
+	$('#selectStores').click(function() {
+		// show the pop
+		if(couponId) {
+			var url = '/database/store_component/select/subject/coupon/subjectId/' + couponId + '/action/{=if $priorEditMode=}add{=else=}select{=/if=}';
+			$("#popBoxCheckCategories").find("#category").attr({"src":url});
+			$('#popTitleForIframe').html('选择门店');
+			$("#brg").show();
+			$("#popBoxCheckCategories").css({"min-width":"1000px"}).show().position({my:"center",at:"center",of:window}).draggable();
+		} else {
+			alert('获取券ID失败，无法绑定门店');
+			return false;
+		}
+	});
+	$('#showStores').click(function() {
+		// show the pop
+		if(couponId) {
+			var url = '/database/store_component/showSelect/subject/coupon/subjectId/' + couponId{=if $priorEditMode=} + '/readOnly/yes'{=/if=};
+			$("#popBoxCheckCategories").find("#category").attr({"src":url});
+			$('#popTitleForIframe').html('查看门店');
+			$("#brg").show();
+			$("#popBoxCheckCategories").css({"min-width":"1000px"}).show().position({my:"center",at:"center",of:window}).draggable();
+		} else {
+			alert('获取券ID失败，无法查看门店');
+			return false;
+		}
+	});
+
+	$('#selectCategories').click(function() {
+		if(couponId) {
+			// showbox
+			$(this).attr("disabled",true);
+			var initialedCategory = allCategory;
+			var len = initialedCategory.length;
+			var selectedLen = selectedCategories.length;
+			var i = 0, j = 0, k = 0;
+			var curCateId = '';
+			var openedCnt = 0;
+
+			initCategoryList(categoryLevel);
+			
+			// rebuild selected category tree
+
+			if(selectedLen) {
+				selectedCategoryParents = [];
+				for(j = 0; j < selectedLen; j++) {
+					curCateId = selectedCategories[j];
+					if(categoryList[curCateId]['pId']) { // 上一级
+						selectedCategoryParents.push(categoryList[curCateId]['pId']);
+						curCateId = categoryList[curCateId]['pId'];
+						if(categoryList[curCateId]['pId']) {  // 上两级 
+							selectedCategoryParents.push(categoryList[curCateId]['pId']);
+							curCateId = categoryList[curCateId]['pId']; 
+							if(categoryList[curCateId]['pId']) { // 上三级，极限了，总共四级
+								selectedCategoryParents.push(categoryList[curCateId]['pId']);
+							}
+						}
+					}
+				}
+				
+				selectedCategoryParents = uniqIntArr(selectedCategoryParents) || [];
+				openedCnt = selectedCategoryParents.length;
+				for(i = 0; i < len; i++) {
+					if(initialedCategory[i].isLeaf) {
+						for(j = 0; j < selectedLen; j++) {
+							if(initialedCategory[i].id == selectedCategories[j]) {
+								initialedCategory[i].checked = true;
+								continue;
+							}
+						}
+					} else {
+						for(k = 0; k < openedCnt; k++) {
+							if(initialedCategory[i].id == selectedCategoryParents[k]) {
+								initialedCategory[i].checked = true;
+								initialedCategory[i].open = true;
+								continue;
+							}
+						}
+					}
+				}
+			} else {
+				for(i = 0; i < len; i++) {
+					if(initialedCategory[i].checked) {
+						initialedCategory[i].checked = false;
+						initialedCategory[i].open = false;
+					}
+				}
+			}
+			
+
+			categoryTree(initialedCategory, "#treeCategory", function(selectedItems){
+				categoryTreeClicked = true;
+{=if !$priorEditMode=}
+				selectedCategories_temp = getCategoryLeaves(selectedItems);
+{=else=}
+				// 只允许增加，不允许删除
+				selectedItems = getCategoryLeaves(selectedItems);
+				var len = selectedItems.length;
+				for(var i = 0; i < len; i++) {
+					selectedCategories_temp.push(selectedItems[i]);
+				}
+				selectedCategories_temp = uniqIntArr(selectedCategories_temp);
+{=/if=}
+			});
+			$("#popBoxSelectCategories").show().position({my:"center",at:"center",of:window}).draggable();
+			$("#brg").show();
+			
+		} else {
+			alert('获取券ID失败，无法设置类目');
+			return false;
+		}
+	});
+	
+	$("#selectBtn").click(function(){
+		$("#popBoxSelectCategories").hide();
+		$("#brg").hide();
+
+		if(categoryTreeClicked) {
+			selectedCategories = selectedCategories_temp;
+			if(selectedCategories.length > 0)
+				$("em#selectCategoriesEm").remove();
+
+			categoryTreeClicked = false;
+		}
+
+		showCheckCategoriesBox();
+	});
+
+	$('#checkCategories').click(showCheckCategoriesBox);
+
+	function showCheckCategoriesBox() {
+		if(couponId) {
+			// showbox
+//			$(this).attr("disabled",true);
+			var cnt = selectedCategories.length;
+			if(cnt < 1) {
+				alert('尚未选择类目');
+				return false;
+			}
+	
+			initCategoryList(categoryLevel);
+			
+			var CategoryTable = $('#checkCategoryList');
+//			var headRow = '<tr><th>一级类目</th><th>二级类目</th><th>三级类目</th><th>商品数量</th><th>选择商品</th><th>选择票商品</th><th>删除类目</th></tr>';
+			var headRow = '<tr><th>一级类目</th><th>二级类目</th><th>商品数量</th><th>选择商品</th><th>选择票商品</th>{=if !$priorEditMode=}<th>删除类目</th>{=/if=}</tr>';
+			var row = '';
+			var category1 = category2 = category3 = '';
+			CategoryTable.empty().append(headRow);
+
+			dumpLocalStorage();
+			
+			var productNoCnt = '';
+			var commodityCheckLink = commodityAddLink = commoditySelectLink = ticketCheckLink = ticketAddLink = ticketCheckLink = '#';
+			var outlets = stores.join(',');
+
+			for(var i = 0; i < cnt; i++) {
+				categoryId = selectedCategories[i];
+
+				if(categoryList[categoryId].categoryLevel == 1) {
+					category3 = '(无)';
+					category2 = '(无)';
+					category1 = categoryList[categoryId].name;
+					categoryIds = categoryId;
+				} else if(categoryList[categoryId].categoryLevel == 2) {
+					if(!categoryList[categoryId].isLeaf) {
+					}
+					category3 = '(无)';
+					category2 = categoryList[categoryId].name;
+					category1 = categoryList[categoryList[categoryId].pId].name;
+					categoryIds = categoryList[categoryId].pId + ',' + categoryId;
+				} else if(categoryList[categoryId].categoryLevel == 3) {
+					category3 = categoryList[categoryId].name;
+					category2 = categoryList[categoryList[categoryId].pId].name;
+					category1 = categoryList[categoryList[categoryList[categoryId].pId].pId].name;
+					categoryIds = categoryList[categoryList[categoryId].pId].pId + ',' + categoryList[categoryId].pId + ',' + categoryId;
+				} else {
+					category1 = category2 = category3 = '-';
+					categoryIds = '-1';
+				}
+				
+				productNoCnt = 0;
+				if((typeof commodities[categoryId]) !== 'undefined' && (typeof commodities[categoryId].length) !== 'undefined') {
+					productNoCnt += commodities[categoryId].length;
+				}
+				if((typeof tickets[categoryId]) !== 'undefined' && (typeof tickets[categoryId].length) !== 'undefined') {
+					productNoCnt += tickets[categoryId].length;
+				}
+				productNoCnt = productNoCnt || '(空)';
+				
+				commoditySelectLink = '/goods/goods_component/select/subject/coupon/subjectId/' + couponId + '/categoryIds/' + categoryIds + '/action/select';
+				if(outlets) {
+					commoditySelectLink +='/outlets/' + outlets; // TODO check it out
+				}
+				commodityAddLink    = commoditySelectLink + '/action/add';
+				commoditySelectLink = commoditySelectLink + '/action/select';
+				commodityCheckLink  = '/goods/goods_component/showSelect/subject/coupon/subjectId/' + couponId + '/categoryIds/' + categoryIds{=if $priorEditMode=} + '/readOnly/yes'{=/if=};
+				commodityLinks = '';
+{=if !$priorEditMode=}
+				commodityLinks += '<a class="showIframe" href="#" url="' + commoditySelectLink + '" data-object="商品">选择</a>';
+{=else=}
+				commodityLinks += '<a class="showIframe" href="#" url="' + commodityAddLink + '" data-object="商品">增加</a>';
+{=/if=}
+				commodityLinks += '&nbsp;&nbsp;<a class="showIframe" href="#" url="' + commodityCheckLink + '" data-object="商品">查看</a>';
+
+				ticketSelectLink = '/ticketcenter/show_component/select/subject/coupon/subjectId/' + couponId + '/categoryIds/' + categoryIds;
+				if(outlets) {
+					ticketSelectLink +='/storeIds/' + outlets; // TODO check it out
+				}
+				ticketAddLink    = ticketSelectLink + '/action/add';
+				ticketSelectLink = ticketSelectLink + '/action/select';
+				ticketCheckLink  = '/ticketcenter/show_component/showSelect/subject/coupon/subjectId/' + couponId + '/categoryIds/' + categoryIds{=if $priorEditMode=} + '/readOnly/yes'{=/if=};;
+
+				ticketLinks = '';
+{=if !$priorEditMode=}
+				ticketLinks += '<a class="showIframe" href="#" url="' + ticketSelectLink + '" data-object="票">选择</a>';
+{=else=}
+				ticketLinks += '<a class="showIframe" href="#" url="' + ticketAddLink + '" data-object="票">增加</a>';
+{=/if=}
+				ticketLinks += '&nbsp;&nbsp;<a class="showIframe" href="#" url="' + ticketCheckLink + '" data-object="票">查看</a>';
+				
+				deleteLink = '<a href="#" class="delCategory" data-category="' + categoryId + '">删除</a>';
+				
+//				row = '<tr><td>'+ category1 +'</td><td>'+ category2 +'</td><td>'+ category3 +'</td><td>' + productNoCnt + '</td>';
+				row = '<tr><td>'+ category1 +'</td><td>'+ category2 +'</td><td>' + productNoCnt + '</td>';
+				row += '<td>' + commodityLinks + '</td><td>' + ticketLinks + '</td>{=if !$priorEditMode=}<td>' + deleteLink + '</td>{=/if=}</tr>';
+				
+				CategoryTable.append(row);
+
+				$("#brg").show();
+				$("#checkCategoriesBox").css({"min-width":"550px"}).show().position({my:"center",at:"center",of:window}).draggable();
+			}
+
+			// init event
+			$('.delCategory').unbind().click(function() {
+//				console.log($(this).data('category'));
+
+				if(confirm('删除类目会导致关联到当前类目的票都被删除，但商品需要提前人工删除。')) {
+					// 删除指定类目
+					var toDelete = $(this).data('category');
+					
+					dumpLocalStorage();
+
+					if(commodities[toDelete] && commodities[toDelete].length) {
+						// FIXME 无法直接通过类目ID 删除 SKU，需要人工处理。
+						alert('商品需要提前人工删除之后才能删除类目。');
+						return false;
+					}
+					
+					selectedCategories = arrayDelValue(selectedCategories, toDelete); // 删除类目list中的元素
+					delete tickets[toDelete]; // 删除对应的票
+					delete commodities[toDelete]; // 删除对应的商品
+					// how to delete sku? manually
+	
+					// 同步数据到本地，会被其它页面调用
+					store.set(ticketKey, tickets);
+					store.set(commodityKey, commodities);
+	
+					$(this).parent().parent().remove();
+
+					alert('删除类目成功！');
+				}
+				
+			});
+		} else {
+			alert('获取券ID失败，无法查看类目');
+		}
+		
+		return false;
+	}
+
+	window["showCheckCategoriesBoxParent"] = showCheckCategoriesBox;
+
+	$("#checkCategoryList").on("click", ".showIframe", function(){ 
+			$("#popBoxCheckCategories").find("#category").attr({"src":$(this).attr("url")});
+			$('#popTitleForIframe').html($(this).html() + $(this).data('object'));
+			$("#brg").show();	
+			$("#popBoxCheckCategories").css({"min-width":"1000px"}).show().position({my:"center",at:"center",of:window}).draggable();
+	});
+	$("#popBoxCheckCategories #close").click(function(){ 
+		$("#popBoxCheckCategories").find("#category").attr("src","");
+		$("#popBoxCheckCategories").hide();
+		$("#brg").hide();
+	});
+	$("#closeCheckCategoriesBox").click(function(){
+		$("#checkCategoriesBox").hide();
+		$("#brg").hide();
+	});
+
+	$('#setSettlement').click(function() {
+		// show the pop
+		if(couponId) {
+			var url = '/database/store_component/storeSettlement/subject/coupon/subjectId/' + couponId;
+			$("#popBoxCheckCategories").find("#category").attr({"src":url});
+			$('#popTitleForIframe').html('设置结算价');
+			$("#brg").show();
+			$("#popBoxCheckCategories").css({"min-width":"1000px","position":"absolute"}).show().position({my:"center",at:"center",of:window}).draggable();
+		} else {
+			alert('获取券ID失败，无法设置结算价');
+			return false;
+		}
+	});
+	$('#showSettlement').click(function() {
+		// show the pop
+		if(couponId) {
+			var url = '/database/store_component/showStoreSettlement/subject/settlement/subjectId/' + couponId;
+			$("#popBoxCheckCategories").find("#category").attr({"src":url});
+			$('#popTitleForIframe').html('查看结算价');
+			$("#brg").show();
+			$("#popBoxCheckCategories").css({"min-width":"1000px"}).show().position({my:"center",at:"center",of:window}).draggable();
+		} else {
+			alert('获取券ID失败，无法查看结算价');
+			return false;
+		}
+	});
+	
+
+	$("#couponUseRuleForm").validate({
+		errorElement:"em",
+		rules: {
+			remark: {
+		   		textLimit:[$("#remark").attr("end"),$("#remark").attr("start")]
+		   }
+		},
+		messages: {
+			validStartDate:"开始日期不能为空！",
+			validEndDate:"结束日期不能为空！"
+	  	},
+		errorPlacement: function(error, element) {
+			if (element.is(':radio')) {
+				error.appendTo(element.parent().parent());
+			} else if(element.attr("alias") == "next"){
+				error.appendTo(element.parent());
+			} else if(element.is(":checkbox")) {
+				error.insertAfter(element.next());
+			}else { 
+				error.insertAfter(element); 
+			} 
+		}
+	});	
+	$('#couponUseRuleForm').submit(function() {
+		if($("#validEndDate").val()){
+			var validendtime  = $("#validEndDate").val().split("-");
+			var validendyear  = validendtime[0];
+			var validendmonth = validendtime[1];
+			var validendday   = validendtime[2];
+			var validendhour  = $("#validEndDate").parent().find(".hour").val();
+			var validendminute = $("#validEndDate").parent().find(".minute").val();
+			var validendsecond = "00";
+			
+			var validEndDate = new Date(validendyear,validendmonth,validendday,validendhour,validendminute,validendsecond);
+			var validendtime  = validEndDate.getTime();
+			var nowdate = new Date()
+			var nowtime = new Date(nowdate.getFullYear(),nowdate.getMonth()+1,nowdate.getDate(),nowdate.getHours(),nowdate.getMinutes(),nowdate.getSeconds()).getTime();
+
+			if(validendtime <= nowtime){ 
+				alert("优惠券有效期结束时间不能早于现在时间！");
+				return false;
+			}
+		}
+
+		if(!$("#useNumLimitPerTotal").attr("readonly") && $("#useNumLimitPerTotal").val() > 0 && $("#useNumLimitPerOrder").val() > 0 && $("#useNumLimitPerTotal").val() > $("#useNumLimitPerOrder").val()){ 
+			alert("可以使用券张数不能大于每一个订单最多可以使用券张数！");
+			return false;
+		}
+
+		dumpLocalStorage();
+
+		// FIXME 重新设置验证规则
+		$("em#selectStoresEm").remove();
+		if(stores.length == 0){ 
+			$("#showStores").parent().append("<em class='error' id='selectStoresEm'>门店为必选项！</em>");
+			return false;
+		}
+
+		$("em#selectCategoriesEm").remove();
+		if($("input[name=limitedProducts]:checked").val() == "1" && selectedCategories.length == "0"){
+			$("#selectCategoriesSpan").append("<em id='selectCategoriesEm' style='display:inline;color:red;font-style:oblique;margin-left:20px'>请选择其它使用范围！</em>");
+			return false;
+		}
+
+		$("em#setSettlementEm").remove();
+		var vendibility = parseInt($('input[name=vendibility]:checked').val()); // 只验证可销售的券的结算价
+
+		if(($("#settlementRow").css("display") != "none") && vendibility && !/^[0-9]+(.[0-9]{1,2})?$/.test(settlement)) {
+			$('#setSettlement').parent().append("<em id='setSettlementEm' style='display:inline;color:red;font-style:oblique;margin-left:20px'>请设置所有门店结算价为有效的价格，0 也有效！</em>");
+			return false;
+		}
+
+		$('#validRelativeTimeEm').remove();
+		var validTimeType = $('input[name=validTimeType]:checked').val();
+		if(validTimeType == 'relative') {
+			var validRelativeTime = parseInt($('#validRelativeTime').val());
+			if(!(validRelativeTime && validRelativeTime > 0 && validRelativeTime <= 365)) {
+				$('#validRelativeTime').parent().append("<em id='validRelativeTimeEm' style='display:inline;color:red;font-style:oblique;margin-left:20px'>有效期必须小于365天。</em>");
+				alert('有效期必须小于365天。');
+				return false;
+			}
+		}
+
+		if(skus.length == 0 && limitCommodities.length > 0) {
+			alert("关联的 SKU 为空，可能是 js 文件未加载成功，\n请按 Ctrl + F5 强制刷新之后，到优惠券列表中找到当前条目重新编辑。");
+			return false;
+		}
+		//submit
+		if($(this).valid()) {
+			refreshCommodities();
+			refreshTickets();
+
+			var postData = {
+					productNo:       couponId,
+					validTimeType:   validTimeType,
+					thresholdOrderLimitless: $('input[name=thresholdOrderLimitless]:checked').val(),
+					limitStores:     JSON.stringify(stores),
+					thresholdOrder:  0,
+					useNumLimitPerTotal: 0,
+					useNumLimitPerOrder: 0,
+					limitProducts:       JSON.stringify(limitTickets),
+					limitProductCategories: JSON.stringify(limitTicketCategories),
+					limitCommodities:   JSON.stringify(limitCommodities),
+					limitCommodityCategories: JSON.stringify(limitCommodityCategories),
+					limitCommondities:   JSON.stringify(limitCommodities), // FIXME bug
+					limitCommondityCategories: JSON.stringify(limitCommodityCategories), // FIXME bug
+					limitCommonditySKUs: JSON.stringify(skus),
+					limitCategories:     JSON.stringify(selectedCategories),
+					settlement:          settlement,
+					storeSettlement:     JSON.stringify(storeSettlement),
+				}
+
+			// 使用时间限制
+			if(postData.validTimeType == 'absolute') {
+				postData.validStartTime = $('#validStartDate').val() + ' ' + $('#startHour').val() + ':' + $('#startMinute').val() + ':00';
+				postData.validEndTime   = $('#validEndDate').val() + ' ' + $('#endHour').val() + ':' + $('#endMinute').val() + ':59';
+			} else if (postData.validTimeType == 'relative'){
+				postData.validRelativeTime = validRelativeTime;
+			}
+			postData.remark = $('#remark').val();
+			
+			// 使用条件有限制
+			if(!parseInt(postData.thresholdOrderLimitless)) {
+				postData.thresholdOrder = $('#thresholdOrder').val();
+				postData.useNumLimitPerTotal = $('#useNumLimitPerTotal').val();
+				postData.useNumLimitPerOrder = $('#useNumLimitPerOrder').val();
+			}
+
+			if($('input[name=limitedProducts]:checked').val() == '0') {
+				postData.limitProducts = '[]';
+				postData.limitProductCategories = '[]';
+				postData.limitCommodities = '[]';
+				postData.limitCommodityCategories = '[]';
+				postData.limitCommondities = '[]';
+				postData.limitCommondityCategories = '[]';
+				postData.limitCategories = '[]';
+			}
+			if(inProcess) {
+				alert('表单提交中，请勿反复提交');
+				return false;
+			}
+			inProcess = true;
+			$.post('/coupon/coupon/{=$action=}_userule', postData, function(response) {
+				if(response.status == 200) {
+					if(!response.canSetPointPrice) {
+						// set disabled
+						$('#salePriceType2').attr('disabled', 'disabled');
+						$('#salePriceType2Em').show();
+					} else {
+						$('#salePriceType2').removeAttr('disabled');
+						$('#salePriceType2Em').hide();
+					}
+					
+					goNextTab();
+					
+					inProcess = false;
+				} else {
+					inProcess = false;
+					if(response.message.indexOf('request timeout') > -1) {
+						response.message += "请求超时。";
+					}
+
+					response.message = translateNotice(response.message);
+					
+					alert('优惠券使用规则保存失败：' + response.message);
+				}
+			});
+		} else {
+			// ..
+		}
+		
+		return false;
+	});
+
+	// 编辑器
+	KindEditor.ready(function(K) {
+		edit1 = K.create('#content1', {
+			themeType : 'default',
+			uploadJson : "/{=$smarty.const.XADMIN_APP_GROUP_SYSTEM=}/files/imguploadForKindEditor",
+		});
+	});
+	
+	var infoFormSubmitBtn = null;
+	$('#saveInfo').click(function() {
+		infoFormSubmitBtn = this;
+		$('#couponInfoForm').trigger("submit");
+	});
+	$('#submitInfo').click(function() {
+		infoFormSubmitBtn = this;
+		$('#couponInfoForm').trigger("submit");
+	});
+
+	function initCouponCategoryAttr() {
+		// 覆写的内容
+		if(merchantCategories.length > 0) {
+			couponCategoryAttrInitialed = true; // 执行一次
+			initCategoryList(categoryLevel);
+			
+			var _categoryLevel1 = categoryLevel1,
+			    _categoryLevel2 = categoryLevel2,
+			    _categoryLevel3 = categoryLevel3;
+			var merchantCategoryList = [];
+
+			var i = 0;
+			// merchantCategories
+			// 初始化，重新填回可选
+			var merchantCategoryLeaves = getCategoryLeaves(merchantCategories);
+			var patchedMerchantCategories = merchantCategoryLeaves;
+
+			var leavesCnt = merchantCategoryLeaves.length;
+			for(i = 0; i < leavesCnt; i++) {
+				curCateId = merchantCategoryLeaves[i];
+				if(categoryList[curCateId]['pId']) { // 上一级
+					patchedMerchantCategories.push(categoryList[curCateId]['pId']);
+					curCateId = categoryList[curCateId]['pId'];
+					if(categoryList[curCateId]['pId']) {  // 上两级 
+						patchedMerchantCategories.push(categoryList[curCateId]['pId']);
+						curCateId = categoryList[curCateId]['pId']; 
+						if(categoryList[curCateId]['pId']) { // 上三级，极限了，总共四级
+							patchedMerchantCategories.push(categoryList[curCateId]['pId']);
+						}
+					}
+				}
+			}
+
+			patchedMerchantCategories = uniqIntArr(patchedMerchantCategories);
+			var cnt = patchedMerchantCategories.length,
+			    level1Cnt = categoryLevel1.length,
+			    level2Cnt = categoryLevel2.length,
+			    level3Cnt = categoryLevel3.length;
+		    var l = 0, m = 0, n = 0;
+			var matched = false;
+			var category = {};
+			
+			categoryLevel1 = [], categoryLevel2 = [], categoryLevel3 = []; // 不要用 = 连续复制，会 bug
+			for(i = 0; i < cnt; i++) {
+				matched = false;
+				
+				for(l = 0; l < level1Cnt; l++) {
+					if(_categoryLevel1[l].categoryId == patchedMerchantCategories[i]) {
+						category = {
+								'categoryId': _categoryLevel1[l].categoryId,
+								'categoryLevel': _categoryLevel1[l].categoryLevel,
+								'categoryName': _categoryLevel1[l].categoryName,
+								'parent': _categoryLevel1[l].parent,
+								'isLeaf': _categoryLevel1[l].isLeaf
+							};
+						categoryLevel1.push(category);
+						matched = true;
+						continue;
+					}
+				}
+
+				if(!matched) {
+					for(m = 0; m < level2Cnt; m++) {
+						if(_categoryLevel2[m].categoryId == patchedMerchantCategories[i]) {
+							category = {
+									'categoryId': _categoryLevel2[m].categoryId,
+									'categoryLevel': _categoryLevel2[m].categoryLevel,
+									'categoryName': _categoryLevel2[m].categoryName,
+									'parent': _categoryLevel2[m].parent,
+									'isLeaf': _categoryLevel2[m].isLeaf
+								};
+							categoryLevel2.push(category);
+							matched = true;
+							continue;
+						}
+					}
+				}
+
+				if(!matched) {
+					for(n = 0; n < level3Cnt; n++) {
+						if(_categoryLevel3[n].categoryId == patchedMerchantCategories[i]) {
+							category = {
+									'categoryId': _categoryLevel3[n].categoryId,
+									'categoryLevel': _categoryLevel3[n].categoryLevel,
+									'categoryName': _categoryLevel3[n].categoryName,
+									'parent': _categoryLevel3[n].parent,
+									'isLeaf': _categoryLevel3[n].isLeaf
+								};
+							categoryLevel3.push(category);
+							matched = true;
+							continue;
+						}
+					}
+				}
+			}
+
+			categoryLevel = categoryLevel1.concat(categoryLevel2).concat(categoryLevel3);
+			initCategoryList(categoryLevel, true);
+			buildCategoryLevel(categoryLevel);
+			initCategoryLevelOptions();
+		}
+	}
+	
+	$("#couponInfoForm").validate({
+		errorElement:"em",
+		rules: {
+			subTitle: {
+				required: true,
+		   		textLimit:[$("#subTitle").attr("end"),$("#subTitle").attr("start")]
+		   },
+			buyNotify: {
+		   		textLimit:[$("#buyNotify").attr("end"),$("#buyNotify").attr("start")]
+		   },
+		   "memberType[]":{ 
+//			   		required:true
+		   }
+		},
+		messages: {
+			category1:"一级类目不能为空！",
+			category2:"二级类目不能为空！",
+			category3:"三级类目不能为空！",
+	  	},
+		errorPlacement: function(error, element) {
+			if (element.is(':radio')) {
+				error.appendTo(element.parent().parent());
+			} else if(element.attr("alias") == "next"){
+				error.appendTo(element.parent());
+			} else if(element.is(":checkbox")) {
+				error.appendTo(element.parent().parent());
+//					error.insertAfter(element.next());
+			}else { 
+				error.insertAfter(element); 
+			} 
+		}
+	});
+
+	// submit
+	$('#couponInfoForm').submit(function() {
+
+		if($("#salePrice").val() >= 100000){ 
+			alert("售价不能大于99999.99元！");
+			return false;
+		}
+		
+		var thistime  = $("#saleEndDate").val().split("-");
+		var thisyear  = thistime[0];
+		var thismonth = thistime[1];
+		var thisday   = thistime[2];
+		var thishour  = $("#saleEndDate").parent().find(".hour").val();
+		var thisminute = $("#saleEndDate").parent().find(".minute").val();
+		var thissecond = "00";
+
+		var fortime   = $("#validEndDate").val().split("-");
+		var foryear   = fortime[0];
+		var formonth  = fortime[1];
+		var forday    = fortime[2];
+		var forhour   = $("#validEndDate").parent().find(".hour").val();
+		var forminute = $("#validEndDate").parent().find(".minute").val();
+		var forsecond = "00";
+
+		var thistime  = new Date(thisyear,thismonth,thisday,thishour,thisminute,thissecond);
+		var fortime   = new Date(foryear,formonth,forday,forhour,forminute,forsecond);
+
+		thistime = thistime.getTime();
+		fortime  = fortime.getTime();
+
+		if(thistime >= fortime){ 
+			alert("优惠券下架时间不能晚于有效截止时间！");
+			return false;
+		}
+/*
+		if($("#saleStartDate").val()){
+			var salestarttime  = $("#saleStartDate").val().split("-");
+			var salestartyear  = salestarttime[0];
+			var salestartmonth = salestarttime[1];
+			var salestartday   = salestarttime[2];
+			var salestarthour  = $("#saleStartDate").parent().find(".hour").val();
+			var salestartminute = $("#saleStartDate").parent().find(".minute").val();
+			var salestartsecond = "00";
+			
+			var saleStartDate = new Date(salestartyear,salestartmonth,salestartday,salestarthour,salestartminute,salestartsecond);
+			var salestarttime  = saleStartDate.getTime();
+			var nowdate = new Date()
+			var nowtime = new Date(nowdate.getFullYear(),nowdate.getMonth()+1,nowdate.getDate(),nowdate.getHours(),nowdate.getMinutes(),nowdate.getSeconds()).getTime();
+
+			if(salestarttime <= nowtime){ 
+				alert("优惠券上架时间不能早于现在时间！");
+				return false;
+			}
+		}
+*/
+		if($("#uploadedImageShowBox li").length == "0"){ 
+			alert("商品图片不能为空！");
+			return false;
+		}
+
+		if($("#uploadedImageShowBox li").length > 5){ 
+			alert("商品图片不能大于5张！");
+			return false;
+		}
+
+		var content1 = edit1.html();
+//			$("#details").val(content1);
+		var content2 = $("#mobileContentDiv").html();
+
+		if(content1 == ""){
+			alert("Web端商品详情不能为空！");
+			return false;
+		}
+
+		if(content2.length < 12){
+			alert("APP端商品详情不能为空！");
+			return false;
+		}
+		var salePrice = parseFloat($('#salePrice').val()) ? $('#salePrice').val() : 0;
+		var salePricePoint = parseFloat($('#salePricePoint').val()) ? $('#salePricePoint').val() : 0
+		var origPrice = parseFloat($("#origPrice").val());
+		
+		if($('input[name=productType]:checked').val() == '{=$smarty.const.COUPON_TYPE_VOUCHER=}'
+           && (salePrice > origPrice || salePricePoint > origPrice)) {
+			alert("代金券的售价不能大于面值！");
+			return false;
+		}
+
+		if($(this).valid()) {
+			
+			$(this).attr('disabled', 'disabled');
+
+//			$("#mobileContentDetail").val(content2);
+			var postData = {
+					productNo: couponId,
+					subTitle:   $('#subTitle').val(),
+					salePrice:  salePrice,
+					salePricePoint: salePricePoint,
+					category1:  $('#category1Id').val(),
+					category2:  $('#category2Id').val(),
+					category3:  $('#category3Id').val(),
+					buyNotify:  $('#buyNotify').val(),
+					webDetail:  content1,
+					topics:     '[]', // placeholder
+					memberType: '[]', // placeholder
+					appDetail: $("#mobileContentDiv").html(),
+					limitPerMember: $('#limitPerMember').val(),
+					limitPerOrder:  $('#limitPerOrder').val(),
+					saleStartTime:  $('#saleStartDate').val() + ' ' + $('#saleStartHour').val() + ':' + $('#saleStartMinute').val() + ':00',
+					saleEndTime:    $('#saleEndDate').val() + ' ' + $('#saleEndHour').val() + ':' + $('#saleEndMinute').val() + ':59'
+				};
+			var topics = [];
+			$('.uploadedImage').each(function(i, n) {
+				if($("input[name='primaryImage']:checked").val() == n.value){
+					topics.unshift(n.value);
+				}else{
+					topics.push(n.value);
+				}
+			});
+
+			postData.topics = JSON.stringify(topics);
+			
+			var memberType = [];
+			$('.memberType:checked').each(function(i, n) {
+				memberType.push(parseInt(n.value));
+			});
+			postData.memberType = JSON.stringify(memberType);
+			
+			// 立即上架
+			var limitedPerMember =$('input[name=limitedPerMember]:checked').val();
+			if(!parseInt(limitedPerMember)) {
+				postData.limitPerMember = 0;
+			}
+			var limitedPerOrder = $('input[name=limitedPerOrder]:checked').val()
+			if(!parseInt(limitedPerOrder)) {
+				postData.limitPerOrder = 0;
+			}
+			var saleStartNow = $('input[name=saleStartNow]:checked').val();
+			postData.saleStartNow = parseInt(saleStartNow)
+			if(postData.saleStartNow) {
+				postData.saleStartTime = '0000-00-00 00:00:00';
+				postData.onSaleType = '1';
+			} else {
+				postData.onSaleType = '0';
+			}
+
+			if(inProcess) {
+				alert('表单提交中，请勿反复提交');
+				return false;
+			}
+			inProcess = true;
+			$.post('/coupon/coupon/{=$action=}_info', postData, function(response) {
+				if(response.status == 200) {
+					$(infoFormSubmitBtn).removeAttr('disabled');
+					inProcess = false;
+					
+					if($(infoFormSubmitBtn).attr("id") == "saveInfo"){ 
+						alert("保存成功！");
+						window.location.href = "/coupon/coupon/detail/id/"+couponId;
+					}else if($(infoFormSubmitBtn).attr("id") == "submitInfo"){
+						$.get("/coupon/coupon/apply/id/"+couponId, function(response) {
+							if(response.status == 200){
+								alert("提交成功！");
+								window.location.href = "/coupon/coupon/detail/id/"+couponId;
+							}else{ 
+								inProcess = false;
+								if(response.msg.indexOf('request timeout') > -1) {
+									response.msg += "请求超时。";
+								}
+								alert('优惠券商品信息提交失败：' + response.msg);
+							}
+						});
+					}
+				} else {
+					inProcess = false;
+					if(response.message.indexOf('request timeout') > -1) {
+						response.message += "请求超时。";
+					}
+
+					response.message = translateNotice(response.message);
+					
+					alert('优惠券商品信息保存失败：' + response.message);
+				}
+			});
+		} else {
+			// ..
+		}
+		
+		return false;
+	});
+
+	$('#preview').click(function() {
+		this.href = $(this).attr('url') + couponId;
+	});
+	
+	$('.preStep').each(function(index) {
+		$(this).click(function() {
+			if(currentTabIndex) {
+				$('.tabUl a').eq(currentTabIndex - 1).click();
+			}
+		});
+	});
+
+	function initPage()
+	{
+{=if !$readMode=}
+		if(!couponId) {
+			// remove all disabled attr
+			$('.productType').removeAttr('disabled');
+			$('input[name=createCertificateType]').removeAttr('disabled');
+			$('input[name=vendibility]').removeAttr('disabled');
+			$('#stockNum').removeAttr('disabled');
+		}
+{=/if=}
+
+{=if $readMode=}
+		// store the data to local
+		initLocalStorageKey();
+		initLocalStorage();
+		updateValidTimeTypeAction(true);
+		updateSalePriceTypeAction(true);
+		createCertificateTypeUpdate(true);
+		updateThresholdOrderAction(true);
+{=/if=}
+		// TODO more is coming soon
+	}
+	
+	function goNextTab()
+	{
+		if(currentTabIndex < 3) {
+			afterSubmit = true;
+			$('.tabUl a').eq(currentTabIndex + 1).click();
+		}
+	}
+	
+	function refreshCommodities()
+	{
+		limitCommodities = [];
+		limitCommodityCategories = [];
+		var property = ''; // categoryId
+		var i = 0;
+		var len =0;
+		for(property in commodities) {
+			if(commodities.hasOwnProperty(property)) {
+				len = commodities[property].length;
+				for(i = 0; i < len; i++) {
+					limitCommodities.push(commodities[property][i]);
+					limitCommodityCategories.push(property);
+				}
+			}
+		}
+	}
+
+	function refreshTickets()
+	{
+		limitTickets = [];
+		limitTicketCategories = [];
+		
+		var property = ''; // categoryId
+		var i = 0;
+		var len =0;
+		for(property in tickets) {
+			if(tickets.hasOwnProperty(property)) {
+				len = tickets[property].length;
+				for(i = 0; i < len; i++) {
+					limitTickets.push(tickets[property][i]);
+					limitTicketCategories.push(property);
+				}
+			}
+		}
+	}
+	
+	//加载图片上传
+	function loadFileUpload()
+	{
+		$('#ImageUploadTrigger').unbind().click(function(){
+			if($("#uploadedImageShowBox li").length > 4){ 
+				alert("商品图片不能大于5张！");
+				return false;
+			}	
+			$('#Filedata').val('');
+		  	$('#Filedata').click();
+		  	return false;
+		});
+		$('#Filedata').unbind().change(function(){
+		  ajaxFileUpload();
+		  $(this).val('');
+
+		  return false;
+		});
+		//删除图片处理
+		$("a[id^='delFile_']").unbind().click(function(){
+			var thisIndex = $(this).attr('id').substring(8);
+			$("#uploadedImage_" + thisIndex).remove();
+		});
+	}
+	function ajaxFileUpload()
+	{
+		$.ajaxFileUpload({
+		url: "{=SmartyU url='/goods/goods_component/ajax_upload'=}",
+//		url: "{=SmartyU url='/market/market_activity/imgupload'=}",
+		secureuri: false,
+		fileElementId: 'Filedata',
+		dataType: 'json',
+		success: function (data, status)
+		{
+			if(data.status == 0)
+			{
+				var imageHtml = '';
+				imageHtml += '<li id="uploadedImage_' + data.img + '" class="uploadedImages">' + "\n";
+				imageHtml += '	<img width="100px" height="100px" src="' + data.imgurl + '">' + "\n";
+				imageHtml += '	<input type="hidden" class="uploadedImage" name="uploadedImages[]" value="' + data.img + '">' + "\n";
+				imageHtml += '	<div class="uploadedImageAction">' + "\n";
+				imageHtml += '		<a id="delFile_' + data.img + '" class="btn upBtn" href="#">删除图片</a>' + "\n";
+				imageHtml += '	</div>' + "\n";
+				imageHtml += '	<label><input type="radio" class="primaryImage" name="primaryImage" value="' + data.img + '">设为主图</label>' + "\n";
+				imageHtml += '</li>' + "\n";
+						
+				$("#uploadedImageShowBox").append(imageHtml);
+
+				loadFileUpload();
+			} else {
+				alert(data.msg);
+			}
+		},
+		error: function (data, status, e)
+		{
+//			console.log(data, status);
+			alert(e);
+		}
+	  });
+
+	  return false;
+	}
+	
+
+	Util.loadJS("XY_Dialog.js",function(){
+		$("#mobileContentText").click(function() {
+			$('#mobileContentTextPopTextarea').val('');
+		  Util.Dialog({
+		  	width : 380,
+		  	boxID : 'mobileContentTextPop',
+			content :"id:mobileContentTextPopBox",
+			showtitle : false,
+			showbg: true
+		  });
+		  return false;
+		});
+	});
+
+	$('#mobileContentTextPopCancelBtn').click(function(){
+		Util.Dialog.close('mobileContentTextPop','');
+	});
+
+	$('#mobileContentTextPopSaveBtn').click(function(){
+		var textVal = $('#mobileContentTextPopTextarea').val();
+		if(textVal == '')
+		{
+			alert("添加文字不能为空！");
+			return false;
+		}
+		var mobileTextHtml = '<p class="tips" editable="1">'+textVal+'</p>';
+		$("#mobileContentDiv").append(mobileTextHtml);
+		Util.Dialog.close('mobileContentTextPop','');
+	});
+
+	function loadContentImageUpload()
+	{
+		$('#mobileContentImg').unbind().click(function(){
+		  $('#contentImage').val('');
+		  $('#contentImage').click();
+		  return false;
+		});
+		$('#contentImage').unbind().change(function(){
+		  ajaxMobileConentUpload();
+		  $(this).val('');
+		  return false;
+		});
+	}
+
+	//手机详情图片上传
+	$("#mobileContentDiv").on("dblclick","*",function(e){
+		$(this).attr("contenteditable",true).attr("editable",2);
+	});
+
+	$("#mobileContentDiv").on("click","[editable='1']",function(e){
+		$("#mobileContentDiv").find("[editable='2']").removeAttr("contenteditable").attr("editable","1");
+	});
+
+	var pos = 0;
+
+	$("#mobileContentDiv").on("keyup click", "[editable='2']", function(){ 
+		pos = window.getSelection().focusOffset;
+	});
+
+	function ajaxMobileConentUpload()
+	{
+		$.ajaxFileUpload({
+	    url: "{=SmartyU url='/goods/goods_component/ajax_upload'=}",
+	    secureuri: false,
+	    fileElementId: 'contentImage',
+	    dataType: 'json',
+	    success: function (data, status)
+	    {
+	    	if(data.status == 0)
+	    	{
+				var obj = $("#mobileContentDiv [editable='2']");
+				if(pos > 0){
+					var imgHtml = '<img src="'+data.imgurl+'" width="350px">';
+					var s = obj.html();
+					obj.html( s.substring(0, pos)+imgHtml+s.substring(pos) );
+				}else{
+				    var imgHtml = '<p class="tips" editable="1"><img src="'+data.imgurl+'" width="350px"></p>';
+					$("#mobileContentDiv").append(imgHtml);
+		    	}
+
+		    	loadContentImageUpload();
+		    }
+		    else
+		    {
+		    	alert(data.msg);
+		    }
+	    },
+	    error: function (data, status, e)
+	    {
+	      alert(e);
+	    }
+	  })
+	  return false;
+	}
+	
+	function getCategoryLeaves(selectedCategories)
+	{
+		var categoryLeaves = [];
+		var categoryLeavesStrEle = [];
+		var len = selectedCategories.length;
+		var allCategoryCnt = categoryLevel.length;
+		var i = j = k = m = 0;
+		for(i = 0; i < len; i++) {
+			for(j = 0; j < allCategoryCnt; j++) {
+				if(selectedCategories[i] == categoryLevel[j].categoryId) {
+					if(categoryLevel[j].isLeaf) {
+						categoryLeaves.push(selectedCategories[i]);
+					} else {
+						for(k = 0; k < allCategoryCnt; k++) {
+							if(selectedCategories[i] == categoryLevel[k].parent) {
+								if(categoryLevel[k].isLeaf) {
+									categoryLeaves.push(categoryLevel[k].categoryId);
+								} else {
+									for(m = 0; m < allCategoryCnt; m++) {
+										if(categoryLevel[k].categoryId == categoryLevel[m].parent) {
+											// 只处理到第三级类目，不再判断是否有下级类目
+											categoryLeaves.push(categoryLevel[m].categoryId);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		categoryLeaves = uniqIntArr(categoryLeaves) || [];
+		len = categoryLeaves.length;
+		if(len) {
+			for(var n = 0; n < len; n++) {
+				categoryLeavesStrEle.push(categoryLeaves[n].toString());
+			}
+		}
+		
+		return categoryLeavesStrEle;
+	}
+	
+	var initCategoryListInitialed = false;
+	function initCategoryList(categoryLevel) {
+		var editMode = arguments[1] === true ? true : false; // jQuery 会传一个默认参数进来，只有为 true 时才确定为编辑模式
+		if(initCategoryListInitialed && !editMode) {
+			return
+		}
+		
+		var cnt = categoryLevel.length;
+		var categroy = {};
+		for(var i = 0; i < cnt; i++) {
+			category = {
+					id: categoryLevel[i].categoryId,
+					categoryLevel: categoryLevel[i].categoryLevel,
+					pId: categoryLevel[i].parent,
+					name: categoryLevel[i].categoryName,
+					sort: categoryLevel[i]['sort'],
+					isLeaf: categoryLevel[i].isLeaf 
+			};
+			categoryList[category.id] = category;
+		}
+		
+		initCategoryListInitialed = true;
+	}
+	
+	loadFileUpload();
+	loadContentImageUpload();
+
+	$(".thresholdOrderLimitless").on("click", updateThresholdOrderAction);
+	function updateThresholdOrderAction(){
+		var editMode = arguments[0] === true ? true : false; // jQuery 会传一个默认参数进来，只有为 true 时才确定为编辑模式
+		if($('input[name=thresholdOrderLimitless]:checked').val() == "0"){
+			$(".coupon1disabled").attr("readonly",false);
+		}else{
+			if(!editMode) {
+				$("#thresholdOrder").val("0");
+				$("#useNumLimitPerTotal").val("1");
+				$("#useNumLimitPerOrder").val("0");
+			}
+			$(".coupon1disabled").attr("readonly",true);
+		}
+	}
+	
+
+	$(".saleStartNowInput").on("click",function(){
+		if($(this).val() == "1"){
+			$("#saleStartDateId").hide().find("#saleStartDate").val("");
+		}else{ 
+			$("#saleStartDateId").show();
+		}
+	});	
+
+	$(".salePriceType").on("click", updateSalePriceTypeAction);
+	
+	function updateSalePriceTypeAction()
+	{
+		var editMode = arguments[0] === true ? true : false; // jQuery 会传一个默认参数进来，只有为 true 时才确定为编辑模式
+		if($('input[name=salePriceType]:checked').val() == "1"){
+			$("#salePrice").attr("readonly",false);
+			$("#salePricePoint").attr("readonly",true);
+			if(!editMode) {
+				$("#salePricePoint").val("0");
+			}
+		}else{ 
+			$("#salePrice").attr("readonly",true);
+			$("#salePricePoint").attr("readonly",false);
+			if(!editMode) {
+				$("#salePrice").val("0.00");
+			}
+		}
+	}
+
+	$(".validTimeType").on("click", updateValidTimeTypeAction);
+	
+	function updateValidTimeTypeAction() {
+		var editMode = arguments[0] === true ? true : false; // jQuery 会传一个默认参数进来，只有为 true 时才确定为编辑模式
+		
+		if($('input[name=validTimeType]:checked').val() == "absolute"){
+			$("#startHourSpan").find("input,select").attr("disabled",false);
+			if(!editMode) {
+				$("#validRelativeTime").val("");
+			}
+			$("#validRelativeTime").attr("disabled",true);
+			$("#validRelativeTime").parent().find("em.error").hide();
+		}else{
+			if(!editMode) {
+				$("#startHourSpan").find("#validStartDate,#validEndDate").val("");
+				$("#startHourSpan").find("#startHour").val("0");
+				$("#startHourSpan").find("#startMinute").val("0");
+				$("#startHourSpan").find("#endHour").val("23");
+				$("#startHourSpan").find("#endMinute").val("59");
+			}
+			$("#startHourSpan").find("input,select").attr("disabled",true);
+			$("#startHourSpan").find("em.error").hide();
+			$("#validRelativeTime").attr("disabled",false);
+		}
+	}
+
+	$(".limitedProducts").on("click",function(){ 
+		if($(this).val() == "0"){
+			$("#selectCategoriesSpan").hide();
+		}else{
+			$("#selectCategoriesSpan").show();
+		}
+	});
+
+	$(".hour,.minute").on("change",function(){
+
+		var thistime  = $(this).parent().find(".day").val().split("-");
+		var thisyear  = thistime[0];
+		var thismonth = thistime[1];
+		var thisday   = thistime[2];
+		var thishour  = $(this).parent().find(".hour").val();
+		var thisminute = $(this).parent().find(".minute").val();
+		var thissecond = "00";
+
+		var fortime   = $("#"+$(this).parent().attr("fortime")).find(".day").val().split("-");
+		var foryear   = fortime[0];
+		var formonth  = fortime[1];
+		var forday    = fortime[2];
+		var forhour   = $("#"+$(this).parent().attr("fortime")).find(".hour").val();
+		var forminute  = $("#"+$(this).parent().attr("fortime")).find(".minute").val();
+		var forsecond = "00";
+
+		var thistime  = new Date(thisyear,thismonth,thisday,thishour,thisminute,thissecond);
+		var fortime   = new Date(foryear,formonth,forday,forhour,forminute,forsecond);
+
+		thistime = thistime.getTime();
+		fortime  = fortime.getTime();
+
+		if($(this).parent().attr("fortype") == "start"){ 
+			if(thistime >= fortime){ 
+				$(this).val("");
+				alert("起始时间不能大于或等于结束时间！");
+				return false;
+			}
+		}else{ 
+			if(thistime <= fortime){ 
+				$(this).val("");
+				alert("结束时间不能小于或等于起始时间！");
+				return false;
+			}
+		}
+	});
+
+	$("#uploadedImageShowBox").on("click",".deletePicBtn",function(){
+//		console.log($(this).attr("delfor"));
+		$("#"+$(this).attr("delfor")).remove(); 
+		if($("#uploadedImageShowBox").find("li").length == "0"){ 
+			$("#image_uploads_otherpics_check").show();
+		}
+	});
+
+});
+
+//for upload
+//index iframe的索引,code 错误码，0为正常 ，msg 文字提示，name 上传成功后图片名称 ，url 图片的url地址
+function defaultcallback(index, code, msg, name, url, input_name, node, count) {
+	if(code != 0) {
+		alert(msg);
+	   	return false;
+	 }
+	var imageHtml = '';
+		imageHtml += '<li id="uploadedImage_' + name + '" class="uploadedImages">' + "\n";
+		imageHtml += '	<img width="100px" height="100px" src="' + url + '">' + "\n";
+		imageHtml += '	<input type="hidden" class="uploadedImage" name="uploadedImages[]" value="' + name + '">' + "\n";
+		imageHtml += '	<div class="uploadedImageAction">' + "\n";
+		imageHtml += '		<span id="delFile_' + name + '" delfor="uploadedImage_' + name + '" class="btn upBtn deletePicBtn" style="cursor:pointer">删除图片</span>' + "\n";
+		imageHtml += '	</div>' + "\n";
+		imageHtml += '	<label><input type="radio" class="primaryImage" name="primaryImage" value="' + name + '">设为主图</label>' + "\n";
+		imageHtml += '</li>' + "\n";
+		
+	if(count == 1) {
+		$("#uploadedImageShowBox").append(imageHtml);
+	    $("em#image_uploads_otherpics_check").hide();
+	} else {
+	      var nowcount=0;
+	   	  nowcount=$(".uploadedImages").length;
+	   	  if(nowcount>=count) {
+	   		  	alert("对不起，上传的图片数量不能超过"+count+"张！");
+			} else {
+				$("#uploadedImageShowBox").append(imageHtml);
+	   	  }
+	}
+
+	$($("#uploadedImageShowBox").find(".primaryImage")[0]).attr("checked",true);
+
+}
+// bug
+function samplecallback(index, code, msg, name, url, input_name, node, count) {
+	defaultcallback(index, code, msg, name, url, input_name, node, count)
+}
+
+function initLocalStorageKey()
+{
+	if(!localStorageKeyInitialed) {
+		storeKey      = 'store_for_coupon_' + couponId;
+		commodityKey  = 'commodity_for_coupon_' + couponId;
+		ticketKey     = 'ticket_for_coupon_' + couponId;
+		settlementKey = 'settlement_for_coupon_' + couponId;
+		storeSettlementKey = 'storeSettlement_for_coupon_' + couponId;
+		skuKey        = 'sku_for_coupon_' + couponId;
+		
+		localStorageKeyInitialed = true;
+	}
+}
+{=if $readMode=}
+// for edit
+function initLocalStorage()
+{
+	stores = {=$storesJsonStr=};
+	store.set(storeKey, stores);
+	
+	commodities = {=$commoditiesJsonStr=};
+	store.set(commodityKey, commodities);
+	
+	tickets = {=$ticketsJsonStr=};
+	store.set(ticketKey, tickets);
+	
+	settlement = '{=$couponDetail.settlement=}';
+	store.set(settlementKey, settlement);
+	
+	storeSettlement = {=$storeSettlementJsonStr=};
+	store.set(storeSettlementKey, storeSettlement);
+
+	skus = {=$skusJsonStr=};
+	store.set(skuKey, skus);
+}
+{=/if=}
+// refresh the value of the variables for data stored in localstroage 
+function dumpLocalStorage()
+{
+	stores = store.get(storeKey) || [];
+	commodities = store.get(commodityKey) || {};
+	skus = store.get(skuKey) || [];
+	tickets = store.get(ticketKey) || {};
+	settlement = store.get(settlementKey);
+	if(typeof settlement == undefined && settlement !== '0') {
+		settlement = '';
+	}
+	storeSettlement = store.get(storeSettlementKey) || {};
+}
+
+
+function translateNotice(message)
+{
+	message = message.replace("origPrice","面值");
+	message = message.replace("parkingTime","停车时间");
+	message = message.replace("merchantNo","商户编号");
+	message = message.replace("merchantName","商户名称");
+	message = message.replace("operatorId","操作员ID");
+	message = message.replace("operatorName","操作员名");
+	message = message.replace("vendibility","发放方式");
+	message = message.replace("createCertificateType","券生成方式");
+	message = message.replace("stockNum","库存");
+	message = message.replace("couponNos","导入的券码");
+	message = message.replace("validStartTime","有效期起始时间");
+	message = message.replace("validEndTime","有效期结束时间");
+	message = message.replace("validRelativeTime","相对有效期");
+	message = message.replace("remark","备注");
+	message = message.replace("thresholdOrder","可用券订单所需额度");
+	message = message.replace("useNumLimitPerTotal","订单最大使用数量");
+	message = message.replace("useNumLimitPerOrder","单品每满一定额度可使用数量");
+	message = message.replace("limitStores","限制门店");
+	message = message.replace("limitProducts","限制票商品");
+	message = message.replace("limitCommondities","限制商品(实物商品)");
+	message = message.replace("limitCategories","限制品类");
+	message = message.replace("settlement","默认结算价格");
+	message = message.replace("storeSettlement","门店结算价格");
+	message = message.replace("subTitle","券副标题");
+	message = message.replace("salePrice","现金");
+	message = message.replace("salePricePoint","积分");
+	message = message.replace("category1","一级类目");
+	message = message.replace("category2","二级类目");
+	message = message.replace("category3","三级类目");
+	message = message.replace("topics","商品图片");
+	message = message.replace("buyNotify","购买须知");
+	message = message.replace("webDetail","WEB端商品详情");
+	message = message.replace("appDetail","APP端商品详情");
+	message = message.replace("saleStartTime","销售起始时间");
+	message = message.replace("saleEndTime","销售结束时间");
+	message = message.replace("memberType","会员类型");
+	message = message.replace("limitPerMember","每人购买限制");
+	message = message.replace("limitPerOrder","每单购买限制");
+
+	return message;
+}
+</script>
+
+<div id="brg"></div>
+<div class="popBox" style="position:absolute;display:none" id="popBoxSelectCategories">
+	<div class="popBg">
+	    <h1 id="popTitle" class="popTitle">选择类目</h1>
+	    <div id="close">X</div>
+	</div>
+	<div class="inputdiv">
+	  <ul id="treeCategory" class="ztree" style="overflow:auto;max-height:450px;"></ul>
+  	</div>
+  	<div style="width:100%;text-align:center"><button id="selectBtn" style="margin:0 auto">确定</button></div>
+</div>
+ 
+<div id="checkCategoriesBox" class="lg popBox divcenter" style="position:absolute;display:none" >
+  <div class="popBg">
+    <h1 id="popTitle" class="popTitle">查看类目</h1>
+    <div id="closeCheckCategoriesBox">X</div>
+  </div>
+  <div id="inputdiv" style="overflow:auto;height:400px;">
+  	<table id="checkCategoryList" class="table-bordered qulist"></table>
+  </div>
+</div>
+<div class="popBox" style="position:absolute;display:none" id="popBoxCheckCategories">
+  <div class="popBg">
+    <h1 id="popTitleForIframe" class="popTitle"></h1>
+    <div id="close">X</div>
+  </div>
+  <div class="inputdiv">
+	  <iframe id="category" style="overflow:auto;width:998px;height:400px;"></iframe>
+   </div>
+</div>
+
+<div class="operate panel panel-default">
+		<div class="panel-body">
+				<div class="pull-left">{=$pageTitle=}</div>
+		</div>
+</div>
+<style>
+.tab-a:hover{ 
+	text-decoration:none;
+}
+</style>
+<ul class="tabUl clearfix">
+	<li><a href="#" class="cur tab-a" >1.基本信息</a></li>
+	<li><a href="#" class="tab-a">2.发放规则</a></li>
+	<li><a href="#" class="tab-a">3.使用规则</a></li>
+	<li><a href="#" class="tab-a">4.商品信息</a></li>
+</ul>
+	<form id="couponBasicForm" class="couponForm" method="get">
+		<table class="table table-bordered comTable" id="couponBasic"> 	
+		<tr>
+			<td style="width:350px">发券主体</td>
+			<td colspan="3"><input value="{=$publisherName=}" type="text" readonly="readonly"></td>
+		</tr>
+{=if $smarty.const.IS_MERCHANT || $merchantCoupon=}
+		<tr>
+			<td style="width:350px">商户名称</td>
+			<td colspan="3"><input value="{=$merchantName=}" type="text" readonly="readonly"></td>
+		</tr>
+{=/if=}
+		<tr>
+			<td>券类型</td>
+			<td colspan="3" style="width:500px">
+				{=foreach from=$couponTypes item=type key=code=}
+					<label class="rdio"><input class="productType" name="productType" type="radio" value="{=$code=}"{=if (!$readMode && $code == $smarty.const.COUPON_TYPE_VOUCHER) || ($readMode && $code==$couponDetail.productType)=} checked="checked"{=/if=}{=if $readMode=} disabled="disabled"{=/if=}>{=$type=}</label><br />
+				{=/foreach=}
+			</td>
+		</tr>
+		<tr class="coupon1 orHide">
+			<td>面值<font color="red">*</font></td>
+			<td colspan="3"><input type="text" id="origPrice" name="origPrice" maxlength="8" class="st coupon1 orDisable isFloat isMoney1 required"{=if $readMode=} value="{=$couponDetail.origPrice=}"{=/if=}> 元 <em class="error" for="origPrice" style="display:none"></em></td>
+		</tr>
+		<tr class="coupon4 orHide">
+			<td>停车时长<font color="red">*</font></td>
+			<td colspan="3"><input type="text" id="parkingTime" name="parkingTime" class="st coupon4 orDisable isDigits required" alias="next"{=if $readMode=} value="{=$couponDetail.parkingTime=}"{=/if=}> 分钟</td>
+		</tr>
+		<tr>
+			<td>券名称<font color="red">*</font></td>
+			<td colspan="3"><div><input type="text" id="couponTitle" name='title' start="16" end="28" maxlength="28" class="required"{=if $readMode=} value="{=$couponDetail.title=}"{=/if=}></div><p class="tips">提示：8至14个字，示例：小厨坊江湖菜30元代金券</p></td>
+		</tr>
+		<tr>
+		 <td align="center" colspan="4">
+			 <input class="btn btn-danger upBtn" type="submit" value="保存并下一步" />
+		 </td>
+		 </tr>
+		</table>
+	</form>
+	<form id="couponSaleRuleForm" class="couponForm" method="get">
+		<table class="table table-bordered comTable" style="display:none"> 
+		<tr{=if $smarty.const.IS_MERCHANT=} style="display: none;"{=/if=}>
+			<td width="20%">发放方式</td>
+			<td width="80%>" colspan="3">
+				<label class="rdio" id="vendibility1"><input type="radio" name="vendibility" value="1"{=if !$couponId || ($couponId && ($couponDetail.vendibility==1 || !$couponDetail.createCertificateType))=} checked="checked"{=/if=}{=if ($readMode && $couponDetail.createCertificateType > 0)|| $smarty.const.IS_MERCHANT == true=} disabled="disabled"{=/if=}>作为商品发售</label><br />
+				<label class="rdio" id="vendibility2"><input type="radio" name="vendibility" value="0"{=if $readMode && !$couponDetail.vendibility && $couponDetail.createCertificateType=} checked="checked"{=/if=}{=if ($readMode && $couponDetail.createCertificateType > 0) || $smarty.const.IS_MERCHANT == true=} disabled="disabled"{=/if=}>营销活动赠券</label>
+			</td>
+		</tr>
+		<tr>
+			<td>券码生成方式</td>
+			<td colspan="3">
+				<label class="rdio"><input type="radio" id="createCertificateType1" name="createCertificateType" value="1"{=if !$readMode || ($readMode && $couponDetail.createCertificateType!=2)=} checked="checked"{=/if=}{=if $readMode && $couponDetail.createCertificateType > 0=} disabled="disabled"{=/if=}>自动生成</label><br />
+				<label class="rdio"><input type="radio" id="createCertificateType2" name="createCertificateType" value="2"{=if $readMode && $couponDetail.createCertificateType==2=} checked="checked"{=/if=}{=if $readMode && $couponDetail.createCertificateType > 0=} disabled="disabled"{=/if=}>导入券码</label>下载范例文件：<a href="/coupon/coupon/down_input_list_excel">范例.xls</a>
+				<div>
+				
+					<style type="text/css">
+						.imgiframe{border-width:0px;width:120px;height:60px;overflow:hidden}
+						.image_src{display:none;width:270px;height:150px;}
+					</style>
+					<div id="uploadedFile">
+					 
+					</div>
+					<br>
+					<div id="xlsUploadBox">
+{=if !$readMode || ($readMode && $couponDetail.createCertificateType == 0)=}
+						<iframe class="imgiframe" frameBorder="0" src="/{=$smarty.const.XADMIN_APP_GROUP_SYSTEM=}/files/filesupload?p=0&inputType=xls,xlsx&inputName=md5&node=image_uploads_otherpics&fileSize=5242880&width=640&height=640&setType=true"></iframe>
+<script>
+// call back for xls/xlsx file upload
+function filesuploads_js_callback(msg, code, fid, md5, name, node, url, input_name, count) {
+	if(code != 0) {
+		alert(msg);
+		return false;
+	}
+
+	// get the coupon codes
+	var url = '/coupon/coupon/extractCouponCodes/fileName/' + md5;
+	$.get(url, {}, function(response) {
+		if(response.status == 200) {
+			if(response.data && $.isArray(response.data)) {
+				if(response.data.length > 300) {
+					alert('导入出错：一次只能导入300条记录，当前导入的为' + response.data.length + '条');
+					return false;
+				}
+
+				for (var i = 0; i < response.data.length; i++){ 
+					var d = response.data[i];
+					if(!/^ *\d{1,30}$/.test(d)){ 
+						alert("文件券码只能为长度不能大于30位以内的整数。\n请检查 excel 的格式不能出现类似于科学计数法的单元格。\n错误条目内容如下：" + d);
+						return false;
+					}
+				}
+				
+				$("#xlsUploadBox").hide();
+				
+				var html = "<div class=\"div_"+md5+"\">\
+<span class=\"span_"+md5+"\">"+name+" 已上传并解析成功，共 " + response.data.length + " 条数据。</span>\
+<input type=\"hidden\" readonly name=\""+input_name+"\"  class=\""+input_name+"\"  value=\""+md5+"\">";
+//coupon code 文件只允许导入一次，不能删了再导
+					if(!couponImported) {
+						html += "<a onclick=\"delete_xlsx_upload(\'"+md5+"\')\" class=\"btn btn-danger upBtn vebot\">删除</a></div>";
+					}
+				$('#stockNum').val(response.data.length);
+				$('#uploadedFile').html(html);
+				
+				couponCodes = response.data;
+//				console.log(couponCodes);
+			} else {
+				couponCodes = [];
+			}
+		} else {
+			alert(response.msg);
+		}
+	}, 'json');
+}
+function delete_xlsx_upload(md5)
+{
+	if(couponImported) {
+		alert('优惠码只允许初始化一次，不能执行删除重新提交的操作。');
+		
+		return false; // coupon code 文件只允许导入一次，不能删了再导
+	}
+	
+	$(".div_" + md5).remove();
+	$("#xlsUploadBox").show();
+	couponCodes = [];
+	$("#stockNum").val('');
+//	console.log(couponCodes);
+}
+</script>
+						<span class="tips">提示：请上传.xls或者.xlsx格式文件，最多支持300条。<br />注意：导入只能执行一次，请选择正确的文件，否则只能重新新建优惠券。</span>
+{=/if=}
+					</div>
+				</div>
+			</td>
+		</tr>
+		<tr id="certificateNumberRow">
+			<td>初始发券数量</td>
+			<td colspan="3"><span><input type="text" class="st isDigits" maxlength="5" id="stockNum" name="stockNum"{=if $readMode=} disabled="disabled" value="{=$couponDetail.initNum=}"{=/if=}> 张 <em class="error" for="stockNum" style="display:none"></em></span>
+			<p class="tips">提示：</p>
+			<p class="tips">1、此数量自动记为飞凡的库存量，可以留空</p>
+			<p class="tips">2、保存后不可编辑，可在渠道管理或者库存管理中增加库存量</p>
+			<p class="tips">3、若有第三方销售渠道，请建券后在渠道管理中进行分配</p>
+			<p class="tips">4、导入券码时，此项不可输入，显示为上传的券码总数量</p>
+			</td>
+		</tr>
+		<tr>
+		 <td align="center" colspan="4">
+			 <a href="#" class="btn btn-danger upBtn preStep">上一步</a>
+			 <input type="submit" class="btn btn-danger upBtn" value="保存并下一步">
+		 </td>
+		 </tr>
+		</table>
+	</form>
+	<form id="couponUseRuleForm" class="couponForm" method="get">
+		<table class="table table-bordered comTable" style="display:none"> 	
+		<tr>
+			<td width="20%">券有效期<font color="red">*</font></td>
+			<td width="80%" colspan="3">
+					<label><input type="radio" name="validTimeType" value="absolute" class="validTimeType"{=if ($readMode && !$couponDetail.validPeriodType) || !$readMode=} checked="checked"{=/if=}>有效期自</label>
+					<span id="startHourSpan">
+						<span id="couponStartDateId" fortime="couponEndDateId" fortype="start">
+							<input type='text' id="validStartDate" name='validStartDate' class="day required" alias="next" readonly style="width:161px"{=if $readMode && !$couponDetail.validPeriodType=} value="{=$validStartDate=}"{=/if=}>
+							<select id="startHour" class="hour required" name="startHour">
+							{=section name=startHour loop=24=} 
+								<option value="{=$smarty.section.startHour.index=}"{=if $readMode && !$couponDetail.validPeriodType && $startHour == $smarty.section.startHour.index=} selected="selected"{=/if=}>{=$smarty.section.startHour.index=}</option> 
+							{=/section=}
+							</select>时
+							<select id="startMinute" class="minute required" name="startMinute">
+							{=section name=startMinute loop=60=} 
+								<option value="{=$smarty.section.startMinute.index=}"{=if $readMode && !$couponDetail.validPeriodType && $startMinute == $smarty.section.startMinute.index=} selected="selected"{=/if=}>{=$smarty.section.startMinute.index=}</option> 
+							{=/section=}
+							</select>分
+						</span>
+						<span id="couponEndDateId" fortime="couponStartDateId" fortype="end">
+							到 <input type='text' id="validEndDate" name='validEndDate' class="day required" alias="next" readonly style="width:161px"{=if $readMode && !$couponDetail.validPeriodType=} value="{=$validEndDate=}"{=/if=}>
+							<select id="endHour" class="hour required" name="endHour">
+							{=section name=endHour loop=24=} 
+								<option value="{=$smarty.section.endHour.index=}"{=if ($readMode && !$couponDetail.validPeriodType && $endHour == $smarty.section.endHour.index) || (!$readMode && $smarty.section.endHour.index==23)=} selected="selected"{=/if=}>{=$smarty.section.endHour.index=}</option> 
+							{=/section=}
+							</select>时
+							<select id="endMinute" class="minute required" name="endMinute">
+							{=section name=endMinute loop=60=} 
+								<option value="{=$smarty.section.endMinute.index=}"{=if ($readMode && !$couponDetail.validPeriodType && $endMinute ==  $smarty.section.endMinute.index) || (!$readMode && $smarty.section.endMinute.index==59)=} selected="selected"{=/if=}>{=$smarty.section.endMinute.index=}</option> 
+							{=/section=}
+							</select>分
+						</span>
+						<em class="error" for="validStartDate"></em>
+						<em class="error" for="validEndDate"></em>
+						<em class="error" for="startHour"></em>
+						<em class="error" for="startMinute"></em>
+						<em class="error" for="endHour"></em>
+						<em class="error" for="endMinute"></em>
+					</span><br /><br />
+					<div id="validRelativeTimeType_div"><label><input type="radio" name="validTimeType" value="relative" class="validTimeType"{=if $readMode && $couponDetail.validPeriodType == 1=} checked="checked"{=/if=}>自会员领取后</label>
+					<input type="text" id="validRelativeTime" class="st isDigits required" name="validRelativeTime" disabled{=if $readMode && $couponDetail.validPeriodType == 1 && $couponDetail.validRelativeDate > 0=} value="{=$couponDetail.validRelativeDate=}"{=/if=}> 天内有效 <em id="validRelativeTimeEm" for="validRelativeTime" class="error" style="display:none"></em></div><br />
+					<div>备注说明：<input id="remark" type="text" name="remark" maxLength="40" start="0" end="40"{=if $readMode=} value="{=$couponDetail.remark=}"{=/if=}>  <span class="tips">提示：对券使用时间的文本备注说明</span></div>
+			</td>
+		</tr>
+		<tr>
+			<td>使用条件<font color="red">*</font></td>
+			<td colspan="3">
+				<label class="rdio"><input id="thresholdOrderLimitless" type="radio" name="thresholdOrderLimitless" class="thresholdOrderLimitless" value="1"{=if ($readMode && $thresholdOrderLimitless) || !$readMode=} checked="checked"{=/if=}>不限制</label><br />
+				<label id="use_rule"><input id="thresholdOrderLimitless1" type="radio" class="coupon1 orDisable thresholdOrderLimitless" name="thresholdOrderLimitless" value="0" readonly{=if $readMode && !$thresholdOrderLimitless=} checked="checked"{=/if=}>订单金额每满 </label>
+				<span><input type="text" id="thresholdOrder" class="st coupon1 orDisable coupon1disabled required" name="thresholdOrder" maxlength="6" readonly value="{=if $readMode && !$thresholdOrderLimitless=}{=$couponDetail.ruleOrderAmount=}{=else=}0{=/if=}">
+					元，可以使用 <input type="text" id="useNumLimitPerTotal" class="st coupon1 orDisable isDigits coupon1disabled required" name="useNumLimitPerTotal" readonly value="{=if $readMode && !$thresholdOrderLimitless=}{=$couponDetail.rulePerTotal=}{=else=}1{=/if=}">
+					张券，一个订单最多可使用 <input type="text" id="useNumLimitPerOrder" class="st coupon1 orDisable isDigits coupon1disabled required" name="useNumLimitPerOrder" readonly value="{=if $readMode && !$thresholdOrderLimitless=}{=$couponDetail.rulePerOrder=}{=else=}0{=/if=}"> 张券
+				<em for="thresholdOrder" class="error" style="display:none">订单金额只能为数字，且小数点不能大于2位</em>
+				<em for="useNumLimitPerTotal" class="error" style="display:none">券的数量只能为数字</em>
+				<em for="useNumLimitPerOrder" class="error" style="display:none">使用券只能为数字</em>
+				</span>
+				<p class="tips">提示：0表示不限制</p>
+			</td>
+		</tr>
+		<tr>
+			<td>使用门店范围<font color="red">*</font></td>
+			<td colspan="3">
+<!-- 			<label class="rdio"><input type="radio" name="limitedStores" value="0"{=if $readMode && !$limitedStores=} checked="checked"{=/if=}>适用于所有门店</label><br> -->
+<span><label class="rdio"><input type="radio" name="limitedStores" value="1"{=if ($readMode && $limitedStores) || !$readMode=} checked="checked"{=/if=}>可以使用于以下门店</label> <a href="#" id="selectStores">{=if $priorEditMode=}增加{=else=}选择{=/if=}</a>&nbsp;&nbsp;<a href="#" id="showStores">查看</a></span>
+				<input type="hidden" name="limitStores" value="[]" />
+			</td>
+		</tr>
+		<tr>
+			<td>其它使用范围<font color="red">*</font></td>
+			<td colspan="3">
+				<label class="rdio"><input type="radio" class="limitedProducts coupon1 coupon4 checked orDisable" name="limitedProducts" id="limitedProducts0" value="0"{=if ($readMode && !$limitedProducts) || !$readMode=} checked="checked"{=/if=}>适用于所有品类和商品</label><br>
+				<label class="rdio"><input type="radio" class="limitedProducts coupon2 checked" name="limitedProducts" value="1" id="limitedProducts1"{=if $readMode && $limitedProducts=} checked="checked"{=/if=}>限用于以下品类和商品</label> <span id="selectCategoriesSpan"{=if ($readMode && !$limitedProducts) || !$readMode=} style="display:none"{=/if=}><a id="selectCategories" href="#">{=if $priorEditMode=}增加{=else=}选择{=/if=}</a> <a id="checkCategories" href="#">查看</a></span>
+				<input type="hidden" id="limitProducts" name="limitProducts" value="[]" />
+				<input type="hidden" id="limitCategories" name="limitCategories" value="[]" /> 
+			</td>
+		</tr>
+		<tr id="settlementRow">
+			<td>结算价<font color="red">*</font></td>
+			<td colspan="3"><a href="#" id="setSettlement" class="btn btn-danger upBtn">设置结算价</a>
+				<input type="hidden" id="settlement" name="settlement" value="0"  class="isFloat required" /> 
+				<input type="hidden" id="storeSettlement" name="storeSettlement" value="{}" />
+				<em for="storeSettlement" class="error" style="display:none"></em>
+			</td>
+		</tr>
+		<tr>
+			 <td align="center" colspan="4">
+				<a href="#" class="btn btn-danger upBtn preStep">上一步</a>
+				<input type="submit" class="btn btn-danger upBtn" value="保存并下一步">
+			 </td>
+		 </tr>
+		</table>
+	</form>
+	<form id="couponInfoForm" class="couponForm" method="get">
+		<table class="table table-bordered comTable" id="couponInfo" style="display:none;">
+		<tr>
+			<td width="20%">券副标题<font color="red">*</font></td>
+			<td width="80%" colspan="3"><div><input type="text" id="subTitle" name="subTitle" class="required" start="16" end="60" maxLength="60"{=if $readMode=} value="{=$couponDetail.subTitle=}"{=/if=}></div>
+			<p class="tips">提示：8至30个字，示例：小厨房消费满100元可使用一张，可累积使用</p></td>
+		</tr>
+		<tr id="salePrice_box">
+			<td>售价<font color="red">*</font></td>
+			<td colspan="3">
+				<div class="vendible"><label><input class="salePriceType required" type="radio" name="salePriceType" value="1"{=if ($readMode && $salePriceType == 1) || !$readMode=} checked="checked"{=/if=}>现金</label><input type="text" id="salePrice" class="st isFloat isMoney1 required" name="salePrice" value="{=if $readMode && $salePriceType == 1=}{=$couponDetail.salePrice=}{=else=}0.00{=/if=}" maxlength="8"> 元 <em for="salePrice" class="error" style="display:none"></em></div>
+				<div><label><input id="salePriceType2" class="salePriceType required" type="radio" name="salePriceType" value="2"{=if $readMode && $salePriceType == 2=} checked="checked"{=/if=}>积分</label><input type="text" id="salePricePoint" class="st isDigits required" name="salePricePoint" readonly value="{=if $readMode && $salePriceType == 2=}{=$couponDetail.salePrice=}{=else=}0{=/if=}" maxlength="10"> 分 <em for="salePricePoint" class="error" style="display:none"></em><em id="salePriceType2Em" style="display:none">“使用规则”中设置的部分门店未签积分合同。</em></div>
+			</td>
+		</tr>
+		<tr>
+			<td>商品类目<font color="red">*</font></td>
+			<td colspan="3" id="couponCategoryAttr">
+{=if $readMode=}
+				<input type="hidden" id="initCategory1Id" value="{=if $couponDetail.categoryId1 > 0=}{=$couponDetail.categoryId1=}{=/if=}">
+ 				<input type="hidden" id="initCategory2Id" value="{=if $couponDetail.categoryId2 > 0=}{=$couponDetail.categoryId2=}{=/if=}">
+ 				<input type="hidden" id="initCategory3Id" value="{=if $couponDetail.categoryId3 > 0=}{=$couponDetail.categoryId3=}{=/if=}">
+{=/if=}
+				<select id="category1Id" name="category1" class="required">
+					<option value="">一级类目</option>
+				</select>
+				<select id="category2Id" name="category2" class="required">
+					<option value="">二级类目</option>
+				</select>
+				<select id="category3Id" name="category3" class="required">
+					<option value="">三级类目</option>
+				</select>
+				<em class="error" for="category1Id"></em>
+				<em class="error" for="category2Id"></em>
+				<em class="error" for="category3Id"></em>
+			</td>
+		</tr>
+		<tr>
+			<td>商品图片<font color="red">*</font></td>
+			<td colspan="3">
+				<input type="hidden" id="topics" name="topics" />
+			<!-- upload: -->
+				<style type="text/css">
+					.imgiframe {
+						border-width: 0px;
+						width: 96px;
+						height: 44px;
+					}
+
+					.image_src {
+						display: none;
+						width: 270px;
+						height: 150px;
+					}
+				</style>
+
+				<span class="image_uploads_otherpics"></span> <br>
+
+				<div style="overflow:auto">
+					<div style="float:left">
+						<iframe class="imgiframe" frameBorder="0"
+							src="/{=$smarty.const.XADMIN_APP_GROUP_SYSTEM=}/files/imageuploads?p=0&inputName=brandLogo[]&node=image_uploads_otherpics&picCount=5&fileSize=5242880&width=1280&height=720&setType=true"
+						></iframe>
+					</div>
+					<div style="float:left;margin-top:5px">
+						<em class="error" style="display:none" id="image_uploads_otherpics_check">此处为必填项</em>
+						<span class="tips">提示：图片格式支持JPG、JPEG、PNG，大小不超过5M，尺寸要求1280*720，最多上传5张</span>
+					</div>
+				</div>	
+				<br>
+				<ul id="uploadedImageShowBox" class="imgList clearfix">
+				 {=if $couponDetail.topPics=}
+				{=foreach key=key item=item from=$couponDetail.topPics=} {=if $item=}
+					<li id="uploadedImage_{=$item=}" class="uploadedImages">
+						<img width="100px" height="100px" src="http://img1.wanhui.cn/orig/{=$item=}">
+						<input type="hidden" class="uploadedImage" name="uploadedImages[]" value="{=$item=}">
+						<div class="uploadedImageAction">
+							<a id="delFile_{=$item=}" class="btn upBtn" href="#">删除图片</a>
+						</div>
+						<label><input type="radio" name="primaryImage" value="{=$item=}"{=if $readMode && !$key=} checked="checked"{=/if=}>设为主图</label>
+					</li>
+				{=/if=} {=/foreach=} {=/if=} 
+				</ul>
+			<!-- upload -->
+			</td>
+		</tr>
+<!--
+		<tr>
+			<td>特色服务</td>
+			<td colspan="3">
+				<label class="ck"><input type="checkbox" name="services[]">万达自有</label>
+				<label class="ck"><input type="checkbox" name="services[]">支持退货</label>
+			</td>
+		</tr>
+-->
+		<tr>
+			<td>购买须知OR商品卖点<font color="red">*</font></td>
+			<td colspan="3">
+				<textarea id="buyNotify" class="textarea required text-limit" name="buyNotify" start="0" end="4000" maxLength="4000"  placeholder="这里填写纯文本的简介，用户购买须知或商品的卖点" style="width:550px;height:200px">{=if $readMode=}{=$couponDetail.buyNotify=}{=/if=}</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td>WEB端商品详情<font color="red">*</font></td>
+			<td colspan="3">
+				<textarea name="details" id="webDetail" class="text-limit" style="display:none"	>{=if $readMode=}{=$couponDetail.webDetail=}{=/if=}</textarea>
+				<textarea id="content1" style="height:350px;width:850px;">{=if $readMode=}{=$couponDetail.webDetail=}{=/if=}</textarea>
+			</td>
+		</tr>
+		<tr>
+			<td>APP端商品详情<font color="red">*</font></td>
+			<td colspan="3">
+				<div class="choice">
+					  <a class="text" id="mobileContentText">文字</a>
+					  <a class="img" id="mobileContentImg">图片</a>
+					  <input type="file" name="contentImage" id="contentImage" style="display:none;">
+				</div>
+				<textarea name="appDetail" id="mobileContentDetail" style="display:none"></textarea>
+				<div id="mobileContentDiv" style="margin-top: 15px;">{=if $readMode=}{=$couponDetail.appDetail=}{=/if=}</div>
+			</td>
+		</tr>
+		<tr class="vendible">
+			<td>上架时间<font color="red">*</font></td>
+			<td colspan="3">
+				<label class="rdio"><input class="saleStartNow saleStartNowInput required" type="radio" name="saleStartNow" value="1"{=if ($readMode && $couponDetail.onSaleType > 0) || !$readMode=} checked="checked"{=/if=}>立即上架</label>
+				<input type="radio" class="saleStartNow saleStartNowInput required" name="saleStartNow" value="0" style="margin-left:20px"{=if $readMode && !$couponDetail.onSaleType=} checked="checked"{=/if=}>定时上架
+				<span id="saleStartDateId" fortime="saleEndDateId" fortype="start"{=if ($readMode && $couponDetail.onSaleType > 0) || !$readMode=} style="display:none"{=/if=}>
+					<input type='text' id='saleStartDate' class='day required' name='saleStartDate' style="width:161px" readonly{=if $readMode && $saleTimeSet && !$couponDetail.onSaleType=} value="{=$saleStartDate=}"{=/if=}>
+					<select id="saleStartHour" name="saleStartHour" class="hour required">
+					{=section name=saleStartHour loop=24=} 
+						<option value="{=$smarty.section.saleStartHour.index=}"{=if $readMode && $saleTimeSet && !$couponDetail.onSaleType && $saleStartHour == $smarty.section.saleStartHour.index=} selected="selected"{=/if=}>{=$smarty.section.saleStartHour.index=}</option> 
+					{=/section=}
+					</select>时
+					<select id="saleStartMinute" name="saleStartMinute" class="minute required">
+					{=section name=saleStartMinute loop=60=} 
+						<option value="{=$smarty.section.saleStartMinute.index=}"{=if $readMode && $saleTimeSet && !$couponDetail.onSaleType && $saleStartMinute == $smarty.section.saleStartMinute.index=} selected="selected"{=/if=}>{=$smarty.section.saleStartMinute.index=}</option> 
+					{=/section=}
+					</select>分
+					<em class="error" style="display:none" for="saleStartDate">必填选项</em>
+					<em class="error" for="saleStartHour"></em>
+					<em class="error" for="saleStartMinute"></em>
+				</span>
+
+			</td>
+		</tr>
+		<tr class="vendible">
+			<td>下架时间<font color="red">*</font></td>
+			<td id="saleEndDateId" colspan="3" fortime="saleStartDateId" fortype="end">
+				<input type='text' id='saleEndDate' class='day required' name='saleEndDate' style="width:161px" readonly{=if $readMode && $saleTimeSet=} value="{=$saleEndDate=}"{=/if=}>
+				<select id="saleEndHour" name="saleEndHour" class="hour required">
+				{=section name=saleEndHour loop=24=} 
+					<option value="{=$smarty.section.saleEndHour.index=}"{=if ($readMode && $saleTimeSet && $saleEndHour == $smarty.section.saleEndHour.index) || (!($readMode && $saleTimeSet) && $smarty.section.saleEndHour.index==23)=} selected="selected"{=/if=}>{=$smarty.section.saleEndHour.index=}</option> 
+				{=/section=}
+				</select>时
+				<select id="saleEndMinute" name="saleEndMinute" class="minute required">
+				{=section name=saleEndMinute loop=60=} 
+					<option value="{=$smarty.section.saleEndMinute.index=}"{=if ($readMode && $saleTimeSet && $saleEndMinute == $smarty.section.saleEndMinute.index) || (!($readMode && $saleTimeSet) && $smarty.section.saleEndMinute.index==59)=} selected="selected"{=/if=}>{=$smarty.section.saleEndMinute.index=}</option> 
+				{=/section=}
+				</select>分
+				<em class="error" style="display:none" for="saleEndDate">必填选项</em>
+				<em class="error" for="saleEndHour"></em>
+				<em class="error" for="saleEndMinute"></em>
+			</td>
+		</tr>
+<!-- 
+		<tr class="vendible">
+			<td>会员类型<font color="red">*</font></td>
+			<td colspan="3">
+{=foreach key=key item=item from=$memberTypes=}
+				<label class="ck"><input type="checkbox" class="memberType" name="memberType[]" value="{=$key=}"{=if in_array($key, $couponDetail.memberType)=} checked="checked"{=/if=}>{=$item=}</label>
+{=/foreach=}
+			</td>
+		</tr>
+ -->
+		<tr class="vendible">
+			<td>每人购买限制</td>
+			<td colspan="3">
+				<label class="rdio"><input type="radio" id="limitedPerMember" name="limitedPerMember" value="0"{=if ($readMode && !$couponDetail.limitPerMember) || !$readMode=} checked="checked"{=/if=}>不限制</label>
+				<label><input type="radio" id="limitedPerMember" name="limitedPerMember" value="1"{=if $readMode && $couponDetail.limitPerMember > 0=} checked="checked"{=/if=}>限制每人最多可购买 </label><input id="limitPerMember" type="text" maxlength="7" class="st isDigits" name="limitPerMember"{=if $readMode && $couponDetail.limitPerMember > 0=} value="{=$couponDetail.limitPerMember=}"{=/if=}> 张 <em for="limitPerMember" class="error" style="display:none"></em>
+			</td>
+		</tr>
+		<tr class="vendible">
+			<td>每单购买限制</td>
+			<td colspan="3">
+				<label class="rdio"><input type="radio" name="limitedPerOrder" value="0"{=if ($readMode && !$couponDetail.limitPerOrder) || !$readMode=} checked="checked"{=/if=}>不限制</label>
+				<label><input type="radio" name="limitedPerOrder" value="1"{=if $readMode && $couponDetail.limitPerOrder > 0=} checked="checked"{=/if=}>限制每笔订单最多可购买 </label><input id="limitPerOrder" type="text" maxlength="7" class="st isDigits" name="limitPerOrder"{=if $readMode && $couponDetail.limitPerOrder > 0=} value="{=$couponDetail.limitPerOrder=}"{=/if=}> 张 <em for="limitPerOrder" class="error" style="display:none"></em>
+			</td>
+		</tr>
+		<tr>
+		 <td align="center" colspan="4">
+			<a href="#" class="btn btn-danger upBtn preStep">上一步</a>
+			<span class="btn btn-danger upBtn" id="saveInfo">保存</span>
+			{=if !$readMode || ($readMode && !$priorEditMode && (true || !($couponDetail.vendibility==$smarty.const.COUPON_VENDIBLE_YES && $couponDetail.createCertificateType==$smarty.const.COUPON_CERTIFICATE_TYPE_AUTO)))=}<span class="btn btn-danger upBtn" id="submitInfo">提交</span>{=/if=}
+			<a id="preview" href="" url="/coupon/coupon/preview/productType/coupon/productNo/" class="btn btn-danger upBtn" target="_blank">预览</a>
+		 </td>
+		 </tr>
+		</table>
+	</form>
+
+<!-----手机详情添加文字弹层------>
+<div class="tableBox" id="mobileContentTextPopBox" style="display: none;">
+  <h2 class="boxTitle" style="margin-top:0;">商品操作</h2>
+  <table class="table table-bordered" style="margin-bottom:0">
+		<tr>
+			<td width="20%">操作</td>
+			<td width="80%"><span id="opTitle">手机端详情添加文字</span></td>
+		</tr>
+		<tr>
+			<td>添加文字&nbsp;<font color="red">*</font></td>
+			<td><textarea style="height:150px;width:260px;" id="mobileContentTextPopTextarea" start="0" end="280" maxLength="280"></textarea></td>
+		</tr>
+		<tr>
+			<td colspan="2" align='center' style="background-color: #f7f7f7">
+				<a href="javascript:void(0);" class="btn btn-danger" id="mobileContentTextPopSaveBtn" >保存</a>&nbsp;&nbsp;&nbsp;&nbsp;
+				<a href="javascript:void(0);" class="btn btn-danger" id="mobileContentTextPopCancelBtn" >取消</a>&nbsp;&nbsp;&nbsp;&nbsp;
+			</td>
+		</tr>
+	</table>
+</div>

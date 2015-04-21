@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:ng="http://angularjs.org" ng-app="storeApp">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+    <title>飞凡智慧生活O2O开放平台商户管理中心</title>
+    <link rel="shortcut icon" href="favicon.ico" >
+    <link type="text/css" rel="stylesheet" href="css/reset.css" />
+    <link type="text/css" rel="stylesheet" href="css/style.css" />
+    <link type="text/css" rel="stylesheet" href="js/libs/bower_components/ng-table/ng-table.css" />
+    <link type="text/css" rel="stylesheet" href="js/libs/bower_components//bootstrap/dist/css/bootstrap.css" />
+
+</head>
+
+<body>
+        <div id="ajaxLoading">Data Loading, Please Just Wait.....</div>
+        <div class="header" style="border-bottom:1px; padding:10px;background-color:#165470">
+                <a href="/"><div class="logo"></div></a>
+                <h1>飞凡智慧生活O2O开放平台商户管理中心</h1>
+                <div class="user-name pull-right"><a href="/">Song, Sammi</a></div>
+                <div class="sign-out pull-right"><a href="/login.html">Sign out</a></div>
+        </div>
+
+        <div class="container-fluid" style="position:relative">
+            <div class="left" id="mainMenu" style="position:absolute;left:0;top:0;height:1000px;width:185px;background-color:#505050">
+                <div class="module" ng-show="true">
+                    <a href="javascript:"><span class="expanded">优惠券管理</span></a>
+                    <a href="#/coupon/coupon"><span>优惠券列表</span></a>
+                    <a href="#/coupon/coupon/create"><span>新增优惠券</span></a>
+                </div>
+            </div>
+
+            <div class="right" ng-view  id="main" style="margin-left:185px;">
+            </div>
+        </div>
+    <div class="footer">&copy;2014 ModFurniture Warehouse</div>
+
+<script src="js/config.js"></script>
+<script src="js/bower_components/jquery/dist/jquery.js"></script>
+<script src="js/bower_components/angular/angular.js"></script>
+<script src="js/bower_components/angular-route/angular-route.js"></script>
+<script src="js/bower_components/angular-resource/angular-resource.js"></script>
+
+<script src="js/bower_components/angular-sanitize/angular-sanitize.js"></script>
+<script src="js/libs/bower_components/ng-table/ng-table.js"></script>
+<script src="js/filters.js"></script>
+<script src="js/directives.js"></script>
+<!--script src="js/controllers/authController.js"></script-->
+
+<!--以下代码为JS自动生成-->
+<script src="js/services/couponService.js"></script>
+<script src="js/controllers/couponController.js"></script>
+<!--autojs-->
+<script src="js/app.js"></script>
+<script>
+    $("div.module a h2").click(function() {
+        var current = $(this).parent().parent().find("h2");
+        var selected = "selected";
+        var expanded = "expaned";
+        var collapse = "collapse";
+        $("div.module a h2").removeClass(selected);
+        $(this).parent().parent().find("h3").toggle();
+        current.toggleClass(expanded);
+        current.toggleClass(collapse);
+        current.addClass(selected);
+    });
+</script>
+</body>
+</html>

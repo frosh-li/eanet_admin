@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>{=$title|default:"飞凡智慧生活O2O开放平台商户管理中心"=}</title>
+    <meta name="description" content="" />
+    <link rel="shortcut icon" href="favicon.ico" >
+    <link rel="stylesheet" type="text/css" href="css/login.css">
+    <script src="js/libs/bower_components/angular/angular.js"></script>
+    <script src="js/libs/bower_components/jquery/dist/jquery.js"></script>
+    <script src="js/login.js"></script>
+
+    <!-- basic styles -->
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css"  />
+    <link rel="stylesheet" href="/static/css/font-awesome.min.css" />
+
+    <!--[if IE 7]>
+    <link rel="stylesheet" href="/static/css/font-awesome-ie7.min.css" />
+    <![endif]-->
+
+    <!-- page specific plugin styles -->
+    <link rel="stylesheet" href="/static/css/jquery-ui-1.10.3.full.min.css" />
+
+    <!-- fonts -->
+
+    <!-- ace styles -->
+
+    <link rel="stylesheet" href="/static/css/ace.min.css" />
+    <link rel="stylesheet" href="/static/css/ace-rtl.min.css" />
+    <link rel="stylesheet" href="/static/css/ace-skins.min.css" />
+
+    <!--[if lte IE 8]>
+    <link rel="stylesheet" href="/static/css/ace-ie.min.css" />
+    <![endif]-->
+
+    <!-- inline styles related to this page -->
+    <link rel="stylesheet" href="/static/css/style.css" />
+    <!-- ace settings handler -->
+
+
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+
+    <!--[if lt IE 9]>
+    <script src="/static/js/html5shiv.js"></script>
+    <script src="/static/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+    <body>
+        <!-- Wrap all page content here -->
+
+        <header>
+        <div class="headerBox merchantHead">
+          <div class="headerPic">
+            <a href="#"><img src="/static/img/logoPic2.png" /></a>
+            <span>飞凡智慧生活O2O开放平台商户管理中心</span>
+          </div>
+        </div>
+        </header>
+        <div class="contentBg">
+        <div class="conhegBox"></div>
+        <div class="contentBox">
+          <div class="row">
+            <div class="loginBg hidden-xs">
+                <img src="/static/img/back2.jpg" />
+            </div>
+            <div class="formBox">
+                <div class="loginTitle">
+                    <h1 class="text-left">登录</h1>
+                </div>
+                <form method="post" id="form_login" class="form-horizontal">
+
+                    <div class="form-group">
+                        <div class="col-sm-11">
+                            <i class="iconUser"></i>
+                            <input class="form-control" id="username" name="username" placeholder="请输入您的手机号" type="text" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-11">
+                            <i class="iconPwd"></i>
+                            <input class="form-control" id="password" type="password" name="password" placeholder="请输入您的密码"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-11">
+                            <label class="inline pull-left col-3">
+
+                            </label>
+
+                            <a href="#" class="pull-right">忘记密码？</a>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="col-sm-11">
+                        <span class="warnTips" id="tips" style="display:none">用户名或密码错误！还可输入4次</span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-11">
+                            <input type="button" value="登录" onclick="login();" class="loginBtn">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        </div>
+        <div class="conhegBox"></div>
+        </div>
+        <footer>
+        <div class="footerBox">
+          <div class="footDetil">
+            <a href="http://www.ffan.com/help">关于飞凡</a><em></em><a href="http://www.ffan.com/">飞凡网</a><em></em><a href="http://www.ffan.com/app">手机飞凡</a>
+          </div>
+          <div class="footCopyright">Copyright 2013 feifan.com ALL Rights Reserved 万达信息科技有限公司版权所有 京ICP备 13032310-1 客服热线400-950-6655</div>
+        </div>
+        </footer>
+
+</body>
+</html>
