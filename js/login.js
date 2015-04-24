@@ -1,10 +1,9 @@
 'use strict';
-var apihost = "http://10.1.171.80:3000/";
 var token = localStorage.getItem('token');
 var uid = localStorage.getItem('uid');
 if(token){
     $.ajax({
-        url: apihost + "user/refreshtoken",
+        url: globalConfig.api + "ucenter/refreshtoken",
         method:"POST",
         data: "token="+token,
         headers: {
@@ -16,7 +15,7 @@ if(token){
             console.log(data);
             if(data.status == 200 && data.data.token){
                 localStorage.setItem('token', data.data.token);
-                localStorage.setItem('uid', data.data.id);
+                localStorage.setItem('uid', data.data.uid);
                 console.log('登陆成功，即将跳转');
                 window.location="./";
             }else{
@@ -31,7 +30,7 @@ var login = function(){
     var account = "username="+username+"&password="+password;
     console.log(username,password);
     //$http.defaults.headers.post['Content-Type']='application/x-www-form-urlencoded;charset=utf-8';
-    var url = apihost+"ucenter/login";
+    var url = globalConfig.api+"ucenter/login";
     $.ajax({
         url: url,
         method:'post',

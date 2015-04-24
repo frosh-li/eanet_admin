@@ -45,7 +45,6 @@ a:hover {
     background-color:#505050;
 }
 #mainMenu a{
-    display:block;
     height:50px;
     line-height: 50px;
     padding:0 40px;
@@ -53,8 +52,15 @@ a:hover {
     border-bottom: 1px solid #3c3c3c;
     border-left:solid 4px #2294ae;
 }
+.module a {
+    display:none;
+}
+.module.expanded a {
+    display:block;
+}
 #mainMenu .module a:first-child{
     padding-left:30px;
+    display:block;
     background-color:#505050;
     border-left-color: #505050;
 }
@@ -62,6 +68,7 @@ a:hover {
     height:30px;
     line-height: 30px;
 }
+
 .header .pull-right{
     position: absolute;
     height: 30px;

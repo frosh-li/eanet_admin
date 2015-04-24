@@ -2,15 +2,15 @@
 
 /* App Module */
 
-var apihost = "http://10.1.171.80:3000/";
-
 var storeApp = angular.module('storeApp', [
     'ngRoute',
+    'ngResource'
     /*detectedControllerService*/
-    'couponServices',
-    'couponControllers'
+    //'couponServices',
+    //'couponControllers'
     /*endDetectedControllerService*/
 ]);
+
 storeApp.config(['$routeProvider','$httpProvider',
   function($routeProvider,$httpProvider) {
     [
@@ -19,10 +19,6 @@ storeApp.config(['$routeProvider','$httpProvider',
       /*endDetectedRouters*/
     ].forEach(function(router){
       $routeProvider.
-      when('/'+router.name+'/'+router.subName.toLowerCase(),{
-        templateUrl:'templates/'+router.name+"/"+router.subName.toLowerCase()+'/'+'list.html',
-        controller: router.name+router.subName+"List"
-      }).
       when('/'+router.name+'/'+router.subName.toLowerCase()+"/edit:id",{
         templateUrl:'templates/'+router.name+"/"+router.subName.toLowerCase()+'/'+'create.html',
         controller: router.name+router.subName+"Edit"
@@ -98,7 +94,24 @@ storeApp.config(['$routeProvider','$httpProvider',
 
   }]);
 
+storeApp.config(function($sceDelegateProvider) {
+$sceDelegateProvider.resourceUrlWhitelist([
+// Allow same origin resource loads.
+  'self',
+// Allow loading from our assets domain. Notice the difference between * and **.
+  '**']);
+});
 setInterval(checkLogin, 60000);
+
+storeApp.config(function($controllerProvider, $compileProvider, $filterProvider, $provide) {
+  storeApp.register = {
+    controller: $controllerProvider.register,
+    directive: $compileProvider.directive,
+    filter: $filterProvider.register,
+    factory: $provide.factory,
+    service: $provide.service
+  };
+});
 
 
 function checkLogin(){
@@ -107,7 +120,7 @@ function checkLogin(){
 
     if(token && uid){
         $.ajax({
-            url: apihost + "ucenter/refreshtoken",
+            url: globalConfig.api + "ucenter/refreshtoken",
             method:"POST",
             headers: {
               'X-TOKEN': token,
