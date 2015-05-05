@@ -1,0 +1,19 @@
+<h3>用户列表</h3>
+<table ng-table class="table table-bordered ng-table">
+<tr>
+	<th>用户ID</th>
+	<th>名称</th>
+	<th>用户组</th>
+	<th>上次登录</th>
+	<th>创建时间</th>
+	<th>操作</th>
+</tr>
+<tr ng-repeat="list in lists.data">
+	<td>{{list._id}}</td>
+	<td>{{list.username}}</td>
+	<td>{{list.group}}</td>
+	<td>{{list.lastlogin}}</td>
+	<td>{{list.created}}</td>
+	<td>查看 新增</td>
+</tr>
+</table>

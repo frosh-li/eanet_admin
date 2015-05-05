@@ -1,3 +1,3 @@
 var globalConfig = {
-    api:'http://10.1.171.245:3000/'
+    api:'http://10.1.171.73:3000/'
 };

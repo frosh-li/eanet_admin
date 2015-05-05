@@ -4,7 +4,9 @@
 
 var storeApp = angular.module('storeApp', [
     'ngRoute',
-    'ngResource'
+    'ngResource',
+    'authsServices',
+    'authsControllers'
     /*detectedControllerService*/
     //'couponServices',
     //'couponControllers'
@@ -15,7 +17,7 @@ storeApp.config(['$routeProvider','$httpProvider',
   function($routeProvider,$httpProvider) {
     [
       /*detectedRouters*/
-      {name: 'coupon', subName:'Coupon'},
+      {name: 'coupon', subName:'Coupon'}
       /*endDetectedRouters*/
     ].forEach(function(router){
       $routeProvider.
@@ -28,7 +30,16 @@ storeApp.config(['$routeProvider','$httpProvider',
         controller: router.name+router.subName+"Create"
       })
     });
-
+      $routeProvider.when('/auths/newuser', {
+        templateUrl:'templates/auths/newuser.html',
+        controller: 'authsCreateUser'
+      }).when('/auths/group',{
+        templateUrl:'templates/auths/group.html',
+        controller:'authsGroupList'
+      }).when('/auths/users',{
+        templateUrl:'templates/auths/users.html',
+        controller:'authsUserList'
+      })
 
       $httpProvider.defaults.transformRequest = function(data){
         if(typeof data === 'object'){
@@ -40,19 +51,18 @@ storeApp.config(['$routeProvider','$httpProvider',
           return ret.join("&");
         }
       };
-      $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
-      $httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
-      $httpProvider.defaults.headers.post['X-TOKEN'] = localStorage.getItem('token');
-      $httpProvider.defaults.headers.put['X-TOKEN'] = localStorage.getItem('token');
-      $httpProvider.defaults.headers.common['X-TOKEN'] = localStorage.getItem('token');
-      $httpProvider.defaults.headers.post['X-UID'] = localStorage.getItem('uid');
-      $httpProvider.defaults.headers.put['X-UID'] = localStorage.getItem('uid');
-      $httpProvider.defaults.headers.common['X-UID'] = localStorage.getItem('uid');
       $httpProvider.interceptors.push(function($q){
 
         return {
           'request': function(config){
-            console.log(config);
+            $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+            $httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+            $httpProvider.defaults.headers.post['X-TOKEN'] = localStorage.getItem('token');
+            $httpProvider.defaults.headers.put['X-TOKEN'] = localStorage.getItem('token');
+            $httpProvider.defaults.headers.common['X-TOKEN'] = localStorage.getItem('token');
+            $httpProvider.defaults.headers.post['X-UID'] = localStorage.getItem('uid');
+            $httpProvider.defaults.headers.put['X-UID'] = localStorage.getItem('uid');
+            $httpProvider.defaults.headers.common['X-UID'] = localStorage.getItem('uid');
             if(config.url.indexOf('.html') < 0 && config.url.indexOf('refreshtoken') < 0){
               $("#ajaxLoading").html('Data Loading, Please Just Wait.....').fadeIn(500);
             }
@@ -66,14 +76,14 @@ storeApp.config(['$routeProvider','$httpProvider',
             if(document.getElementById('ajaxLoading').style.display!='none'){
               $("#ajaxLoading").html('Data Request Finished!').fadeOut(4000);
             }
-            if(response.status && response.status == 300){
+            if(response.status && response.status == 302){
               console.log('需要登录');
               window.location = './login.html';
             }
             if(response.status && response.status == 301){
               console.log('权限不够');
               //throw new Error('not enough permissions');
-              alert('not enough permissions');
+              alert('权限不够');
               return $q.reject('not enough permissions');
             }
             if(response.status && response.status == 400){
@@ -101,6 +111,7 @@ $sceDelegateProvider.resourceUrlWhitelist([
 // Allow loading from our assets domain. Notice the difference between * and **.
   '**']);
 });
+setTimeout(checkLogin,0);
 setInterval(checkLogin, 60000);
 
 storeApp.config(function($controllerProvider, $compileProvider, $filterProvider, $provide) {
@@ -117,7 +128,7 @@ storeApp.config(function($controllerProvider, $compileProvider, $filterProvider,
 function checkLogin(){
     var token = localStorage.getItem('token');
     var uid = localStorage.getItem('uid');
-
+    console.log('token', token);
     if(token && uid){
         $.ajax({
             url: globalConfig.api + "ucenter/refreshtoken",
@@ -137,6 +148,7 @@ function checkLogin(){
               if(data.data.token){
                   localStorage.setItem('token', data.data.token);
                   localStorage.setItem('uid', data.data.uid);
+                  localStorage.setItem('modules', JSON.stringify(data.data.modules));
               }
             }
         });

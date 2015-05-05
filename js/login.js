@@ -16,9 +16,11 @@ if(token){
             if(data.status == 200 && data.data.token){
                 localStorage.setItem('token', data.data.token);
                 localStorage.setItem('uid', data.data.uid);
+                localStorage.setItem('modules', JSON.stringify(data.data.modules));
                 console.log('登陆成功，即将跳转');
                 window.location="./";
             }else{
+                localStorage.clear();
                 console.log(data.msg);
             }
         }
@@ -44,6 +46,7 @@ var login = function(){
                 // 登陆成功，将token存在于localStorage中
                 localStorage.setItem('token', data.data.token);
                 localStorage.setItem('uid', data.data.uid);
+                localStorage.setItem('modules', JSON.stringify(data.data.modules));
                 //localStorage.setItem('auth',JSON.stringify(data.data.auth));
                 console.log('登陆成功，即将跳转');
                 window.location="./";

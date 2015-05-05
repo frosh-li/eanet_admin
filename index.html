@@ -32,6 +32,9 @@
                 <div class="module">
                     <a href="javascript:"  module="order" loaded=0><span class="expanded">交易管理</span></a>
                 </div>
+                <div class="module">
+                    <a href="javascript:"  module="auths" loaded=0><span class="expanded">权限管理</span></a>
+                </div>
             </div>
 
             <div class="right" ng-view  id="main" style="margin-left:185px;">
@@ -52,6 +55,8 @@
 <!--script src="js/controllers/authController.js"></script-->
 
 <!--以下代码为JS自动生成-->
+<script src="js/services/authsService.js"></script>
+<script src="js/controllers/authsController.js"></script>
 <!--script src="js/services/couponService.js"></script>
 <script src="js/controllers/couponController.js"></script-->
 <!--autojs-->
@@ -80,7 +85,7 @@
                     'X-TOKEN': localStorage.getItem("token"),
                     "X-UID": localStorage.getItem("uid")
                 },
-                url: globalConfig.api+module+"/common/showMenu",
+                url: globalConfig.api+module+(module === "auths" ? "" : "/common")+"/showMenu",
                 success: function(data){
                     if(!data){
                         return;
