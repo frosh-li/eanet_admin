@@ -1,0 +1,24 @@
+<h3>权限树结构</h3>
+<style>
+	.api-tree{
+		line-height:30px;
+		padding:20px;
+		border:1px solid #ccc;
+	}
+	.api-tree .api-module{
+		margin: 10px 0;
+	}
+	.api-tree .api-module dd{
+		margin-left:2em;
+		color:#333;
+	}
+</style>
+<div class="api-tree">
+	<dl class="api-module" ng-repeat="list in lists.data">
+		<dt data="{{list.name}}">{{list.cn}} {{list.name}}</dt>
+		<dd ng-repeat="data in list.innerApi">
+			<span>{{data.name}}</span>
+			<span>{{data.url}}</span>
+		</dd>
+	</dl>
+</div>
