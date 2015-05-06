@@ -39,6 +39,9 @@ storeApp.config(['$routeProvider','$httpProvider',
       }).when('/auths/users',{
         templateUrl:'templates/auths/users.html',
         controller:'authsUserList'
+      }).when('/auths/apis',{
+        templateUrl:'templates/auths/apis.html',
+        controller:'authsApiList'
       })
 
       $httpProvider.defaults.transformRequest = function(data){
@@ -111,7 +114,7 @@ $sceDelegateProvider.resourceUrlWhitelist([
 // Allow loading from our assets domain. Notice the difference between * and **.
   '**']);
 });
-setTimeout(checkLogin,0);
+setTimeout(checkLogin,2000);
 setInterval(checkLogin, 60000);
 
 storeApp.config(function($controllerProvider, $compileProvider, $filterProvider, $provide) {
@@ -125,7 +128,7 @@ storeApp.config(function($controllerProvider, $compileProvider, $filterProvider,
 });
 
 
-function checkLogin(){
+function checkLogin(cb){
     var token = localStorage.getItem('token');
     var uid = localStorage.getItem('uid');
     console.log('token', token);

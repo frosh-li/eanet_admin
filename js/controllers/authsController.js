@@ -28,3 +28,12 @@ authsControllers.controller('authsCreateUser', ['$http','$scope','AuthGroupList'
 
   }]);
 
+authsControllers.controller('authsApiList', ['$http','$scope','AuthApiList',
+  function($http,$scope,AuthApiList) {
+
+    $scope.lists = AuthApiList.query();
+    console.log($scope.lists);
+
+  }]);
+
+
