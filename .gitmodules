@@ -1,0 +1,3 @@
+[submodule "modules/order"]
+	path = modules/order
+	url = git@10.77.144.103:lijunliang6/x-admin-module.git
