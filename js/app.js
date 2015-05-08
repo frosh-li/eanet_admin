@@ -114,7 +114,7 @@ $sceDelegateProvider.resourceUrlWhitelist([
 // Allow loading from our assets domain. Notice the difference between * and **.
   '**']);
 });
-setTimeout(checkLogin,2000);
+//setTimeout(checkLogin,2000);
 setInterval(checkLogin, 60000);
 
 storeApp.config(function($controllerProvider, $compileProvider, $filterProvider, $provide) {
@@ -151,7 +151,7 @@ function checkLogin(cb){
               if(data.data.token){
                   localStorage.setItem('token', data.data.token);
                   localStorage.setItem('uid', data.data.uid);
-                  localStorage.setItem('modules', JSON.stringify(data.data.modules));
+                  // localStorage.setItem('modules', JSON.stringify(data.data.modules));
               }
             }
         });
