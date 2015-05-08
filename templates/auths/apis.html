@@ -4,6 +4,7 @@
 		line-height:30px;
 		padding:20px;
 		border:1px solid #ccc;
+		position:relative;
 	}
 	.api-tree .api-module{
 		margin: 10px 0;
@@ -12,13 +13,32 @@
 		margin-left:2em;
 		color:#333;
 	}
+	.api-tree .api-module .tree-open{
+		background:url(/img/tree-open.png) no-repeat left center;
+		padding-left:20px;
+	}
+	.api-tree .api-module .tree-close{
+		background:url(/img/tree-close.png) no-repeat left center;
+		padding-left:20px;
+	}
+	.api-tree label{
+		margin:0;
+	}
+
+
 </style>
 <div class="api-tree">
-	<dl class="api-module" ng-repeat="list in lists.data">
-		<dt data="{{list.name}}">{{list.cn}} {{list.name}}</dt>
+	<dl class="api-module" ng-repeat="list in lists.data" ng-click="hanldeTree(this)">
+		<dt data="{{list.name}}">
+			<input type="checkbox" />
+			<label class="tree-open">{{list.cn}} {{list.name}}</label>
+		</dt>
 		<dd ng-repeat="data in list.innerApi">
-			<span>{{data.name}}</span>
-			<span>{{data.url}}</span>
+			<input type="checkbox" />
+			<label class="tree-open">
+				<span>{{data.name}}</span>
+				<span>{{data.url}}</span>
+			</label>
 		</dd>
 	</dl>
 </div>
