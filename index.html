@@ -38,7 +38,7 @@
               <i class="searchIcon"></i>
               <input type="text" placeholder="快速查询..." class="searchIn">
             </div>
-            <a href="/login/logout" class="loginOut merOut">退出</a>
+            <a href="/api/ucenter/logout?redirect=/login.html" class="loginOut merOut" >退出</a>
           </form>
         </div>
 
@@ -327,10 +327,6 @@
             if ($(this).attr('loaded') == 0) {
                 var module = $(this).attr('module');
                 $.ajax({
-                    headers: {
-                        'X-TOKEN': localStorage.getItem("token"),
-                        "X-UID": localStorage.getItem("uid")
-                    },
                     url: globalConfig.api + module + (module === "auths" ? "" : "/common") + "/showMenu",
                     success: function(data) {
                         if (!data) {

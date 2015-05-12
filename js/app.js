@@ -60,12 +60,14 @@ storeApp.config(['$routeProvider','$httpProvider',
           'request': function(config){
             $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
             $httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+            /*
             $httpProvider.defaults.headers.post['X-TOKEN'] = localStorage.getItem('token');
             $httpProvider.defaults.headers.put['X-TOKEN'] = localStorage.getItem('token');
             $httpProvider.defaults.headers.common['X-TOKEN'] = localStorage.getItem('token');
             $httpProvider.defaults.headers.post['X-UID'] = localStorage.getItem('uid');
             $httpProvider.defaults.headers.put['X-UID'] = localStorage.getItem('uid');
             $httpProvider.defaults.headers.common['X-UID'] = localStorage.getItem('uid');
+            */
             if(config.url.indexOf('.html') < 0 && config.url.indexOf('refreshtoken') < 0){
               $("#ajaxLoading").html('Data Loading, Please Just Wait.....').fadeIn(500);
             }
@@ -79,17 +81,18 @@ storeApp.config(['$routeProvider','$httpProvider',
             if(document.getElementById('ajaxLoading').style.display!='none'){
               $("#ajaxLoading").html('Data Request Finished!').fadeOut(4000);
             }
-            if(response.status && response.status == 302){
+            console.log(response);
+            if(response.data && response.data.status == 302){
               console.log('需要登录');
               window.location = './login.html';
             }
-            if(response.status && response.status == 301){
+            if(response.data && response.data.status == 301){
               console.log('权限不够');
               //throw new Error('not enough permissions');
               alert('权限不够');
               return $q.reject('not enough permissions');
             }
-            if(response.status && response.status == 400){
+            if(response.data && response.data.status == 400){
               console.log(response.msg);
               alert(response.msg);
               return $q.reject(response.msg);
@@ -114,8 +117,6 @@ $sceDelegateProvider.resourceUrlWhitelist([
 // Allow loading from our assets domain. Notice the difference between * and **.
   '**']);
 });
-//setTimeout(checkLogin,2000);
-setInterval(checkLogin, 60000);
 
 storeApp.config(function($controllerProvider, $compileProvider, $filterProvider, $provide) {
   storeApp.register = {
@@ -126,37 +127,3 @@ storeApp.config(function($controllerProvider, $compileProvider, $filterProvider,
     service: $provide.service
   };
 });
-
-
-function checkLogin(cb){
-    var token = localStorage.getItem('token');
-    var uid = localStorage.getItem('uid');
-    console.log('token', token);
-    if(token && uid){
-        $.ajax({
-            url: globalConfig.api + "ucenter/refreshtoken",
-            method:"POST",
-            headers: {
-              'X-TOKEN': token,
-              'X-UID': uid
-            },
-            dataType:"json",
-            success:function(data){
-              console.log('data',data);
-              if(data.status != 200){
-                  localStorage.clear();
-                  window.location="./login.html";
-                  return;
-              }
-              if(data.data.token){
-                  localStorage.setItem('token', data.data.token);
-                  localStorage.setItem('uid', data.data.uid);
-                  // localStorage.setItem('modules', JSON.stringify(data.data.modules));
-              }
-            }
-        });
-    }else{
-        localStorage.clear();
-        window.location="./login.html";
-    }
-}
