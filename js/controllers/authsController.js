@@ -20,11 +20,53 @@ authsControllers.controller('authsGroupList', ['$http','$scope','AuthGroupList',
 
   }]);
 
+authsControllers.controller('authsGroupAdd', ['$http','$scope','AuthGroupList',
+  function($http,$scope,AuthGroupList) {
+
+    $scope.lists = AuthGroupList.query();
+    console.log($scope.lists);
+
+  }]);
+  
 authsControllers.controller('authsCreateUser', ['$http','$scope','AuthGroupList',
   function($http,$scope,AuthGroupList) {
 
-    $scope.grouplist = AuthGroupList.query();
-    console.log($scope.lists);
+    $scope.grouplists = AuthGroupList.query();
+    console.log($scope.grouplists);
+
+    $scope.formData = {username:"周如金",password:"1234454",group:""};
+    
+    $scope.selectChange = function(){
+      console.log($scope.formData.group);
+    }
+    
+    $scope.processForm = function(){
+      var token = localStorage.getItem('token');
+      var uid = localStorage.getItem('uid');
+      console.log($.param($scope.formData));
+    
+      $.ajax({
+        method  : 'POST',
+        url     : globalConfig.api + "auths/newuser",
+        data    : $.param($scope.formData),
+        headers: {
+          'X-TOKEN': token,
+          'X-UID': uid
+        },
+      }).success(function(data) {
+        console.log(data);
+        if(data.status == 200){
+          alert("注册成功！");
+        }
+        return false;
+        if (!data.success) {
+            $scope.errorName = data.errors.name;
+            $scope.errorSuperhero = data.errors.superheroAlias;
+        } else {
+            $scope.message = data.message;
+        }
+      });
+    }
 
   }]);
 

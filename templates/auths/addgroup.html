@@ -1,0 +1,69 @@
+<div>
+	<h2 class="boxTitle">新建权限组</h2>
+	<form id="form_data" name="form_data" method="post" class="form-horizontal" novalidate="novalidate">
+		<table class="table table-bordered comTable">
+	  		<tbody>
+			  <tr>
+			    <td style="width:150px">权限组名称<font color="red">*</font></td>
+			    <td colspan="2">
+			      <input type="text" value="" class="name required" name="groupname" maxlength="20">
+			    </td>
+			  </tr>
+			  <tr>
+			    <td>API权限分配</td>
+			    <td colspan="2">
+				   <style>
+						.api-tree{
+							line-height:30px;
+							padding:20px;
+							border:1px solid #ccc;
+							position:relative;
+						}
+						.api-tree .api-module{
+							margin: 10px 0;
+						}
+						.api-tree .api-module dd{
+							margin-left:2em;
+							color:#333;
+						}
+						.api-tree .api-module .tree-open{
+							background:url(/img/tree-open.png) no-repeat left center;
+							padding-left:20px;
+						}
+						.api-tree .api-module .tree-close{
+							background:url(/img/tree-close.png) no-repeat left center;
+							padding-left:20px;
+						}
+						.api-tree label{
+							margin:0;
+						}
+					</style>
+					<div class="api-tree">
+						<dl class="api-module" ng-repeat="list in lists.data" ng-click="hanldeTree(this)">
+							<dt data="{{list.name}}">
+								<input type="checkbox" />
+								<label class="tree-open">{{list.cn}} {{list.name}}</label>
+							</dt>
+							<dd ng-repeat="data in list.innerApi">
+								<input type="checkbox" />
+								<label class="tree-open">
+									<span>{{data.name}}</span>
+									<span>{{data.url}}</span>
+								</label>
+							</dd>
+						</dl>
+					</div>
+			    </td>
+			  </tr>
+	          <tr>
+	            <td align="center" style="background-color: #f7f7f7" colspan="3">
+	              <input type="hidden" value="1" id="status" class="checkdom" name="status">
+					<a id="save_file" class="btn btn-danger upBtn" href="#a_opt">保 存</a>
+					<a id="submit_file" class="btn btn-danger upBtn" href="/system/auth_group/index#a_opt">取消</a>
+	            </td>
+	          </tr>			  
+			  <tr style="display:none;" id="error_tr"><td align="center" id="error_td" style="background-color: #f7f7f7" colspan="3"></td></tr>
+			</tbody>
+		</table>
+	</form>
+ </div>

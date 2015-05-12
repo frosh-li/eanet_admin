@@ -1,1 +1,29 @@
-coupon coupon create.html
+<form style="position: relative;width: 420px;top: 200px;margin: 0 auto;" ng-submit="processForm()">
+    <div id="sign-username" class="form-group">
+        <label>用户名</label>
+        <input type="text" name="name" class="form-control" placeholder="请输入3-10个字符" ng-model="formData.username">
+        <span class="help-block"></span>
+    </div>
+
+    <div id="sign-password" class="form-group">
+        <label>用户密码</label>
+        <input type="password" name="password" class="form-control" placeholder="请输入6-12位密码" ng-model="formData.password">
+        <span class="help-block"></span>
+    </div>
+    
+    <div id="sign-password" class="form-group">
+        <label>确认密码</label>
+        <input type="password" name="password1" class="form-control" placeholder="请重复输入一次相同密码" ng-model="password1" ng-blur="confirmPassword()">
+        <span class="help-block"></span>
+    </div>
+    
+    <div id="sign-group" class="form-group">
+        <label>所属权限组</label>
+        <select name="group"  class="form-control" ng-model="formData.group" ng-options="group.name as group.name for group in grouplists.data" ng-change="selectChange()"></select>
+        <span class="help-block"></span>
+    </div>
+	
+    <button type="submit" class="btn btn-success btn-lg btn-block">
+        <span class="glyphicon glyphicon-flash"></span>提交
+    </button>
+</form>
