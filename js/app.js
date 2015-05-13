@@ -41,7 +41,7 @@ storeApp.config(['$routeProvider','$httpProvider',
         controller:'authsGroupAdd'
       }).when('/auths/users',{
         templateUrl:'templates/auths/users.html',
-        controller:'authsUserList'
+        controller:'authsUser'
       }).when('/auths/apis',{
         templateUrl:'templates/auths/apis.html',
         controller:'authsApiList'

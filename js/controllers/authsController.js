@@ -4,10 +4,10 @@
 
 var authsControllers = angular.module('authsControllers', ['ngTable']);
 
-authsControllers.controller('authsUserList', ['$http','$scope','AuthUserList',
-  function($http,$scope,AuthUserList) {
+authsControllers.controller('authsUser', ['$http','$scope','AuthUser',
+  function($http,$scope,AuthUser) {
 
-    $scope.lists = AuthUserList.query();
+    $scope.lists = AuthUser.query();
     console.log($scope.lists);
 
   }]);
@@ -27,24 +27,37 @@ authsControllers.controller('authsGroupAdd', ['$http','$scope','AuthGroupList',
     console.log($scope.lists);
 
   }]);
-  
-authsControllers.controller('authsCreateUser', ['$http','$scope','AuthGroupList',
-  function($http,$scope,AuthGroupList) {
+
+authsControllers.controller('authsCreateUser', ['$http','$scope','AuthUser','AuthGroupList',
+  function($http,$scope,AuthUser,AuthGroupList) {
 
     $scope.grouplists = AuthGroupList.query();
     console.log($scope.grouplists);
 
     $scope.formData = {username:"周如金",password:"1234454",group:""};
-    
+
     $scope.selectChange = function(){
       console.log($scope.formData.group);
     }
-    
+
     $scope.processForm = function(){
       var token = localStorage.getItem('token');
       var uid = localStorage.getItem('uid');
       console.log($.param($scope.formData));
-    
+      var authUser = new AuthUser($scope.formData);
+      authUser.$save(function(data){
+        if(data.status == 200){
+          alert('新建成功');
+        }else{
+          alert(data.msg);
+        }
+
+      }, function(err){
+        console.log(err);
+        alert('系统错误')
+      });
+      /*
+      return;
       $.ajax({
         method  : 'POST',
         url     : globalConfig.api + "auths/newuser",
@@ -66,6 +79,7 @@ authsControllers.controller('authsCreateUser', ['$http','$scope','AuthGroupList'
             $scope.message = data.message;
         }
       });
+*/
     }
 
   }]);
