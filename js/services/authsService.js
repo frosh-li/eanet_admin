@@ -5,7 +5,6 @@
 
 var authsServices = angular.module('authsServices', ['ngResource']);
 
-
 authsServices.factory('AuthUser', ['$resource',
   function($resource){
     return $resource(globalConfig.api + 'auths/user/:id', {id:'@id',search:'@search'}, {
@@ -28,7 +27,7 @@ authsServices.factory('AuthGroupList', ['$resource',
     });
   }]);
 
-authsServices.factory('AuthApiList', ['$resource',
+authsServices.factory('AuthApi', ['$resource',
   function($resource){
     return $resource(globalConfig.api + 'auths/apis/:id', {id:'@id',search:'@search'}, {
       query: {method:'GET', params:{}, isArray:false},

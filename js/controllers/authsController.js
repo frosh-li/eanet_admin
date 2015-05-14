@@ -43,7 +43,9 @@ authsControllers.controller('authsCreateUser', ['$http','$scope','AuthUser','Aut
     $scope.processForm = function(){
       var token = localStorage.getItem('token');
       var uid = localStorage.getItem('uid');
+      
       console.log($.param($scope.formData));
+      
       var authUser = new AuthUser($scope.formData);
       authUser.$save(function(data){
         if(data.status == 200){
@@ -56,35 +58,11 @@ authsControllers.controller('authsCreateUser', ['$http','$scope','AuthUser','Aut
         console.log(err);
         alert('系统错误')
       });
-      /*
-      return;
-      $.ajax({
-        method  : 'POST',
-        url     : globalConfig.api + "auths/newuser",
-        data    : $.param($scope.formData),
-        headers: {
-          'X-TOKEN': token,
-          'X-UID': uid
-        },
-      }).success(function(data) {
-        console.log(data);
-        if(data.status == 200){
-          alert("注册成功！");
-        }
-        return false;
-        if (!data.success) {
-            $scope.errorName = data.errors.name;
-            $scope.errorSuperhero = data.errors.superheroAlias;
-        } else {
-            $scope.message = data.message;
-        }
-      });
-*/
     }
 
   }]);
 
-authsControllers.controller('authsApiList', ['$http','$scope','AuthApiList',
+authsControllers.controller('authsApiList', ['$http','$scope','AuthApi',
   function($http,$scope,AuthApiList) {
 
     // $scope.lists = AuthApiList.query();
@@ -134,4 +112,23 @@ authsControllers.controller('authsApiList', ['$http','$scope','AuthApiList',
 
   }]);
 
+authsControllers.controller('authsApiAdd', ['$http','$scope','AuthGroupList',
+  function($http,$scope,AuthGroupList) {
 
+    $scope.lists = AuthGroupList.query();
+    $scope.formData = {code:"模块标识",model:"模块名称"}; 
+    
+    var vm = $scope.vm = {};
+    vm.items = ['item1'];
+    vm.itemId = 3;
+    
+    vm.addItem = function() {
+      vm.items.push('item' + vm.itemId);
+      vm.itemId++;
+    };
+    
+    vm.delItem = function(index) {
+      vm.items.splice(index, 1);
+    };
+
+  }]);
