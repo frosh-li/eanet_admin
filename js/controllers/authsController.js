@@ -32,8 +32,6 @@ authsControllers.controller('authsCreateUser', ['$http','$scope','AuthUser','Aut
   function($http,$scope,AuthUser,AuthGroupList) {
 
     $scope.grouplists = AuthGroupList.query();
-    console.log($scope.grouplists);
-
     $scope.formData = {username:"周如金",password:"1234454",group:""};
 
     $scope.selectChange = function(){
@@ -41,11 +39,6 @@ authsControllers.controller('authsCreateUser', ['$http','$scope','AuthUser','Aut
     }
 
     $scope.processForm = function(){
-      var token = localStorage.getItem('token');
-      var uid = localStorage.getItem('uid');
-      
-      console.log($.param($scope.formData));
-      
       var authUser = new AuthUser($scope.formData);
       authUser.$save(function(data){
         if(data.status == 200){
@@ -112,23 +105,35 @@ authsControllers.controller('authsApiList', ['$http','$scope','AuthApi',
 
   }]);
 
-authsControllers.controller('authsApiAdd', ['$http','$scope','AuthGroupList',
-  function($http,$scope,AuthGroupList) {
-
-    $scope.lists = AuthGroupList.query();
-    $scope.formData = {code:"模块标识",model:"模块名称"}; 
-    
-    var vm = $scope.vm = {};
-    vm.items = ['item1'];
-    vm.itemId = 3;
+authsControllers.controller('authsApiAdd', ['$http','$scope','AuthApi','AuthGroupList',
+  function($http,$scope,AuthApi,AuthGroupList) {
+    var vm = $scope.vm = [{name:"", url:"", method:"get", isMenu:true}];
     
     vm.addItem = function() {
-      vm.items.push('item' + vm.itemId);
-      vm.itemId++;
+      vm.push({name:"", url:"", method:"get", isMenu:true});
     };
     
     vm.delItem = function(index) {
-      vm.items.splice(index, 1);
+      vm.splice(index,1);
     };
+    
+    $scope.methods = ["get","post","put","delete"];
+    $scope.formData = {code : "", model : "", uri : "", apilist : vm};
+
+    $scope.processForm = function(){
+      $scope.formData.innerApi = JSON.stringify($scope.formData.apilist);
+      var authApi = new AuthApi($scope.formData);
+      authApi.$save(function(data){
+        if(data.status == 200){
+          alert('注册成功');
+        }else{
+          alert(data.msg);
+        }
+
+      }, function(err){
+        console.log(err);
+        alert('系统错误')
+      });
+    }    
 
   }]);

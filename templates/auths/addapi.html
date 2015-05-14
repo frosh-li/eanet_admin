@@ -23,17 +23,18 @@
 			  </tr>
 			  <tr>
 				<td colspan="2">
-					<table class="table table-bordered comTable" ng-repeat="item in vm.items">
+					<table class="table table-bordered comTable" ng-repeat="item in formData.apilist">
 					  <tr>
 						<td style="width:150px">子模块<font color="red">*</font></td>
 						<td>
-					        <table style="height:100px">
-						       	<tr><td>名称：</td><td><input type="text" value="" class="name required" name="name[]" maxlength="20"></td></tr>
-								<tr><td>URL：</td><td><input type="text" value="" class="url required" name="url[]" maxlength="20"></td></tr>
-								<tr><td>方法名：</td><td><input type="text" value="" class="method required" name="method[]" maxlength="20"></td></tr>
+					        <table style="height:130px">
+						       	<tr><td>名称：</td><td><input type="text" value="" class="name required" ng-model="item.name" name="name[]" maxlength="20"></td></tr>
+								<tr><td>URL：</td><td><input type="text" value="" class="url required" ng-model="item.url" name="url[]" maxlength="20"></td></tr>
+								<tr><td>方法名：</td><td><select ng-model="item.method" ng-options="method as method for method in methods"></select></td></tr>
+								<tr><td>显示为菜单项：</td><td><input type="checkbox" class="isMenu" ng-model="item.isMenu"/></td></tr>
 							</table>
 						</td>
-						<td><button type="button" class="close" ng-click="vm.delItem($index)">&times;</button></td>
+						<td style="width:100px"><button style="margin:0 auto;width:30px" type="button" class="close" ng-click="vm.delItem($index)">&times;</button></td>
 					  </tr>
 					</table>
 				</td>
@@ -42,7 +43,7 @@
 	          <tr>
 	            <td align="center" style="background-color: #f7f7f7" colspan="3">
 	              <input type="hidden" value="1" id="status" class="checkdom" name="status">
-					<a id="save_file" class="btn btn-danger upBtn" href="#a_opt">保 存</a>
+					<a id="save_file" class="btn btn-danger upBtn" ng-click="processForm()">保 存</a>
 					<a id="submit_file" class="btn btn-danger upBtn" href="/system/auth_group/index#a_opt">取消</a>
 	            </td>
 	          </tr>			  
