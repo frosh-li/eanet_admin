@@ -117,6 +117,9 @@ authsControllers.controller('authsApiAdd', ['$http','$scope','AuthApi','AuthGrou
       vm.splice(index,1);
     };
     
+    $scope.show_error = true;
+    $scope.show_type = 1;
+    
     $scope.methods = ["get","post","put","delete"];
     $scope.formData = {code : "", model : "", uri : "", apilist : vm};
 

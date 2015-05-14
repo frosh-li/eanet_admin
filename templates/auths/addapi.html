@@ -1,24 +1,26 @@
 <div>
 	<h2 class="boxTitle">API注册</h2>
-	<form id="form_data" name="form_data" method="post" class="form-horizontal" novalidate="novalidate">
+	<form class="form-horizontal showcase-form" role="form" id="form_data" method="post" name="form_data" novalidate="">
 		<table class="table table-bordered comTable">
 	  		<tbody>
 			  <tr>
 			    <td style="width:150px">模块标识<font color="red">*</font></td>
 			    <td colspan="2">
-			      <input type="text" value="" class="code required" ng-model="formData.code" name="code" maxlength="20">
+			      <input type="text" value="" class="code required" ng-pattern="/^[A-Za-z]{1}[0-9A-Za-z_]{2,29}$/" ng-model="formData.code" name="code" placeholder="请输入英文标识" maxlength="20">
+				  <em style="color:red" ng-show="(form_data.code.$dirty || show_type == 1) && form_data.code.$error.pattern">请输入最少3位英文字符！</em>
 			    </td>
 			  </tr>
 			  <tr>
 			    <td style="width:150px">模块名称<font color="red">*</font></td>
 			    <td colspan="2">
-			      <input type="text" value="" class="model required" ng-model="formData.model" name="model" maxlength="20">
+			      <input type="text" value="" class="model required" ng-pattern="/^[\u0391-\uFFE5]+$/" ng-model="formData.model" name="model" placeholder="请输入中文名称" maxlength="20">
+				  <em style="color:red" ng-show="(form_data.model.$dirty || show_type == 1) && form_data.model.$error.pattern">请输入中文！</em>
 			    </td>
 			  </tr>
 			  <tr>
 			    <td style="width:150px">URI<font color="red">*</font></td>
 			    <td colspan="2">
-			      <input type="text" value="" class="uri required" ng-model="formData.uri" name="uri" maxlength="20">
+			      <input type="text" value="" class="uri required" ng-model="formData.uri" name="uri" placeholder="/activity" maxlength="20">
 			    </td>
 			  </tr>
 			  <tr>
@@ -28,13 +30,16 @@
 						<td style="width:150px">子模块<font color="red">*</font></td>
 						<td>
 					        <table style="height:130px">
-						       	<tr><td>名称：</td><td><input type="text" value="" class="name required" ng-model="item.name" name="name[]" maxlength="20"></td></tr>
-								<tr><td>URL：</td><td><input type="text" value="" class="url required" ng-model="item.url" name="url[]" maxlength="20"></td></tr>
+						       	<tr><td>名称：</td><td>
+									   <input type="text" value="" ng-pattern="/^[\u0391-\uFFE5]+$/" class="name required" placeholder="请输入中文名称" ng-model="item.name" name="name" maxlength="20">
+				  					     <em style="color:red" ng-show="(form_data.name.$dirty || show_type == 1) && form_data.name.$error.pattern">请输入中文！</em>
+					  				   </td></tr>
+								<tr><td>URL：</td><td><input type="text" value="" class="url required" placeholder="/activity/input" ng-model="item.url" name="url[]" maxlength="20"></td></tr>
 								<tr><td>方法名：</td><td><select ng-model="item.method" ng-options="method as method for method in methods"></select></td></tr>
 								<tr><td>显示为菜单项：</td><td><input type="checkbox" class="isMenu" ng-model="item.isMenu"/></td></tr>
 							</table>
 						</td>
-						<td style="width:100px"><button style="margin:0 auto;width:30px" type="button" class="close" ng-click="vm.delItem($index)">&times;</button></td>
+						<td style="width:100px;text-align:center"><button style="margin:0 auto;width:30px;float:none" type="button" class="close" ng-click="vm.delItem($index)">&times;</button></td>
 					  </tr>
 					</table>
 				</td>
