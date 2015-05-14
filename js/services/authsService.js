@@ -16,7 +16,7 @@ authsServices.factory('AuthUser', ['$resource',
     });
   }]);
 
-authsServices.factory('AuthGroupList', ['$resource',
+authsServices.factory('AuthGroup', ['$resource',
   function($resource){
     return $resource(globalConfig.api + 'auths/group/:id', {id:'@id',search:'@search'}, {
       query: {method:'GET', params:{}, isArray:false},

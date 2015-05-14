@@ -6,15 +6,17 @@
 			  <tr>
 			    <td style="width:150px">模块标识<font color="red">*</font></td>
 			    <td colspan="2">
-			      <input type="text" value="" class="code required" ng-pattern="/^[A-Za-z]{1}[0-9A-Za-z_]{2,29}$/" ng-model="formData.code" name="code" placeholder="请输入英文标识" maxlength="20">
+			      <input type="text" value="" class="code required" required="" ng-pattern="/^[A-Za-z]{1}[0-9A-Za-z_]{2,29}$/" ng-model="formData.code" name="code" placeholder="请输入英文标识" maxlength="20">
 				  <em style="color:red" ng-show="(form_data.code.$dirty || show_type == 1) && form_data.code.$error.pattern">请输入最少3位英文字符！</em>
+				  <em style="color:red" ng-show="(form_data.code.$dirty || show_type == 1) && form_data.code.$error.required">必填项！</em>
 			    </td>
 			  </tr>
 			  <tr>
 			    <td style="width:150px">模块名称<font color="red">*</font></td>
 			    <td colspan="2">
-			      <input type="text" value="" class="model required" ng-pattern="/^[\u0391-\uFFE5]+$/" ng-model="formData.model" name="model" placeholder="请输入中文名称" maxlength="20">
-				  <em style="color:red" ng-show="(form_data.model.$dirty || show_type == 1) && form_data.model.$error.pattern">请输入中文！</em>
+			      <input type="text" value="" class="model" required="" ng-pattern="/^[\u0391-\uFFE5]+$/" ng-model="formData.model" name="model" placeholder="请输入中文名称" maxlength="20">
+				  <em style="color:red" ng-show="form_data.model.$error.pattern">请输入中文！</em>
+				  <em style="color:red" ng-show="(form_data.model.$dirty || show_type == 1) && form_data.model.$error.required">必填项！</em>
 			    </td>
 			  </tr>
 			  <tr>

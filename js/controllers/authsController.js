@@ -12,26 +12,27 @@ authsControllers.controller('authsUser', ['$http','$scope','AuthUser',
 
   }]);
 
-authsControllers.controller('authsGroupList', ['$http','$scope','AuthGroupList',
-  function($http,$scope,AuthGroupList) {
+authsControllers.controller('authsGroupList', ['$http','$scope','AuthGroup',
+  function($http,$scope,AuthGroup) {
 
-    $scope.lists = AuthGroupList.query();
+    $scope.lists = AuthGroup.query();
     console.log($scope.lists);
 
   }]);
 
-authsControllers.controller('authsGroupAdd', ['$http','$scope','AuthGroupList',
-  function($http,$scope,AuthGroupList) {
+authsControllers.controller('authsGroupAdd', ['$http','$scope','AuthGroup',
+  function($http,$scope,AuthGroup) {
 
-    $scope.lists = AuthGroupList.query();
+    $scope.lists = AuthGroup.query();
     console.log($scope.lists);
 
   }]);
 
-authsControllers.controller('authsCreateUser', ['$http','$scope','AuthUser','AuthGroupList',
-  function($http,$scope,AuthUser,AuthGroupList) {
+authsControllers.controller('authsCreateUser', ['$http','$scope','AuthUser','AuthGroup',
+  function($http,$scope,AuthUser,AuthGroup) {
 
-    $scope.grouplists = AuthGroupList.query();
+    $scope.grouplists = AuthGroup.query();
+    console.log($scope.grouplists);
     $scope.formData = {username:"周如金",password:"1234454",group:""};
 
     $scope.selectChange = function(){
@@ -105,8 +106,8 @@ authsControllers.controller('authsApiList', ['$http','$scope','AuthApi',
 
   }]);
 
-authsControllers.controller('authsApiAdd', ['$http','$scope','AuthApi','AuthGroupList',
-  function($http,$scope,AuthApi,AuthGroupList) {
+authsControllers.controller('authsApiAdd', ['$http','$scope','AuthApi','AuthGroup',
+  function($http,$scope,AuthApi,AuthGroup) {
     var vm = $scope.vm = [{name:"", url:"", method:"get", isMenu:true}];
     
     vm.addItem = function() {
