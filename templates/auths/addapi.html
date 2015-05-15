@@ -38,15 +38,15 @@
 					  				   </td></tr>
 								<tr><td>URL：</td><td><input type="text" value="" class="url required" placeholder="/activity/input" ng-model="item.url" name="url[]" maxlength="20"></td></tr>
 								<tr><td>方法名：</td><td><select ng-model="item.method" ng-options="method as method for method in methods"></select></td></tr>
-								<tr><td>显示为菜单项：</td><td><input type="checkbox" class="isMenu" ng-model="item.isMenu"/></td></tr>
+								<tr><td>显示为菜单项：</td><td><input type="checkbox" class="isMenu" ng-model="item.isMenu" ng-checked="isMenu[transBoole(item.isMenu)]"/></td></tr>
 							</table>
 						</td>
-						<td style="width:100px;text-align:center"><button style="margin:0 auto;width:30px;float:none" type="button" class="close" ng-click="vm.delItem($index)">&times;</button></td>
+						<td style="width:100px;text-align:center"><button style="margin:0 auto;width:30px;float:none" type="button" class="close" ng-click="delItem($index)">&times;</button></td>
 					  </tr>
 					</table>
 				</td>
 			  </tr>
-			  <tr><td colspan=2><button class="btn btn-default mmm" ng-click="vm.addItem()">添加一条</button></td></tr>
+			  <tr><td colspan=2><button class="btn btn-default mmm" ng-click="addItem()">添加一条</button></td></tr>
 	          <tr>
 	            <td align="center" style="background-color: #f7f7f7" colspan="3">
 	              <input type="hidden" value="1" id="status" class="checkdom" name="status">

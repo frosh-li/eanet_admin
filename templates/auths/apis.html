@@ -31,13 +31,15 @@
 		<dt data="{{list.name}}">
 			<input type="checkbox" />
 			<label class="tree-open">{{list.code}} {{list.model}}</label>
-			<a href="#/auths/addapi/{{list.code}}">编辑</a>
+			<a href="#/auths/addapi/{{list.code}}" style="margin-left:20px">编辑</a>
+			<span ng-click="delModule($index,list.code)" style="cursor:pointer;color:blue;margin-left:20px">删除</span>
 		</dt>
 		<dd ng-repeat="data in list.innerApi">
 			<input type="checkbox" />
 			<label class="tree-open">
 				<span>{{data.name}}</span>
 				<span>{{data.url}}</span>
+				<span>{{menu[transBoole(data.isMenu)]}}</span>
 			</label>
 		</dd>
 	</dl>

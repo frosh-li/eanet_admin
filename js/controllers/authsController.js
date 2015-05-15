@@ -58,7 +58,8 @@ authsControllers.controller('authsCreateUser', ['$http','$scope','AuthUser','Aut
 
 authsControllers.controller('authsApiList', ['$http','$scope','AuthApi',
   function($http,$scope,AuthApi) {
-
+    
+    $scope.menu = ["不显示","显示"];
     $scope.lists = AuthApi.query();
     
     $scope.hanldeTree = function(obj){
@@ -66,47 +67,27 @@ authsControllers.controller('authsApiList', ['$http','$scope','AuthApi',
         console.log(env.target);
     }
     
-    console.log($scope.lists);
+    $scope.transBoole = function(b){
+      return b=="true"||b==1?1:0;
+    }
     
-    $scope.listss = {
-        data:[
-          {
-            name:"交易管理",
-            innerApi:[
-              {
-                "name":"交易列表",
-                "url":"order/list"
-              },
-              {
-                "name":"新建交易",
-                "url":"order/list"
-              },
-              {
-                "name":"退换货",
-                "url":"order/list"
-              },
-            ]
-          },
-          {
-            name:"权限管理",
-            innerApi:[
-              {
-                "name":"新建权限组",
-                "url":"order/list"
-              },
-              {
-                "name":"新建用户",
-                "url":"order/list"
-              },
-              {
-                "name":"权限组列表",
-                "url":"order/list"
-              },
-            ]
+    $scope.delModule = function(index,moduleCode){
+      if(!confirm("确定删除")){
+          return false; 
+      }
+      console.log(moduleCode);
+      AuthApi.delete({code:moduleCode}).$promise.then(function(data){
+          if(data.status == 200){
+              alert("操作成功！ ");
+              $scope.lists.data.splice(index,1);
+          }else{
+            alert(data.msg);
           }
-        ]
-    };
-    //console.log($scope.lists);
+      }, function(err){
+          console.log(err);
+          alert("系统错误！ ");
+      });
+    }
 
   }]);
 
@@ -114,11 +95,11 @@ authsControllers.controller('authsApiAdd', ['$http','$scope','AuthApi','$routePa
   function($http,$scope,AuthApi,$routeParams) {
     var vm = $scope.vm = [{name:"", url:"", method:"get", isMenu:true}];  
     
-    vm.addItem = function() {
+    $scope.addItem = function() {
       vm.push({name:"", url:"", method:"get", isMenu:true});
     };
     
-    vm.delItem = function(index) {
+    $scope.delItem = function(index) {
       vm.splice(index,1);
     };
     
@@ -126,13 +107,19 @@ authsControllers.controller('authsApiAdd', ['$http','$scope','AuthApi','$routePa
     $scope.show_type = 1;
     $scope.methods = ["get","post","put","delete"];
     
-    $scope.formData = {code : "", model : "", uri : "", innerApi : vm};
+    $scope.formData = {code : "", model : "", uri : "", apilist : vm};
+    
     if($routeParams.code){
         AuthApi.getOne({code : $routeParams.code}).$promise.then(function(res){
           $scope.formData = res.data;
           $scope.formData.apilist = $scope.formData.innerApi;
         });
-    }    
+    }
+
+    $scope.isMenu = [false,true];
+    $scope.transBoole = function(b){
+      return b=="true"||b==1?1:0;
+    }
 
     $scope.processForm = function(){
       $scope.formData.innerApi = JSON.stringify($scope.formData.apilist);
@@ -140,6 +127,7 @@ authsControllers.controller('authsApiAdd', ['$http','$scope','AuthApi','$routePa
       authApi.$save(function(data){
         if(data.status == 200){
           alert('注册成功');
+          //$state.go("auths.apis");
         }else{
           alert(data.msg);
         }
