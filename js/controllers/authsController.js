@@ -14,7 +14,7 @@ authsControllers.controller('authsUser', ['$http','$scope','AuthUser',
 
 authsControllers.controller('authsGroupList', ['$http','$scope','AuthGroup',
   function($http,$scope,AuthGroup) {
-
+    console.log("aaa");
     $scope.lists = AuthGroup.query();
     console.log($scope.lists);
 
@@ -57,14 +57,18 @@ authsControllers.controller('authsCreateUser', ['$http','$scope','AuthUser','Aut
   }]);
 
 authsControllers.controller('authsApiList', ['$http','$scope','AuthApi',
-  function($http,$scope,AuthApiList) {
+  function($http,$scope,AuthApi) {
 
-    // $scope.lists = AuthApiList.query();
+    $scope.lists = AuthApi.query();
+    
     $scope.hanldeTree = function(obj){
         var env = window.event || e;
         console.log(env.target);
     }
-    $scope.lists = {
+    
+    console.log($scope.lists);
+    
+    $scope.listss = {
         data:[
           {
             name:"交易管理",
@@ -102,13 +106,13 @@ authsControllers.controller('authsApiList', ['$http','$scope','AuthApi',
           }
         ]
     };
-    console.log($scope.lists);
+    //console.log($scope.lists);
 
   }]);
 
-authsControllers.controller('authsApiAdd', ['$http','$scope','AuthApi','AuthGroup',
-  function($http,$scope,AuthApi,AuthGroup) {
-    var vm = $scope.vm = [{name:"", url:"", method:"get", isMenu:true}];
+authsControllers.controller('authsApiAdd', ['$http','$scope','AuthApi','$routeParams',
+  function($http,$scope,AuthApi,$routeParams) {
+    var vm = $scope.vm = [{name:"", url:"", method:"get", isMenu:true}];  
     
     vm.addItem = function() {
       vm.push({name:"", url:"", method:"get", isMenu:true});
@@ -120,9 +124,15 @@ authsControllers.controller('authsApiAdd', ['$http','$scope','AuthApi','AuthGrou
     
     $scope.show_error = true;
     $scope.show_type = 1;
-    
     $scope.methods = ["get","post","put","delete"];
-    $scope.formData = {code : "", model : "", uri : "", apilist : vm};
+    
+    $scope.formData = {code : "", model : "", uri : "", innerApi : vm};
+    if($routeParams.code){
+        AuthApi.getOne({code : $routeParams.code}).$promise.then(function(res){
+          $scope.formData = res.data;
+          $scope.formData.apilist = $scope.formData.innerApi;
+        });
+    }    
 
     $scope.processForm = function(){
       $scope.formData.innerApi = JSON.stringify($scope.formData.apilist);

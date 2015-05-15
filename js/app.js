@@ -48,6 +48,9 @@ storeApp.config(['$routeProvider','$httpProvider',
       }).when('/auths/addapi',{
         templateUrl:'templates/auths/addapi.html',
         controller:'authsApiAdd'
+      }).when('/auths/addapi/:code',{
+        templateUrl:'templates/auths/addapi.html',
+        controller:'authsApiAdd'
       })
 
       $httpProvider.defaults.transformRequest = function(data){
