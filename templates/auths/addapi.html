@@ -34,11 +34,14 @@
 					        <table style="height:130px">
 						       	<tr><td>名称：</td><td>
 									   <input type="text" value="" ng-pattern="/^[\u0391-\uFFE5]+$/" class="name required" placeholder="请输入中文名称" ng-model="item.name" name="name" maxlength="20">
-				  					     <em style="color:red" ng-show="(form_data.name.$dirty || show_type == 1) && form_data.name.$error.pattern">请输入中文！</em>
-					  				   </td></tr>
-								<tr><td>URL：</td><td><input type="text" value="" class="url required" placeholder="/activity/input" ng-model="item.url" name="url[]" maxlength="20"></td></tr>
+				  					   <em style="color:red" ng-show="(form_data.name.$dirty || show_type == 1) && form_data.name.$error.pattern">请输入中文！</em>
+					  			</td></tr>
+								<tr><td>URL：</td><td>
+									   <input type="text" value="" ng-pattern="/^[/]{1}[A-Za-z]+$/" class="url required" placeholder="/input" ng-model="item.url" name="url" maxlength="20">
+									   <em style="color:red" ng-show="form_data.url.$error.pattern">首字符必须为/！</em>
+								</td></tr>
 								<tr><td>方法名：</td><td><select ng-model="item.method" ng-options="method as method for method in methods"></select></td></tr>
-								<tr><td>显示为菜单项：</td><td><input type="checkbox" class="isMenu" ng-model="item.isMenu" ng-checked="isMenu[transBoole(item.isMenu)]"/></td></tr>
+								<tr><td>显示为菜单项：</td><td><input type="checkbox" class="isMenu" ng-model="item.isMenu" ng-checked="isMenu[transBoole(item.isMenu,'bool')]"/></td></tr>
 							</table>
 						</td>
 						<td style="width:100px;text-align:center"><button style="margin:0 auto;width:30px;float:none" type="button" class="close" ng-click="delItem($index)">&times;</button></td>

@@ -1,4 +1,4 @@
-<h3>权限树结构<a href="#/auths/addapi">API注册</a></h3>
+<h3>权限树结构<a href="#/auths/addapi" style="margin-left:20px">API注册</a></h3>
 <style>
 	.api-tree{
 		line-height:30px;
@@ -39,7 +39,7 @@
 			<label class="tree-open">
 				<span>{{data.name}}</span>
 				<span>{{data.url}}</span>
-				<span>{{menu[transBoole(data.isMenu)]}}</span>
+				<span>{{menu[transBoole(data.isMenu,"number")]}}</span>
 			</label>
 		</dd>
 	</dl>

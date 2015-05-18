@@ -14,17 +14,99 @@ authsControllers.controller('authsUser', ['$http','$scope','AuthUser',
 
 authsControllers.controller('authsGroupList', ['$http','$scope','AuthGroup',
   function($http,$scope,AuthGroup) {
-    console.log("aaa");
     $scope.lists = AuthGroup.query();
     console.log($scope.lists);
-
+    
+    $scope.delGroup = function(id,index){
+      if(!confirm("确定删除")){
+          return false; 
+      }
+      console.log(id,index);
+      AuthGroup.delete({id:id}).$promise.then(function(data){
+          if(data.status == 200){
+              alert("操作成功！ ");
+              $scope.lists.data.splice(index,1);
+          }else{
+            alert(data.msg);
+          }
+      }, function(err){
+          console.log(err);
+          alert("系统错误！ ");
+      });
+    }
+    
   }]);
 
-authsControllers.controller('authsGroupAdd', ['$http','$scope','AuthGroup',
-  function($http,$scope,AuthGroup) {
-
-    $scope.lists = AuthGroup.query();
-    console.log($scope.lists);
+authsControllers.controller('authsGroupAdd', ['$http','$scope','AuthGroup','AuthApi','$routeParams','TreeData',
+  function($http,$scope,AuthGroup,AuthApi,$routeParams,TreeData) {
+    var vm = $scope.vm = {};
+    
+    $scope.formData   =   {name:"", apilist:{}};
+        
+    AuthApi.query().$promise.then(function(res){
+        $scope.formData.apilist = res.data;
+        
+        if($routeParams.name){
+            AuthGroup.getOne({name : $routeParams.name}).$promise.then(function(res){
+              if(res.data){
+                $scope.formData.name = res.data.name;
+                $scope.formData.apilist.forEach(function(api){
+                    api.items = api.innerApi;
+                    api.items.forEach(function(item){
+                        res.data.apilist.forEach(function(checkedItem){
+                            if("/"+api.code + "/"  +item.url === checkedItem.url && item.method === checkedItem.method){
+                                item.checked=true;
+                                return;
+                            }
+                        });
+                    });
+                });
+              }
+                
+            });
+        }else{
+          $scope.formData.apilist.forEach(function(api){
+              api.items = api.innerApi;
+          
+              api.items.forEach(function(item){
+                  item.checked=false;
+              });
+          });
+        }
+        
+        vm.tree = new TreeData($scope.formData.apilist);
+    });
+    
+    $scope.processForm = function(){
+      var postParams = [];
+      //$scope.formData.apilist = JSON.stringify($scope.formData.apilist);
+      for(var i = 0, len = $scope.formData.apilist.length ; i < len ; i++){
+        for(var j = 0, jlen = $scope.formData.apilist[i].innerApi.length ; j < jlen ; j++){
+          if($scope.formData.apilist[i].innerApi[j].checked){
+            postParams.push({
+              url:"/" +$scope.formData.apilist[i].code + "/" + $scope.formData.apilist[i].innerApi[j].url,
+              method:$scope.formData.apilist[i].innerApi[j].method
+            });
+          }
+        }
+      }
+      
+      var authGroup = new AuthGroup({
+        groupname: $scope.formData.name,
+        apilist: JSON.stringify(postParams)
+      });
+      
+      authGroup.$save(function(data){
+        if(data.status == 200){
+          alert('新建成功');
+        }else{
+          alert(data.msg);
+        }
+      }, function(err){
+        console.log(err);
+        alert('系统错误');
+      });
+    }    
 
   }]);
 
@@ -32,8 +114,7 @@ authsControllers.controller('authsCreateUser', ['$http','$scope','AuthUser','Aut
   function($http,$scope,AuthUser,AuthGroup) {
 
     $scope.grouplists = AuthGroup.query();
-    console.log($scope.grouplists);
-    $scope.formData = {username:"周如金",password:"1234454",group:""};
+    $scope.formData = {username:"", password:"", group:""};
 
     $scope.selectChange = function(){
       console.log($scope.formData.group);
@@ -59,7 +140,7 @@ authsControllers.controller('authsCreateUser', ['$http','$scope','AuthUser','Aut
 authsControllers.controller('authsApiList', ['$http','$scope','AuthApi',
   function($http,$scope,AuthApi) {
     
-    $scope.menu = ["不显示","显示"];
+    $scope.menu = ["不显示在菜单","显示在菜单"];
     $scope.lists = AuthApi.query();
     
     $scope.hanldeTree = function(obj){
@@ -67,8 +148,11 @@ authsControllers.controller('authsApiList', ['$http','$scope','AuthApi',
         console.log(env.target);
     }
     
-    $scope.transBoole = function(b){
-      return b=="true"||b==1?1:0;
+    $scope.transBoole = function(b,type){
+      if(type == "number")
+        return b=="true"||b==1?1:0;
+      if(type == "bool")
+        return b=="true"||b==1?true:false;
     }
     
     $scope.delModule = function(index,moduleCode){
@@ -100,6 +184,7 @@ authsControllers.controller('authsApiAdd', ['$http','$scope','AuthApi','$routePa
     };
     
     $scope.delItem = function(index) {
+      alert("aaa");
       vm.splice(index,1);
     };
     
@@ -117,8 +202,11 @@ authsControllers.controller('authsApiAdd', ['$http','$scope','AuthApi','$routePa
     }
 
     $scope.isMenu = [false,true];
-    $scope.transBoole = function(b){
-      return b=="true"||b==1?1:0;
+    $scope.transBoole = function(b,type){
+      if(type == "number")
+        return b=="true"||b==1?1:0;
+      if(type == "bool")
+        return b=="true"||b==1?true:false;
     }
 
     $scope.processForm = function(){

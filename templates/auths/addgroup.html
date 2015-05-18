@@ -6,59 +6,69 @@
 			  <tr>
 			    <td style="width:150px">权限组名称<font color="red">*</font></td>
 			    <td colspan="2">
-			      <input type="text" value="" class="name required" name="groupname" maxlength="20">
+			      <input type="text" value="" class="name required" ng-model="formData.name" name="name" maxlength="20">
 			    </td>
 			  </tr>
 			  <tr>
 			    <td>API权限分配</td>
 			    <td colspan="2">
-				   <style>
-						.api-tree{
-							line-height:30px;
-							padding:20px;
-							border:1px solid #ccc;
-							position:relative;
+					<style>
+						.tree li {
+							  cursor: pointer;
+							  padding-left: 1.3em;
+							  color:#333;
 						}
-						.api-tree .api-module{
-							margin: 10px 0;
+						
+						.tree ul {
+							  list-style: none;
+							  padding-left: 0;
 						}
-						.api-tree .api-module dd{
-							margin-left:2em;
-							color:#333;
-						}
-						.api-tree .api-module .tree-open{
-							background:url(/img/tree-open.png) no-repeat left center;
-							padding-left:20px;
-						}
-						.api-tree .api-module .tree-close{
+						
+					   .tree-open{
 							background:url(/img/tree-close.png) no-repeat left center;
 							padding-left:20px;
 						}
-						.api-tree label{
-							margin:0;
+						
+						.tree-close{
+							background:url(/img/tree-open.png) no-repeat left center;
+							padding-left:20px;
+						}
+						
+						.intermediate {
+							  opacity: 0.3;
 						}
 					</style>
-					<div class="api-tree">
-						<dl class="api-module" ng-repeat="list in lists.data" ng-click="hanldeTree(this)">
-							<dt data="{{list.name}}">
-								<input type="checkbox" />
-								<label class="tree-open">{{list.cn}} {{list.name}}</label>
-							</dt>
-							<dd ng-repeat="data in list.innerApi">
-								<input type="checkbox" />
-								<label class="tree-open">
-									<span>{{data.name}}</span>
-									<span>{{data.url}}</span>
-								</label>
-							</dd>
-						</dl>
+					<div class="tree">
+  
+					  <ul>
+					    <li ng-repeat="api in formData.apilist" ng-model="formData.apilist" ng-class="{closed:vm.tree.isFolded(api)}">
+					      <div>
+					        <input type="checkbox" ng-model="api.checked" ng-checked="api.checked" ng-change="vm.tree.check(api, api.checked)" ng-class="{intermediate: vm.tree.isSemiChecked(api)}"/>
+					          <span ng-click="vm.tree.toggleFold(api)">
+					            <span ng-class="vm.tree.isFolded(api)?'tree-open':'tree-close'"></span>
+					            {{api.model}}
+					          </span>
+					      </div>
+					      <ul ng-class="{hidden: vm.tree.isFolded(api)}">
+					        <li ng-repeat="item in api.items" ng-class="{closed:vm.tree.isFolded(item)}">
+					          <input type="checkbox" ng-clecked="item.checked" ng-model="item.checked" ng-change="vm.tree.check(item, item.checked)" ng-class="{intermediate: vm.tree.isSemiChecked(item)}"/>
+					            <span ng-click="vm.tree.toggleFold(item)">
+					              <span ng-class="vm.tree.isFolded(item)?'tree-open':'tree-close'"></span>
+					              {{item.name}}
+					            </span>
+					        </li>
+					      </ul>
+					    </li>
+					  </ul>
+  
 					</div>
+					
 			    </td>
 			  </tr>
 	          <tr>
 	            <td align="center" style="background-color: #f7f7f7" colspan="3">
 	              <input type="hidden" value="1" id="status" class="checkdom" name="status">
-					<a id="save_file" class="btn btn-danger upBtn" href="#a_opt">保 存</a>
+					<a id="save_file" class="btn btn-danger upBtn" ng-click="processForm()">保 存</a>
 					<a id="submit_file" class="btn btn-danger upBtn" href="/system/auth_group/index#a_opt">取消</a>
 	            </td>
 	          </tr>			  

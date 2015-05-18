@@ -55,7 +55,7 @@
         <div class="main-container-inner">
         <div class="sidebar hidden-print">
             <ul class='nav nav-list'>
-                <li>
+                <li ng-repeat="list in lists">
                     <a class="dropdown-toggle" node="409" href="#"><i class="icon-angle-right"></i><span class="menu-text">活动管理</span><b class="arrow icon-angle-down"></b></a>
                     <ul class='submenu'>
                         <li>
@@ -65,199 +65,6 @@
                         <li>
                             <a node="408" href="#/market/merchant_activity/index">
                                 <i class="icon-angle-right"></i><span class="menu-text">营销活动列表</span></a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a class="dropdown-toggle" node="467" href="#"><i class="icon-angle-right"></i><span class="menu-text">交易管理</span><b class="arrow icon-angle-down"></b></a>
-                    <ul class='submenu'>
-                        <li>
-                            <a node="468" href="#/order/order">
-                                <i class="icon-angle-right"></i><span class="menu-text">交易查询</span></a>
-                        </li>
-                        <li>
-                            <a node="471" href="#/order/order_refund/index">
-                                <i class="icon-angle-right"></i><span class="menu-text">退货退款查询列表</span></a>
-                        </li>
-                        <li>
-                            <a node="473" href="#/order/coupon/index">
-                                <i class="icon-angle-right"></i><span class="menu-text">券查询列表</span></a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a class="dropdown-toggle" node="618" href="#"><i class="icon-angle-right"></i><span class="menu-text">wifi_portal</span><b class="arrow icon-angle-down"></b></a>
-                    <ul class='submenu'>
-                        <li>
-                            <a class="dropdown-toggle" node="619" href="#"><i class="icon-angle-right"></i><span class="menu-text">投放</span><b class="arrow icon-angle-down"></b></a>
-                            <ul class='submenu'>
-                                <li>
-                                    <a node="621" href="#/wifiportal/wifi_portal_ad/input">
-                                        <i class="icon-angle-right"></i><span class="menu-text">新建投放</span></a>
-                                </li>
-                                <li>
-                                    <a node="622" href="#/wifiportal/wifi_portal_ad/index">
-                                        <i class="icon-angle-right"></i><span class="menu-text">投放列表</span></a>
-                                </li>
-                                <li>
-                                    <a node="623" href="#/wifiportal/wifi_portal_ad_config/input">
-                                        <i class="icon-angle-right"></i><span class="menu-text">投放配置</span></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a class="dropdown-toggle" node="620" href="#"><i class="icon-angle-right"></i><span class="menu-text">审核</span><b class="arrow icon-angle-down"></b></a>
-                            <ul class='submenu'>
-                                <li>
-                                    <a node="624" href="#/wifiportal/wifi_portal_ad/review">
-                                        <i class="icon-angle-right"></i><span class="menu-text">审核列表</span></a>
-                                </li>
-                                <li>
-                                    <a node="625" href="#/wifiportal/wifi_portal_ad_config/reviewinput">
-                                        <i class="icon-angle-right"></i><span class="menu-text">审核配置</span></a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a class="dropdown-toggle" node="638" href="#"><i class="icon-angle-right"></i><span class="menu-text">财务管理</span><b class="arrow icon-angle-down"></b></a>
-                    <ul class='submenu'>
-                        <li>
-                            <a class="dropdown-toggle" node="639" href="#"><i class="icon-angle-right"></i><span class="menu-text">积分账户</span><b class="arrow icon-angle-down"></b></a>
-                            <ul class='submenu'>
-                                <li>
-                                    <a node="640" href="#/point/account">
-                                        <i class="icon-angle-right"></i><span class="menu-text">账户总览</span></a>
-                                </li>
-                                <li>
-                                    <a node="641" href="#/point/account_detail">
-                                        <i class="icon-angle-right"></i><span class="menu-text">积分交易明细查询</span></a>
-                                </li>
-                                <li>
-                                    <a node="642" href="#/point/account_month_report">
-                                        <i class="icon-angle-right"></i><span class="menu-text">积分月报</span></a>
-                                </li>
-                                <li>
-                                    <a node="643" href="#/point/account_repay_record">
-                                        <i class="icon-angle-right"></i><span class="menu-text">充值还款记录</span></a>
-                                </li>
-                                <li>
-                                    <a node="644" href="#/point/account_cash_record">
-                                        <i class="icon-angle-right"></i><span class="menu-text">提现记录</span></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a class="dropdown-toggle" node="774" href="#"><i class="icon-angle-right"></i><span class="menu-text">对账管理</span><b class="arrow icon-angle-down"></b></a>
-                            <ul class='submenu'>
-                                <li>
-                                    <a node="776" href="#/Billing/Reconciliation">
-                                        <i class="icon-angle-right"></i><span class="menu-text">对账单</span></a>
-                                </li>
-                                <li>
-                                    <a node="798" href="#/Billing/Settle">
-                                        <i class="icon-angle-right"></i><span class="menu-text">结算查询</span></a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a class="dropdown-toggle" node="668" href="#"><i class="icon-angle-right"></i><span class="menu-text">优惠券管理</span><b class="arrow icon-angle-down"></b></a>
-                    <ul class='submenu'>
-                        <li>
-                            <a node="675" href="#/coupon/coupon/index">
-                                <i class="icon-angle-right"></i><span class="menu-text">优惠券列表</span></a>
-                        </li>
-                        <li>
-                            <a node="676" href="#/coupon/coupon/input">
-                                <i class="icon-angle-right"></i><span class="menu-text">新建优惠券</span></a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a class="dropdown-toggle" node="710" href="#"><i class="icon-angle-right"></i><span class="menu-text">商品管理</span><b class="arrow icon-angle-down"></b></a>
-                    <ul class='submenu'>
-                        <li>
-                            <a node="711" href="#/goods/goods_v2/index">
-                                <i class="icon-angle-right"></i><span class="menu-text">商品管理</span></a>
-                        </li>
-                        <li>
-                            <a node="712" href="#/goods/goods_v2/inputBoot">
-                                <i class="icon-angle-right"></i><span class="menu-text">商品发布</span></a>
-                        </li>
-                        <li>
-                            <a node="718" href="#/goods/goods_verification/index">
-                                <i class="icon-angle-right"></i><span class="menu-text">提货核销列表</span></a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a class="dropdown-toggle" node="713" href="#"><i class="icon-angle-right"></i><span class="menu-text">餐饮管理</span><b class="arrow icon-angle-down"></b></a>
-                    <ul class='submenu'>
-                        <li>
-                            <a node="715" href="#/goods/cuisine/input">
-                                <i class="icon-angle-right"></i><span class="menu-text">菜品发布</span></a>
-                        </li>
-                        <li>
-                            <a node="719" href="#/goods/cuisine_verification/index">
-                                <i class="icon-angle-right"></i><span class="menu-text">点餐订单列表</span></a>
-                        </li>
-                        <li>
-                            <a node="720" href="#/goods/cuisine_verification/view">
-                                <i class="icon-angle-right"></i><span class="menu-text">点餐核销</span></a>
-                        </li>
-                        <li>
-                            <a node="738" href="#/catering/booking/index">
-                                <i class="icon-angle-right"></i><span class="menu-text">预订座位列表</span></a>
-                        </li>
-                        <li>
-                            <a node="791" href="#/goods/cuisine/index">
-                                <i class="icon-angle-right"></i><span class="menu-text">菜品管理</span></a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a node="807" href="#/home/index">
-                        <i class="icon-angle-right"></i><span class="menu-text">首页</span></a>
-                </li>
-                <li>
-                    <a class="dropdown-toggle" node="462" href="#"><i class="icon-angle-right"></i><span class="menu-text">儿童预约</span><b class="arrow icon-angle-down"></b></a>
-                    <ul class='submenu'>
-                        <li>
-                            <a node="463" href="#/kids/bespeak_service_param_val">
-                                <i class="icon-angle-right"></i><span class="menu-text">预约参数列表</span></a>
-                        </li>
-                        <li>
-                            <a node="464" href="#/kids/bespeak_service_param_assemble">
-                                <i class="icon-angle-right"></i><span class="menu-text">预约时间列表</span></a>
-                        </li>
-                        <li>
-                            <a node="465" href="#/kids/bespeak_service_order">
-                                <i class="icon-angle-right"></i><span class="menu-text">预约单列表</span></a>
-                        </li>
-                        <li>
-                            <a node="528" href="#/kids/choice_photo_order">
-                                <i class="icon-angle-right"></i><span class="menu-text">选片单列表</span></a>
-                        </li>
-                        <li>
-                            <a node="542" href="#/kids/choice_photo_gift/index">
-                                <i class="icon-angle-right"></i><span class="menu-text">赠品列表</span></a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a class="dropdown-toggle" node="489" href="#"><i class="icon-angle-right"></i><span class="menu-text">会员管理</span><b class="arrow icon-angle-down"></b></a>
-                    <ul class='submenu'>
-                        <li>
-                            <a class="dropdown-toggle" node="490" href="#"><i class="icon-angle-right"></i><span class="menu-text">会员管理</span><b class="arrow icon-angle-down"></b></a>
-                            <ul class='submenu'>
-                                <li>
-                                    <a node="491" href="#/member/member/index">
-                                        <i class="icon-angle-right"></i><span class="menu-text">会员查询列表</span></a>
-                                </li>
-                            </ul>
                         </li>
                     </ul>
                 </li>
@@ -285,7 +92,7 @@
         </div>
         </div>
     </div>
-    <footer class="ffan-footer">
+    <footer class="ffan-footer" style="text-align:center;margin-top:30px">
         Copyright&nbsp;2013&nbsp;feifan.com&nbsp;ALL&nbsp;Rights&nbsp;Reserved&nbsp;万达信息科技有限公司版权所有&nbsp;京ICP备&nbsp;13032310-1&nbsp;客服热线400-950-6655
     </footer>
     <script src="js/config.js"></script>
@@ -307,6 +114,7 @@
     <!--script src="js/services/couponService.js"></script>
 <script src="js/controllers/couponController.js"></script-->
     <!--autojs-->
+    <script src="js/underscore.js"></script>
     <script src="js/app.js"></script>
     <script src="modules/order/app.js"></script>
     <script>
