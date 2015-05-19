@@ -10,8 +10,9 @@ storeAppFilters.filter('boole',function(){
   };
 });
 
-storeAppFilters.filter('checkmark', function() {
+storeAppFilters.filter('isMenuCn', function() {
   return function(input) {
-    return input ? '\u2713' : '\u2718';
+    return input=="true"||input==1?"显示为菜单":"";
   };
 });
+

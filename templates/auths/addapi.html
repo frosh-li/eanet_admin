@@ -41,7 +41,7 @@
 									   <em style="color:red" ng-show="form_data.url.$error.pattern">首字符必须为/！</em>
 								</td></tr>
 								<tr><td>方法名：</td><td><select ng-model="item.method" ng-options="method as method for method in methods"></select></td></tr>
-								<tr><td>显示为菜单项：</td><td><input type="checkbox" class="isMenu" ng-model="item.isMenu" ng-checked="isMenu[transBoole(item.isMenu)]"/></td></tr>
+								<tr><td>显示为菜单项：</td><td><input type="checkbox" class="isMenu" ng-model="item.isMenu" ng-checked="item.isMenu | boole"/></td></tr>
 							</table>
 						</td>
 						<td style="width:100px;text-align:center"><button style="margin:0 auto;width:30px;float:none" type="button" class="close" ng-click="delItem($index)">&times;</button></td>

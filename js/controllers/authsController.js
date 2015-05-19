@@ -170,18 +170,13 @@ authsControllers.controller('authsGroupAdd', ['$http','$scope','AuthGroup','Auth
 authsControllers.controller('authsApiList', ['$http','$scope','AuthApi',
   function($http,$scope,AuthApi) {
     
-    $scope.menu = ["不显示在菜单","显示在菜单"];
     $scope.lists = AuthApi.query();
     
     $scope.hanldeTree = function(obj){
         var env = window.event || e;
         console.log(env.target);
     }
-    
-    $scope.transBoole = function(b){
-        return b=="true"||b==1?1:0;
-    }
-    
+
     $scope.delModule = function(index,id){
       if(!confirm("确定删除")){
           return false; 
@@ -225,11 +220,6 @@ authsControllers.controller('authsApiAdd', ['$http','$scope','AuthApi','$routePa
           $scope.formData = res.data;
           $scope.formData.apilist = $scope.formData.innerApi;
         });
-    }
-
-    $scope.isMenu = [false,true];
-    $scope.transBoole = function(b){
-        return b=="true"||b==1?1:0;
     }
 
     $scope.processForm = function(){
