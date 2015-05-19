@@ -79,7 +79,6 @@ authsControllers.controller('authsGroupAdd', ['$http','$scope','AuthGroup','Auth
     
     $scope.processForm = function(){
       var postParams = [];
-      //$scope.formData.apilist = JSON.stringify($scope.formData.apilist);
       for(var i = 0, len = $scope.formData.apilist.length ; i < len ; i++){
         for(var j = 0, jlen = $scope.formData.apilist[i].innerApi.length ; j < jlen ; j++){
           if($scope.formData.apilist[i].innerApi[j].checked){
@@ -177,22 +176,19 @@ authsControllers.controller('authsApiList', ['$http','$scope','AuthApi',
 
 authsControllers.controller('authsApiAdd', ['$http','$scope','AuthApi','$routeParams',
   function($http,$scope,AuthApi,$routeParams) {
-    var vm = $scope.vm = [{name:"", url:"", method:"get", isMenu:true}];  
+    $scope.formData = {code : "", model : "", uri : "", apilist : [{name:"", url:"", method:"get", isMenu:true}]};
     
     $scope.addItem = function() {
-      vm.push({name:"", url:"", method:"get", isMenu:true});
+      $scope.formData.apilist.push({name:"", url:"", method:"get", isMenu:true});
     };
     
     $scope.delItem = function(index) {
-      alert("aaa");
-      vm.splice(index,1);
+      $scope.formData.apilist.splice(index,1);
     };
     
     $scope.show_error = true;
     $scope.show_type = 1;
     $scope.methods = ["get","post","put","delete"];
-    
-    $scope.formData = {code : "", model : "", uri : "", apilist : vm};
     
     if($routeParams.code){
         AuthApi.getOne({code : $routeParams.code}).$promise.then(function(res){
