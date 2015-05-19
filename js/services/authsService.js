@@ -14,7 +14,8 @@ authsServices.factory('AuthUser', ['$resource',
       save: {method:'POST', isArray:false},
       update:{method:"PUT", isArray:false}
     });
-  }]);
+  }
+]);
 
 authsServices.factory('AuthGroup', ['$resource',
   function($resource){
@@ -25,7 +26,8 @@ authsServices.factory('AuthGroup', ['$resource',
       save: {method:'POST', isArray:false},
       update:{method:"PUT", isArray:false}
     });
-  }]);
+  }
+]);
 
 authsServices.factory('AuthApi', ['$resource',
   function($resource){
@@ -36,4 +38,5 @@ authsServices.factory('AuthApi', ['$resource',
       save: {method:'POST', isArray:false},
       update:{method:"PUT", isArray:false}
     });
-  }]);
+  }
+]);

@@ -6,25 +6,25 @@ var authsControllers = angular.module('authsControllers', ['ngTable']);
 
 authsControllers.controller('authsUserList', ['$http','$scope','AuthUser',
   function($http,$scope,AuthUser) {
-    $scope.lists = AuthUser.query();
-
-    $scope.delUser = function(id,index){
-      if(!confirm("确定删除")){
-          return false; 
-      }
-      
-      AuthUser.delete({id:id}).$promise.then(function(data){
-          if(data.status == 200){
-              alert("操作成功！ ");
-              $scope.lists.data.splice(index,1);
-          }else{
-            alert(data.msg);
+      $scope.lists = AuthUser.query();
+  
+      $scope.delUser = function(id,index){
+          if(!confirm("确定删除")){
+              return false; 
           }
-      }, function(err){
-          console.log(err);
-          alert("系统错误！ ");
-      });
-    }
+          
+          AuthUser.delete({id:id}).$promise.then(function(data){
+              if(data.status == 200){
+                  alert("操作成功！ ");
+                  $scope.lists.data.splice(index,1);
+              }else{
+                  alert(data.msg);
+              }
+          }, function(err){
+              console.log(err);
+              alert("系统错误！ ");
+          });
+      }
   }
   
 ]);
@@ -178,11 +178,8 @@ authsControllers.controller('authsApiList', ['$http','$scope','AuthApi',
         console.log(env.target);
     }
     
-    $scope.transBoole = function(b,type){
-      if(type == "number")
+    $scope.transBoole = function(b){
         return b=="true"||b==1?1:0;
-      if(type == "bool")
-        return b=="true"||b==1?true:false;
     }
     
     $scope.delModule = function(index,id){
@@ -231,11 +228,8 @@ authsControllers.controller('authsApiAdd', ['$http','$scope','AuthApi','$routePa
     }
 
     $scope.isMenu = [false,true];
-    $scope.transBoole = function(b,type){
-      if(type == "number")
+    $scope.transBoole = function(b){
         return b=="true"||b==1?1:0;
-      if(type == "bool")
-        return b=="true"||b==1?true:false;
     }
 
     $scope.processForm = function(){
