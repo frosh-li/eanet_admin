@@ -1,0 +1,15 @@
+<h3>权限组列表 <a href="#/auths/addgroup" style="margin-left:20px">新增权限组</a></h3>
+<table ng-table class="table table-bordered ng-table">
+<tr>
+	<th>权限组ID</th>
+	<th>权限组名称</th>
+	<th>权限列表</th>
+	<th>操作</th>
+</tr>
+<tr ng-repeat="list in lists.data">
+	<td>{{list._id}}</td>
+	<td>{{list.name}}</td>
+	<td>{{list.apilist}}</td>
+	<td><span style="color:green;cursor:pointer" ng-click="delGroup(list._id,$index)">删除</span> <a href="#/auths/editgroup/{{list._id}}">查看</a></td>
+</tr>
+</table>

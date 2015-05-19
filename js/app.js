@@ -248,30 +248,34 @@ storeApp.config(['$routeProvider','$httpProvider',
         controller: router.name+router.subName+"Create"
       })
     });
-      $routeProvider.when('/auths/newuser', {
-        templateUrl:'templates/auths/newuser.html',
-        controller: 'authsCreateUser'
-      }).when('/auths/group',{
-        templateUrl:'templates/auths/group.html',
+      $routeProvider
+      .when('/auths/listuser',{
+        templateUrl:'templates/auths/listuser.html',
+        controller:'authsUserList'
+      }).when('/auths/adduser', {
+        templateUrl:'templates/auths/adduser.html',
+        controller: 'authsUserAdd'
+      }).when('/auths/edituser/:id',{
+        templateUrl:'templates/auths/adduser.html',
+        controller: 'authsUserAdd'
+      }).when('/auths/listgroup',{
+        templateUrl:'templates/auths/listgroup.html',
         controller:'authsGroupList'
       }).when('/auths/addgroup',{
         templateUrl:'templates/auths/addgroup.html',
         controller:'authsGroupAdd'
-      }).when('/auths/users',{
-        templateUrl:'templates/auths/users.html',
-        controller:'authsUser'
-      }).when('/auths/apis',{
-        templateUrl:'templates/auths/apis.html',
+      }).when('/auths/editgroup/:id',{
+        templateUrl:'templates/auths/addgroup.html',
+        controller:'authsGroupAdd'
+      }).when('/auths/listapi',{
+        templateUrl:'templates/auths/listapi.html',
         controller:'authsApiList'
       }).when('/auths/addapi',{
         templateUrl:'templates/auths/addapi.html',
         controller:'authsApiAdd'
-      }).when('/auths/addapi/:code',{
+      }).when('/auths/editapi/:id',{
         templateUrl:'templates/auths/addapi.html',
         controller:'authsApiAdd'
-      }).when('/auths/addgroup/:name',{
-        templateUrl:'templates/auths/addgroup.html',
-        controller:'authsGroupAdd'
       })
 
       $httpProvider.defaults.transformRequest = function(data){
