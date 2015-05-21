@@ -37,7 +37,7 @@
 				  					   <em style="color:red" ng-show="(form_data.name.$dirty || show_type == 1) && form_data.name.$error.pattern">请输入中文！</em>
 					  			</td></tr>
 								<tr><td>URL：</td><td>
-									   <input type="text" value="" ng-pattern="/^[/]{1}[A-Za-z]+$/" class="url required" placeholder="/input" ng-model="item.url" name="url" maxlength="20">
+									   <input type="text" value="" ng-pattern="/^[/]{1}[A-Za-z0-9/]+$/" class="url required" placeholder="/input" ng-model="item.url" name="url" maxlength="20">
 									   <em style="color:red" ng-show="form_data.url.$error.pattern">首字符必须为/！</em>
 								</td></tr>
 								<tr><td>方法名：</td><td><select ng-model="item.method" ng-options="method as method for method in methods"></select></td></tr>
