@@ -73,6 +73,17 @@
                     </ul>
                 </li>
                 <li>
+                    <a class="dropdown-toggle" node="489" href="#"><i class="icon-angle-right"></i><span class="menu-text">交易管理</span><b class="arrow icon-angle-down"></b></a>
+                    <ul class='submenu'>
+                        <li>
+                            <a node="490" href="#/order/order"><i class="icon-angle-right"></i><span class="menu-text">交易查询</span><b class="arrow icon-angle-down"></b></a>
+                            <a  node="490" href="#/order/refuse"><i class="icon-angle-right"></i><span class="menu-text">退货退款查询</span><b class="arrow icon-angle-down"></b></a>
+                            <a node="490" href="#/order/coupon"><i class="icon-angle-right"></i><span class="menu-text">劵查询</span><b class="arrow icon-angle-down"></b></a>
+
+                        </li>
+                    </ul>
+                </li>
+                <li>
                     <a class="dropdown-toggle" node="489" href="#"><i class="icon-angle-right"></i><span class="menu-text">权限管理</span><b class="arrow icon-angle-down"></b></a>
                     <ul class='submenu'>
                         <li>
@@ -110,17 +121,21 @@
     <script src="js/filters.js"></script>
     <script src="js/directives.js"></script>
     <script src="js/factories.js"></script>
-    <!--script src="js/controllers/authController.js"></script-->
 
     <!--以下代码为JS自动生成-->
     <script src="js/services/authsService.js"></script>
     <script src="js/controllers/authsController.js"></script>
-    <!--script src="js/services/couponService.js"></script>
-<script src="js/controllers/couponController.js"></script-->
     <!--autojs-->
     <script src="js/underscore.js"></script>
     <script src="js/app.js"></script>
-    <script src="modules/order/app.js"></script>
+    <script>
+    var modules = JSON.parse(localStorage.getItem('modules'));
+    for(var  i = 0 ; i < modules.length ; i ++){
+        console.log(modules[i]);
+        document.write('<script src="modules\/'+modules[i]+'\/app.js"><\/script>');
+    }
+    </script>
+
     <script>
         $("div.module a h2").click(function() {
             var current = $(this).parent().parent().find("h2");
