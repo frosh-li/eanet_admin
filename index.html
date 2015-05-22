@@ -33,9 +33,10 @@
 
         }
     </style>
+
 </head>
 
-<body>
+<body ng-controller = "mainController">
     <div id="ajaxLoading" style="display:none;">Data Loading, Please Just Wait.....</div>
     <div class="navbar navbar-default headerBox merchantHead" id="navbar">
 
@@ -61,7 +62,7 @@
         </div>
 
         <div class="pull-right leStation">
-      <div>商户超级管理员&nbsp;&nbsp;<span>李俊良6</span></div>
+      <div>{{role}}&nbsp;&nbsp;<span>{{username}}</span></div>
           <a href="/system/sendletter"><i class="letterIcon"></i>站内信<em id="letter_num"></em></a>
           <a href="/system/user/password">修改密码<em id="letter_num"></em></a>
         </div>
@@ -123,6 +124,7 @@
     <footer class="ffan-footer" style="text-align:center;margin-top:30px">
         Copyright&nbsp;2013&nbsp;feifan.com&nbsp;ALL&nbsp;Rights&nbsp;Reserved&nbsp;万达信息科技有限公司版权所有&nbsp;京ICP备&nbsp;13032310-1&nbsp;客服热线400-950-6655
     </footer>
+
     <script src="js/config.js"></script>
     <script src="js/script.min.js"></script>
     <script src="js/bower_components/jquery/dist/jquery.js"></script>
@@ -139,6 +141,7 @@
     <!--以下代码为JS自动生成-->
     <script src="js/services/authsService.js"></script>
     <script src="js/controllers/authsController.js"></script>
+    <script src="js/controllers/mainController.js"></script>
     <!--autojs-->
     <script src="js/underscore.js"></script>
     <script src="js/app.js"></script>
@@ -149,7 +152,6 @@
         document.write('<script src="modules\/'+modules[i]+'\/app.js"><\/script>');
     }
     </script>
-
     <script>
         $("div.module a h2").click(function() {
             var current = $(this).parent().parent().find("h2");

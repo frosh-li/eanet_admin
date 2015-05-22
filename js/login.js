@@ -17,6 +17,7 @@ var login = function(){
                 localStorage.clear();
                 $("#tips").html(data.msg).show().fadeOut(4000).html("");
             }else{
+                localStorage.setItem('uinfo', JSON.stringify(data.data.user));
                 localStorage.setItem('modules', JSON.stringify(data.data.modules));
                 console.log('登陆成功，即将跳转');
                 window.location="./";
