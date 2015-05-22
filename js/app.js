@@ -8,7 +8,8 @@ var storeApp = angular.module('storeApp', [
     'authsControllers',
     'storeAppFilters',
     'storeAppFactories',
-    'mainControllers'
+    'mainControllers',
+    'ngTasty'
     /*detectedControllerService*/
     //'couponServices',
     //'couponControllers'
