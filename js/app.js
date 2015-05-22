@@ -16,7 +16,7 @@ var storeApp = angular.module('storeApp', [
 
 storeApp.config(['$routeProvider','$httpProvider',
   function($routeProvider,$httpProvider) {
-    
+
     [
       /*detectedRouters*/
       {name: 'coupon', subName:'Coupon'}
@@ -32,7 +32,7 @@ storeApp.config(['$routeProvider','$httpProvider',
                 controller: router.name+router.subName+"Create"
             })
     });
-    
+
     $routeProvider
       .when('/auths/listuser',{
         templateUrl:'templates/auths/listuser.html',
@@ -73,7 +73,7 @@ storeApp.config(['$routeProvider','$httpProvider',
           return ret.join("&");
         }
       };
-      
+
       $httpProvider.interceptors.push(function($q){
         return {
           'request': function(config){
@@ -88,18 +88,18 @@ storeApp.config(['$routeProvider','$httpProvider',
             $httpProvider.defaults.headers.common['X-UID'] = localStorage.getItem('uid');
             */
             if(config.url.indexOf('.html') < 0 && config.url.indexOf('refreshtoken') < 0){
-              $("#ajaxLoading").html('Data Loading, Please Just Wait.....').fadeIn(500);
+              $("#ajaxLoading").html('数据加载中，请稍等').fadeIn(500);
             }
             return config;
           }
         }
       });
-      
+
       $httpProvider.responseInterceptors.push(function($q){
         return function(promise){
           return promise.then(function(response){
             if(document.getElementById('ajaxLoading').style.display!='none'){
-              $("#ajaxLoading").html('Data Request Finished!').fadeOut(4000);
+              $("#ajaxLoading").html('数据加载完成').fadeOut(2000);
             }
             console.log(response);
             if(response.data && response.data.status == 302){
