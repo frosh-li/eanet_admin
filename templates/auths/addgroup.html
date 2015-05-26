@@ -5,23 +5,33 @@
 	  		<tbody>
 			  <tr>
 			    <td style="width:150px">权限组名称<font color="red">*</font></td>
-			    <td colspan="2">
-			      <input type="text" value="" class="name required" ng-model="formData.name" name="name" maxlength="20">
+			    <td colspan="2" err-Msg ng-model="errMsg">
+			      	<input type="text" value="" class="name" Not-Empty Is-Chinese ng-model="formData.name" name="name" maxlength="20">
+				  	<em class="error" ng-show="!form_data.name.$pristine && form_data.name.$invalid">{{errMsg}}</em>
 			    </td>
 			  </tr>
 			  <tr>
 			    <td>API权限分配</td>
 			    <td colspan="2">
 					<style>
-						.tree li {
-							  cursor: pointer;
-							  padding-left: 1.3em;
-							  color:#333;
+						.tree{
+							padding-left: 0px;
+						}
+						
+						.tree:before{
+							display: none
 						}
 						
 						.tree ul {
-							  list-style: none;
-							  padding-left: 0;
+							margin: 0px;
+							list-style: none;
+							padding-left: 0;
+						}
+						
+						.tree li {
+							cursor: pointer;
+							padding-left: 1.3em;
+							color:#333;
 						}
 						
 					   .tree-open{
@@ -37,6 +47,7 @@
 						.intermediate {
 							  opacity: 0.3;
 						}
+						
 					</style>
 					<div class="tree">
   
@@ -68,7 +79,7 @@
 	          <tr>
 	            <td align="center" style="background-color: #f7f7f7" colspan="3">
 	              <input type="hidden" value="1" id="status" class="checkdom" name="status">
-					<a id="save_file" class="btn btn-danger upBtn" ng-click="processForm()">保 存</a>
+					<a id="save_file" class="btn btn-danger upBtn" ng-click="processForm()" ng-disabled="form_data.$invalid">保 存</a>
 					<a id="submit_file" class="btn btn-danger upBtn" href="/system/auth_group/index#a_opt">取消</a>
 	            </td>
 	          </tr>			  

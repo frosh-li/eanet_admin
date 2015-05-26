@@ -71,5 +71,6 @@ createValidate(storeAppDirectivies, "isEnglish", "只能输入数字和英文字
 createValidate(storeAppDirectivies, "isChinese", "只能输入中文字符！", /^[\u0391-\uFFE5]+$/);
 createValidate(storeAppDirectivies, "isEmail", "请输入正确格式的EMAIL！", /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/);
 createValidate(storeAppDirectivies, "notEmpty", "必填项！", false, function(value,ctrls){return value;});
+createValidate(storeAppDirectivies, "startFxg", "首字符必须为/！", /^[/]{1}[A-Za-z0-9_/]+$/);
 
 
