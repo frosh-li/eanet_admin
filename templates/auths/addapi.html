@@ -1,3 +1,7 @@
+<style>
+  .error{color:red}
+</style>
+
 <div>
 	<h2 class="boxTitle">API注册</h2>
 	<form class="form-horizontal showcase-form" role="form" id="form_data" method="post" name="form_data" novalidate="">
@@ -5,18 +9,16 @@
 	  		<tbody>
 			  <tr>
 			    <td style="width:150px">模块标识<font color="red">*</font></td>
-			    <td colspan="2">
-			      <input type="text" value="" class="code required" required="" ng-pattern="/^[A-Za-z]{1}[0-9A-Za-z_]{2,29}$/" ng-model="formData.code" name="code" placeholder="请输入英文标识" maxlength="20">
-				  <em style="color:red" ng-show="(form_data.code.$dirty || show_type == 1) && form_data.code.$error.pattern">请输入最少3位英文字符！</em>
-				  <em style="color:red" ng-show="(form_data.code.$dirty || show_type == 1) && form_data.code.$error.required">必填项！</em>
+			    <td colspan="2" err-Msg ng-model="errMsg">
+			      <input type="text" value="" class="code left" Not-Empty Is-English ng-model="formData.code" name="code" placeholder="请输入英文标识">
+				  <em class="error" ng-show="!form_data.code.$pristine && form_data.code.$invalid">{{errMsg}}</em>
 			    </td>
 			  </tr>
 			  <tr>
 			    <td style="width:150px">模块名称<font color="red">*</font></td>
-			    <td colspan="2">
-			      <input type="text" value="" class="model" required="" ng-pattern="/^[\u0391-\uFFE5]+$/" ng-model="formData.model" name="model" placeholder="请输入中文名称" maxlength="20">
-				  <em style="color:red" ng-show="form_data.model.$error.pattern">请输入中文！</em>
-				  <em style="color:red" ng-show="(form_data.model.$dirty || show_type == 1) && form_data.model.$error.required">必填项！</em>
+			    <td colspan="2" err-Msg ng-model="errMsg">
+			      <input type="text" value="" class="model" Not-Empty Is-Chinese ng-model="formData.model" name="model" placeholder="请输入中文名称">
+				  <em class="error" ng-show="!form_data.model.$pristine && form_data.model.$invalid">{{errMsg}}</em>
 			    </td>
 			  </tr>
 			  <tr>
@@ -31,10 +33,10 @@
 					  <tr>
 						<td style="width:150px">子模块<font color="red">*</font></td>
 						<td>
-					        <table style="height:130px">
-						       	<tr><td>名称：</td><td>
-									   <input type="text" value="" ng-pattern="/^[\u0391-\uFFE5]+$/" class="name required" placeholder="请输入中文名称" ng-model="item.name" name="name" maxlength="20">
-				  					   <em style="color:red" ng-show="(form_data.name.$dirty || show_type == 1) && form_data.name.$error.pattern">请输入中文！</em>
+					        <table style="height:130px;min-width: 420px;">
+						       	<tr><td>名称：</td><td err-Msg ng-model="errMsg">
+									   <input type="text" value="" Not-Empty Is-Chinese class="name required" placeholder="请输入中文名称" ng-model="item.name" name="name[]">
+									   <em class="error">{{errMsg}}</em>
 					  			</td></tr>
 								<tr><td>URL：</td><td>
 									   <input type="text" value="" ng-pattern="/^[/]{1}[A-Za-z0-9_/]+$/" class="url required" placeholder="/input" ng-model="item.url" name="url" maxlength="20">
@@ -53,7 +55,7 @@
 	          <tr>
 	            <td align="center" style="background-color: #f7f7f7" colspan="3">
 	              <input type="hidden" value="1" id="status" class="checkdom" name="status">
-					<a id="save_file" class="btn btn-danger upBtn" ng-click="processForm()">保 存</a>
+					<a id="save_file" class="btn btn-danger upBtn" ng-click="processForm()" ng-disabled="form_data.$invalid">保 存</a>
 					<a id="submit_file" class="btn btn-danger upBtn" href="/system/auth_group/index#a_opt">取消</a>
 	            </td>
 	          </tr>

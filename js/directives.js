@@ -20,11 +20,11 @@ function createValidate(mod, name, msg, pat, fn){
                   ctrls[1].$setValidity(name, validity);
     
                   if(!validity){
-                      ctrls[0].errMsg(msg);
+                      ctrls[0].errMsg(msg,1);
+                  }else{
+                      ctrls[0].errMsg(msg,0);
                   }
                   
-    console.log(validity);
-    
                   return validity ? value : undefined;
               };
               
@@ -33,6 +33,12 @@ function createValidate(mod, name, msg, pat, fn){
           }
       };
     }]);    
+}
+
+function array_element_remove(arr, el){
+    if(arr.length > 0 && arr.indexOf(el) >= 0){
+        arr.splice(arr.indexOf(el), 1);
+    }
 }
 
 /* Directives */
@@ -44,40 +50,26 @@ storeAppDirectivies.directive('errMsg', [function () {
       restrict: "A",
       scope: true,
       controller: function($scope){
-          $scope.errMsg = "格式不正确！";
-          this.errMsg = function(errmsg){
-              $scope.errMsg = errmsg;
+          $scope.errMsg = "";
+          $scope.errMsgArray = [];
+          this.errMsg = function(errmsg,boole){
+              if(boole == 1 && $scope.errMsgArray.indexOf(errmsg) < 0){
+                  $scope.errMsgArray.push(errmsg);
+              }
+              if(boole == 0 && $scope.errMsgArray.indexOf(errmsg) >= 0){
+                  array_element_remove($scope.errMsgArray, errmsg);
+              }
+              $scope.errMsg = $scope.errMsgArray.join("");
           }
       }
     };
 }]);
 
-createValidate(storeAppDirectivies, "isChinese", "只能输入中文！", /^[\u0391-\uFFE5]+$/);
+createValidate(storeAppDirectivies, "isRepeat", "两次输入密码不相同！", false, function(value,ctrls){ return ctrls[1].$isEmpty(value) ||  value == $scope.formData.password ; });
+  
+createValidate(storeAppDirectivies, "isEnglish", "只能输入数字和英文字符！", /^[a-zA-Z0-9]+$/);
+createValidate(storeAppDirectivies, "isChinese", "只能输入中文字符！", /^[\u0391-\uFFE5]+$/);
 createValidate(storeAppDirectivies, "isEmail", "请输入正确格式的EMAIL！", /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/);
 createValidate(storeAppDirectivies, "notEmpty", "必填项！", false, function(value,ctrls){return value;});
 
-storeAppDirectivies.directive('isRepeat', [function () {
-  return {
-      restrict: "A",
-      require: ["?^errMsg", "ngModel"],
-      scope: true,
-      link: function ($scope, element, attr, ctrls) {
-          if (ctrls) {
-              var regexp = /^[a-zA-Z0-9]+$/;
-          }
-          var customValidator = function (value) {
-              var validity = ctrls[1].$isEmpty(value) ||  value == $scope.formData.password ;
-              ctrls[1].$setValidity("isRepeat", validity);
-
-              if(!validity){
-                  ctrls[0].errMsg("两次密码不同！");
-              }
-
-              return validity ? value : undefined;
-          };
-          ctrls[1].$formatters.push(customValidator);
-          ctrls[1].$parsers.push(customValidator);
-      }
-  };
-}]);
 

@@ -147,11 +147,13 @@
     <script src="js/underscore.js"></script>
     <script src="js/app.js"></script>
     <script>
-    var modules = JSON.parse(localStorage.getItem('modules'));
-    for(var  i = 0 ; i < modules.length ; i ++){
-        console.log(modules[i]);
-        document.write('<script src="modules\/'+modules[i]+'\/app.js"><\/script>');
-    }
+        if(localStorage.getItem('modules')){
+            var modules = JSON.parse(localStorage.getItem('modules'));
+            for(var  i = 0 ; i < modules.length ; i ++){
+                console.log(modules[i]);
+                document.write('<script src="modules\/'+modules[i]+'\/app.js"><\/script>');
+            }
+        }
     </script>
     <script>
         $("div.module a h2").click(function() {
