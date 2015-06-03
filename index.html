@@ -74,27 +74,11 @@
         <div class="main-container-inner">
         <div class="sidebar hidden-print">
             <ul class='nav nav-list'>
-                <li ng-repeat="list in lists">
-                    <a class="dropdown-toggle" node="409" href="#"><i class="icon-angle-right"></i><span class="menu-text">活动管理</span><b class="arrow icon-angle-down"></b></a>
+                <li ng-repeat="list in lists.data">
+                    <a class="dropdown-toggle" node="409" href="#"><i class="icon-angle-right"></i><span class="menu-text">{{list.model}}</span><b class="arrow icon-angle-down"></b></a>
                     <ul class='submenu'>
                         <li>
-                            <a node="407" href="#/market/merchant_activity/input">
-                                <i class="icon-angle-right"></i><span class="menu-text">申请营销活动</span></a>
-                        </li>
-                        <li>
-                            <a node="408" href="#/market/merchant_activity/index">
-                                <i class="icon-angle-right"></i><span class="menu-text">营销活动列表</span></a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a class="dropdown-toggle" node="489" href="#"><i class="icon-angle-right"></i><span class="menu-text">交易管理</span><b class="arrow icon-angle-down"></b></a>
-                    <ul class='submenu'>
-                        <li>
-                            <a node="490" href="#/order/order"><i class="icon-angle-right"></i><span class="menu-text">交易查询</span><b class="arrow icon-angle-down"></b></a>
-                            <a  node="490" href="#/order/refuse"><i class="icon-angle-right"></i><span class="menu-text">退货退款查询</span><b class="arrow icon-angle-down"></b></a>
-                            <a node="490" href="#/order/coupon"><i class="icon-angle-right"></i><span class="menu-text">劵查询</span><b class="arrow icon-angle-down"></b></a>
-
+                            <a ng-repeat="api in list.innerApi" ng-href="#/{{list.code}}{{api.url}}" node="407"><i class="icon-angle-right"></i><span class="menu-text">{{api.name}}</span></a>
                         </li>
                     </ul>
                 </li>
@@ -157,7 +141,9 @@
         }
     </script>
     <script>
-        $("div.module a h2").click(function() {
+        
+    $(function() {
+        $("body").on("click","div.module a h2",function() {
             var current = $(this).parent().parent().find("h2");
             var selected = "selected";
             var expanded = "expaned";
@@ -168,7 +154,7 @@
             current.toggleClass(collapse);
             current.addClass(selected);
         });
-        $('.module a:first-child').click(function() {
+        $('body').on("click",'.module a:first-child',function() {
             var self = this;
             $(this).parent().toggleClass('expanded');
             if ($(this).attr('loaded') == 0) {
@@ -190,11 +176,11 @@
                 })
             }
         });
-        (function() {
-            $('.dropdown-toggle').click(function(){
-                $(this).next().toggle();
-            });
-        })();
+
+        $('body').on("click",'.dropdown-toggle',function(){
+            $(this).next().toggle();
+        });
+    });
     </script>
 </body>
 

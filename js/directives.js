@@ -7,15 +7,13 @@ function createValidate(mod, name, msg, pat, fn, args){
           restrict: "A",
           require: ["?^errMsg", "ngModel"],
           scope: true,
-          controller: function(){
-              
+          controller: function($scope){
           },
           link: function (scope, element, attr, ctrls) {
               var regexp = pat;
               var val = 0;
-              var fnObj = {errMsg:"", inputed:0, max:attr[name]};
+              var fnObj = {errMsg:"", inputed:0, max:attr[name]}; //用于设置错误显示信息
               
-              console.log(fnObj);
               ctrls[0].setInput( fnObj.inputed );
               ctrls[0].setMax( fnObj.max );
                           
@@ -57,6 +55,7 @@ function createValidate(mod, name, msg, pat, fn, args){
 
 var storeAppDirectivies = angular.module("storeAppDirectivies",[]);
 
+//错误信息显示指令必须写在外层
 storeAppDirectivies.directive('errMsg', [function () {
     return {
       restrict: "A",
