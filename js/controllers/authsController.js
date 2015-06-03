@@ -42,7 +42,7 @@ authsControllers.controller('authsUserAdd', ['$http','$scope','AuthUser','AuthGr
     }
 
     $scope.selectChange = function(){
-      console.log($scope.formData.group);
+        console.log($scope.formData.group);
     }
 
     $scope.processForm = function(){
@@ -130,7 +130,7 @@ authsControllers.controller('authsGroupAdd', ['$http','$scope','AuthGroup','Auth
         }
         
         vm.tree = new TreeData($scope.formData.apilist);
-    });
+    });  
     
     $scope.processForm = function(){
       var postParams = [];
@@ -214,6 +214,7 @@ authsControllers.controller('authsApiAdd', ['$http','$scope','AuthApi','$routePa
     $scope.show_error = true;
     $scope.show_type = 1;
     $scope.methods = ["get","post","put","delete"];
+    $scope.title = "API注册";
     
     if($routeParams.id){
         AuthApi.getOne({id : $routeParams.id}).$promise.then(function(res){
@@ -221,6 +222,23 @@ authsControllers.controller('authsApiAdd', ['$http','$scope','AuthApi','$routePa
           $scope.formData.apilist = $scope.formData.innerApi;
         });
     }
+    
+    $scope.getPos = function(e){
+        var pos = {url:$location.$$url, title:$scope.title, x:event.x, y:event.y}; 
+        var localPos = [];
+        
+        if($routeParams.heatmap)
+            return false;
+        
+        if(JSON.parse(localStorage.getItem($location.$$url)).length > 0){
+            localPos = JSON.parse(localStorage.getItem($location.$$url));
+            localPos.push(pos); 
+        }else{
+            localPos = [pos];
+        }
+        localStorage.setItem($location.$$url,JSON.stringify(localPos));
+//        console.log(JSON.parse(localStorage.getItem($location.$$url)));
+    }  
 
     $scope.processForm = function(){
       $scope.formData.innerApi = JSON.stringify($scope.formData.apilist);
@@ -236,7 +254,7 @@ authsControllers.controller('authsApiAdd', ['$http','$scope','AuthApi','$routePa
         console.log(err);
         alert('系统错误')
       });
-    }    
+    }
 
   }
   

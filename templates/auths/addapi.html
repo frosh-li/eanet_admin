@@ -2,7 +2,7 @@
   .error{color:red}
 </style>
 
-<div>
+<div ng-click="getPos(event)">
 	<h2 class="boxTitle">API注册</h2>
 	<form class="form-horizontal showcase-form" role="form" id="form_data" method="post" name="form_data" novalidate="">
 		<table class="table table-bordered comTable">
@@ -10,8 +10,8 @@
 			  <tr>
 			    <td style="width:150px">模块标识<font color="red">*</font></td>
 			    <td colspan="2" err-Msg ng-model="errMsg">
-			      <input type="text" value="" class="code left" Not-Empty Is-English ng-model="formData.code" name="code" placeholder="请输入英文标识">
-				  <em class="error" ng-show="!form_data.code.$pristine && form_data.code.$invalid">{{errMsg}}</em>
+			      <input type="text" value="" class="code left" Not-Empty Is-English Min-Length="2" Max-Length="20" ng-model="formData.code" name="code" placeholder="请输入英文标识">
+				  <em class="error" ng-show="!form_data.code.$pristine && form_data.code.$invalid">{{errMsg}}</em>{{inputed}}/{{max}}
 			    </td>
 			  </tr>
 			  <tr>
@@ -35,8 +35,8 @@
 						<td>
 					        <table style="height:130px;min-width: 420px;">
 						       	<tr><td>名称：</td><td err-Msg ng-model="errMsg">
-									   <input type="text" value="" Not-Empty Is-Chinese class="name required" placeholder="请输入中文名称" ng-model="item.name" name="name[]">
-									   <em class="error">{{errMsg}}</em>
+									   <input type="text" value="" Not-Empty Is-Chinese Min-Length="3" Max-Length="30" class="name required" placeholder="请输入中文名称" ng-model="item.name" name="name[]">
+									   <em class="error">{{errMsg}}</em>{{inputed}}/{{max}}
 					  			</td></tr>
 								<tr><td>URL：</td><td err-Msg ng-model="errMsg">
 									   <input type="text" value="" Not-Empty Start-Fxg ng-pattern="/^[/]{1}[A-Za-z0-9_/]+$/" class="url required" placeholder="/input" ng-model="item.url" name="url" maxlength="20">
@@ -51,12 +51,12 @@
 					</table>
 				</td>
 			  </tr>
-			  <tr><td colspan=2><button class="btn btn-default mmm" ng-click="addItem()">添加一条</button></td></tr>
+			  <tr><td colspan=2><button class="btn btn-default" ng-click="addItem()">添加一条</button></td></tr>
 	          <tr>
 	            <td align="center" style="background-color: #f7f7f7" colspan="3">
 	              <input type="hidden" value="1" id="status" class="checkdom" name="status">
 					<a id="save_file" class="btn btn-danger upBtn" ng-click="processForm()" ng-disabled="form_data.$invalid">保 存</a>
-					<a id="submit_file" class="btn btn-danger upBtn" href="/system/auth_group/index#a_opt">取消</a>
+					<a id="submit_file" class="btn btn-danger upBtn" ng-click="cancel()">取消</a>
 	            </td>
 	          </tr>
 			  <tr style="display:none;" id="error_tr"><td align="center" id="error_td" style="background-color: #f7f7f7" colspan="3"></td></tr>
@@ -64,3 +64,4 @@
 		</table>
 	</form>
  </div>
+
