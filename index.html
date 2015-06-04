@@ -135,7 +135,6 @@
         if(localStorage.getItem('modules')){
             var modules = JSON.parse(localStorage.getItem('modules'));
             for(var  i = 0 ; i < modules.length ; i ++){
-                console.log(modules[i]);
                 document.write('<script src="modules\/'+modules[i]+'\/app.js"><\/script>');
             }
         }

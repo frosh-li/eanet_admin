@@ -68,13 +68,11 @@ authsControllers.controller('authsUserAdd', ['$http','$scope','AuthUser','AuthGr
 authsControllers.controller('authsGroupList', ['$http','$scope','AuthGroup',
   function($http,$scope,AuthGroup) {
     $scope.lists = AuthGroup.query();
-    console.log($scope.lists);
     
     $scope.delGroup = function(id,index){
       if(!confirm("确定删除")){
           return false; 
       }
-      console.log(id,index);
       AuthGroup.delete({id:id}).$promise.then(function(data){
           if(data.status == 200){
               alert("操作成功！ ");
@@ -170,24 +168,24 @@ authsControllers.controller('authsGroupAdd', ['$http','$scope','AuthGroup','Auth
 authsControllers.controller('authsApiList', ['$http','$scope','AuthApi',
   function($http,$scope,AuthApi) {
     
+    console.log($scope);
+    
     $scope.lists = AuthApi.query();
     
-    $scope.hanldeTree = function(obj){
+    $scope.handleTree = function(obj){
         var env = window.event || e;
-        console.log(env.target);
     }
 
     $scope.delModule = function(index,id){
       if(!confirm("确定删除")){
           return false; 
       }
-      console.log(id);
       AuthApi.delete({id:id}).$promise.then(function(data){
           if(data.status == 200){
               alert("操作成功！ ");
               $scope.lists.data.splice(index,1);
           }else{
-            alert(data.msg);
+              alert(data.msg);
           }
       }, function(err){
           console.log(err);
@@ -237,7 +235,6 @@ authsControllers.controller('authsApiAdd', ['$http','$scope','AuthApi','$routePa
             localPos = [pos];
         }
         localStorage.setItem($location.$$url,JSON.stringify(localPos));
-//        console.log(JSON.parse(localStorage.getItem($location.$$url)));
     }  
 
     $scope.processForm = function(){
