@@ -4,9 +4,9 @@
 
 var mainControllers = angular.module('mainControllers', ['ngTable','ngResource']);
 
-mainControllers.controller('mainController', ['$http','$scope','AuthApi',
-  function($http,$scope,AuthApi) {
-      $scope.lists = AuthApi.query();
+mainControllers.controller('mainController', ['$http','$scope','AuthMenu',
+  function($http,$scope,AuthMenu) {
+      $scope.lists = AuthMenu.query();
       var uinfo = {username:"",group:"",uid:""};
       if(localStorage.getItem('uinfo') && localStorage.getItem('uinfo') != "undefined"){
           uinfo = JSON.parse(localStorage.getItem('uinfo'));
