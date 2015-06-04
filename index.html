@@ -78,7 +78,7 @@
                     <a class="dropdown-toggle" node="409" href="#"><i class="icon-angle-right"></i><span class="menu-text">{{list.model}}</span><b class="arrow icon-angle-down"></b></a>
                     <ul class='submenu'>
                         <li>
-                            <a ng-repeat="api in list.innerApi" ng-href="#/{{list.code}}{{api.url}}" node="407"><i class="icon-angle-right"></i><span class="menu-text">{{api.name}}</span></a>
+                            <a ng-repeat="api in list.innerApi" ng-if="api.isMenu=='true'" ng-href="#/{{list.code}}{{api.url}}" node="407"><i class="icon-angle-right"></i><span class="menu-text">{{api.name}}</span></a>
                         </li>
                     </ul>
                 </li>
@@ -141,7 +141,7 @@
         }
     </script>
     <script>
-        
+
     $(function() {
         $("body").on("click","div.module a h2",function() {
             var current = $(this).parent().parent().find("h2");
