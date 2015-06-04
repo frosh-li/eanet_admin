@@ -38,7 +38,7 @@ function createValidate(mod, name, msg, pat, fn, args){
                   }
                   
                   if(fnObj.inputed)
-                      ctrls[0].setInput( fnObj.inputed.length );
+                      ctrls[0].setInput( fnObj.inputed );
                   if(fnObj.max)
                       ctrls[0].setMax( fnObj.max );
                   
@@ -107,7 +107,10 @@ createValidate(storeAppDirectivies, "maxLength", "", false,
             validity = value.length < attrValue;
 
         fnObj.errMsg = "最多"+attrValue+"个字符！";
-        fnObj.inputed = element.val();
+        
+        fnObj.inputed = 1;
+        if(value)
+            fnObj.inputed = value.length;
         fnObj.max = attrValue;
 
         if(!validity){
