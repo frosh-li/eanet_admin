@@ -111,6 +111,7 @@ createValidate(storeAppDirectivies, "maxLength", "", false,
         fnObj.inputed = 1;
         if(value)
             fnObj.inputed = value.length;
+            
         fnObj.max = attrValue;
 
         if(!validity){
