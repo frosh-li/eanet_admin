@@ -101,10 +101,8 @@ createValidate(storeAppDirectivies, "maxLength", "", false,
     function(value, ctrls, fnObj, attrValue, scope, element, val){
         var validity = true;
         
-        console.log(val);
-        
         if(value)
-            validity = value.length < attrValue;
+            validity = value.length <= attrValue;
 
         fnObj.errMsg = "最多"+attrValue+"个字符！";
         
