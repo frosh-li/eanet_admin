@@ -7,12 +7,12 @@ var authsControllers = angular.module('authsControllers', ['ngTable']);
 authsControllers.controller('authsUserList', ['$http','$scope','AuthUser',
   function($http,$scope,AuthUser) {
       $scope.lists = AuthUser.query();
-  
+
       $scope.delUser = function(id,index){
           if(!confirm("确定删除")){
-              return false; 
+              return false;
           }
-          
+
           AuthUser.delete({id:id}).$promise.then(function(data){
               if(data.status == 200){
                   alert("操作成功！ ");
@@ -26,15 +26,15 @@ authsControllers.controller('authsUserList', ['$http','$scope','AuthUser',
           });
       }
   }
-  
+
 ]);
-  
+
 authsControllers.controller('authsUserAdd', ['$http','$scope','AuthUser','AuthGroup','$routeParams','$location',
   function($http,$scope,AuthUser,AuthGroup,$routeParams,$location) {
 
     $scope.grouplists = AuthGroup.query();
-    $scope.formData = {username:"", password:"", group:""};
-    
+    $scope.formData = {username:"", password:"", group:"", merchantID: ""};
+
     if($routeParams.id){
         AuthUser.getOne({id : $routeParams.id}).$promise.then(function(res){
           $scope.formData = res.data;
@@ -62,16 +62,16 @@ authsControllers.controller('authsUserAdd', ['$http','$scope','AuthUser','AuthGr
     }
 
   }
-  
+
 ]);
 
 authsControllers.controller('authsGroupList', ['$http','$scope','AuthGroup',
   function($http,$scope,AuthGroup) {
     $scope.lists = AuthGroup.query();
-    
+
     $scope.delGroup = function(id,index){
       if(!confirm("确定删除")){
-          return false; 
+          return false;
       }
       AuthGroup.delete({id:id}).$promise.then(function(data){
           if(data.status == 200){
@@ -85,20 +85,20 @@ authsControllers.controller('authsGroupList', ['$http','$scope','AuthGroup',
           alert("系统错误！ ");
       });
     }
-    
+
   }
-  
+
 ]);
 
 authsControllers.controller('authsGroupAdd', ['$http','$scope','AuthGroup','AuthApi','$routeParams','TreeData','$location',
   function($http,$scope,AuthGroup,AuthApi,$routeParams,TreeData,$location) {
     var vm = $scope.vm = {};
-    
+
     $scope.formData   =   {name:"", apilist:{}};
-        
+
     AuthApi.query().$promise.then(function(res){
         $scope.formData.apilist = res.data;
-        
+
         if($routeParams.id){
             AuthGroup.getOne({id : $routeParams.id}).$promise.then(function(res){
               if(res.data){
@@ -115,21 +115,21 @@ authsControllers.controller('authsGroupAdd', ['$http','$scope','AuthGroup','Auth
                     });
                 });
               }
-                
+
             });
         }else{
           $scope.formData.apilist.forEach(function(api){
               api.items = api.innerApi;
-          
+
               api.items.forEach(function(item){
                   item.checked=false;
               });
           });
         }
-        
+
         vm.tree = new TreeData($scope.formData.apilist);
-    });  
-    
+    });
+
     $scope.processForm = function(){
       var postParams = [];
       for(var i = 0, len = $scope.formData.apilist.length ; i < len ; i++){
@@ -142,12 +142,12 @@ authsControllers.controller('authsGroupAdd', ['$http','$scope','AuthGroup','Auth
           }
         }
       }
-      
+
       var authGroup = new AuthGroup({
         groupname: $scope.formData.name,
         apilist: JSON.stringify(postParams)
       });
-      
+
       authGroup.$save(function(data){
         if(data.status == 200){
           alert('操作成功， 正在返回列表页...');
@@ -159,26 +159,26 @@ authsControllers.controller('authsGroupAdd', ['$http','$scope','AuthGroup','Auth
         console.log(err);
         alert('系统错误');
       });
-    }    
+    }
 
   }
-  
+
 ]);
 
 authsControllers.controller('authsApiList', ['$http','$scope','AuthApi',
   function($http,$scope,AuthApi) {
-    
+
     console.log($scope);
-    
+
     $scope.lists = AuthApi.query();
-    
+
     $scope.handleTree = function(obj){
         var env = window.event || e;
     }
 
     $scope.delModule = function(index,id){
       if(!confirm("确定删除")){
-          return false; 
+          return false;
       }
       AuthApi.delete({id:id}).$promise.then(function(data){
           if(data.status == 200){
@@ -194,48 +194,48 @@ authsControllers.controller('authsApiList', ['$http','$scope','AuthApi',
     }
 
   }
-  
+
 ]);
 
 authsControllers.controller('authsApiAdd', ['$http','$scope','AuthApi','$routeParams','$location',
   function($http,$scope,AuthApi,$routeParams,$location) {
     $scope.formData = {code : "", model : "", uri : "", apilist : [{name:"", url:"", method:"get", isMenu:true}]};
-    
+
     $scope.addItem = function() {
       $scope.formData.apilist.push({name:"", url:"", method:"get", isMenu:true});
     };
-    
+
     $scope.delItem = function(index) {
       $scope.formData.apilist.splice(index,1);
     };
-    
+
     $scope.show_error = true;
     $scope.show_type = 1;
     $scope.methods = ["get","post","put","delete"];
     $scope.title = "API注册";
-    
+
     if($routeParams.id){
         AuthApi.getOne({id : $routeParams.id}).$promise.then(function(res){
           $scope.formData = res.data;
           $scope.formData.apilist = $scope.formData.innerApi;
         });
     }
-    
+
     $scope.getPos = function(e){
-        var pos = {url:$location.$$url, title:$scope.title, x:event.x, y:event.y}; 
+        var pos = {url:$location.$$url, title:$scope.title, x:event.x, y:event.y};
         var localPos = [];
-        
+
         if($routeParams.heatmap)
             return false;
-        
+
         if(JSON.parse(localStorage.getItem($location.$$url)).length > 0){
             localPos = JSON.parse(localStorage.getItem($location.$$url));
-            localPos.push(pos); 
+            localPos.push(pos);
         }else{
             localPos = [pos];
         }
         localStorage.setItem($location.$$url,JSON.stringify(localPos));
-    }  
+    }
 
     $scope.processForm = function(){
       $scope.formData.innerApi = JSON.stringify($scope.formData.apilist);
@@ -254,5 +254,5 @@ authsControllers.controller('authsApiAdd', ['$http','$scope','AuthApi','$routePa
     }
 
   }
-  
+
 ]);

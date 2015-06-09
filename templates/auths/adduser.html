@@ -10,7 +10,7 @@
     		  <div err-Msg ng-model="errMsg" style="line-height:34px">
             <input type="text" name="username" class="form-control" placeholder="请输入3-10个中文字符" Is-Chinese Not-Empty style="width:400px;float:left" ng-model="formData.username">
   			    <em class="error" ng-show="!form_data.username.$pristine && form_data.username.$invalid">{{errMsg}}</em>
-          </div>    
+          </div>
 		    </td>
 		  </tr>
 		  <tr>
@@ -36,14 +36,22 @@
 		    <td colspan="2">
             <select name="group"  class="form-control" ng-model="formData.group" ng-options="group.name as group.name for group in grouplists.data" style="width:400px"></select>
 		    </td>
-		  </tr>                                
+		  </tr>
+      <tr>
+        <td style="width:150px">商户ID<font color="red">*</font></td>
+        <td colspan="2">
+            <div err-Msg ng-model="errMsg" style="line-height:34px">
+                <input type="text" name="merchantID" class="form-control" ng-model="formData.merchantID" placeholder="商户ID">
+            </div>
+        </td>
+      </tr>
           <tr>
             <td align="center" style="background-color: #f7f7f7" colspan="3">
                 <input type="hidden" value="1" id="status" class="checkdom" name="status">
           			<a id="save_file" class="btn btn-danger upBtn" ng-click="processForm()" ng-disabled="form_data.$invalid">提 交</a>
           			<a id="submit_file" class="btn btn-danger upBtn" ng-click="goBack()">取消</a>
             </td>
-          </tr>	            
+          </tr>
         </tbody>
     </table>
 </form>
