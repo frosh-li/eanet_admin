@@ -6,7 +6,6 @@ var authsControllers = angular.module('authsControllers', ['ngTable']);
 
 authsControllers.controller('authsUserList', ['$http','$scope','AuthUser',
   function($http,$scope,AuthUser) {
-      $scope.lists = AuthUser.query();
   
       $scope.delUser = function(id,index){
           if(!confirm("确定删除")){
@@ -25,6 +24,43 @@ authsControllers.controller('authsUserList', ['$http','$scope','AuthUser',
               alert("系统错误！ ");
           });
       }
+      
+      var limit = 10;
+      var page = 1;
+      $scope.filterBy = {
+        'orderNos': '',
+        'mobile': '',
+        'cardNo': '',
+        'orderStatus': '',
+        'tradeCodes': '',
+        'startDate': '',
+        'endDate': '',
+        'tradeSrc': ''
+      }
+      
+      $scope.getResource = function (params, paramsObj) {
+          paramsObj.limit = paramsObj.count;
+          paramsObj.p = paramsObj.page;
+          params = params.replace('page=', 'p=');
+          params += '&limit='+paramsObj.count;
+          params = {page:paramsObj.page,count:paramsObj.count,limit:paramsObj.count}
+          return AuthUser.query(params).$promise.then(function(response){
+              response.header = [];
+              var data =  {
+                'rows': response.data,
+                'header': response.header,
+                'pagination': {
+                    "count": paramsObj.count,
+                    "page": paramsObj.page,
+                    "pages": Math.ceil(response.totalCount/paramsObj.count),
+                    "size": response.totalCount
+                }
+              }
+              
+              return data;
+          });
+      }
+      
   }
   
 ]);
@@ -33,7 +69,7 @@ authsControllers.controller('authsUserAdd', ['$http','$scope','AuthUser','AuthGr
   function($http,$scope,AuthUser,AuthGroup,$routeParams,$location) {
 
     $scope.grouplists = AuthGroup.query();
-    $scope.formData = {username:"", password:"", group:""};
+    $scope.formData = {username:"", password:"", group:"", merchantId:"1"};
     
     if($routeParams.id){
         AuthUser.getOne({id : $routeParams.id}).$promise.then(function(res){

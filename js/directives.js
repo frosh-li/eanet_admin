@@ -24,7 +24,7 @@ function createValidate(mod, name, msg, pat, fn, args){
                   }else{
                       if(args){
                           validity = fn(value, ctrls, fnObj, attr[name], scope, element, val);
-                          msg = fnObj.errMsg;
+                          msg = fnObj.errMsg; //fnObj.errMsg是在fn里设置的
                       }else{
                           validity = fn(value, ctrls);
                       }
