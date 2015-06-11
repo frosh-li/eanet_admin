@@ -1,0 +1,166 @@
+<div class="operate panel panel-default">
+    <div class="panel-body" style="height: 50px">
+        <div class="pull-left">
+            积分账户总览
+        </div>
+    </div>
+</div>
+<div style="background-color:#eee; border:#ddd 1px solid; width:100%; margin-bottom:20px;padding:30px 20px;">
+    <table class="table table-bordered" style="background-color:#fff;">
+        <tbody>
+            <tr>
+                <td>原始积分授信额度</td>
+                <td>积分账户当前余额</td>
+                <td>当前可发积分额度</td>
+                <td>操作</td>
+            </tr>
+            <tr>
+                <td><span id="pointCredit">0.00</span></td>
+                <td><span id="pointBalance">5,171.00</span></td>
+                <td><span id="pointValid">5,171.00</span></td>
+                <td><a class="btn btn-info" id="Recharge">充值</a>&nbsp;<a class="btn btn-info" id="WithdrawCash">提现</a>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<p>积分变动时间：<span id="startTime">2015-03-01</span> 到 <span id="endTime">2015-05-31</span></p>
+<div class="ul_table message-container">
+    <main>
+        <div class="mmGrid" style="width: auto; height: auto;">
+            <style>
+            .mmGrid .mmg11d87-col0 {
+                width: 196px;
+                max-width: 196px;
+            }
+            
+            .mmGrid .mmg11d87-col1 {
+                width: 195px;
+                max-width: 195px;
+            }
+            
+            .mmGrid .mmg11d87-col2 {
+                width: 195px;
+                max-width: 195px;
+            }
+            
+            .mmGrid .mmg11d87-col3 {
+                width: 195px;
+                max-width: 195px;
+            }
+            
+            .mmGrid .mmg11d87-col4 {
+                width: 195px;
+                max-width: 195px;
+            }
+            
+            .mmGrid .mmg11d87-col5 {
+                width: 195px;
+                max-width: 195px;
+            }
+            </style>
+            <div class="mmg-headWrapper">
+                <form id="search_form" style="margin:0;">
+                    <table class="mmg-head" cellspacing="0" style="left: 0px;">
+                        <thead>
+                            <tr>
+                                <th class="mmg11d87-col0  first" rowspan="1" colspan="1" data-colindex="0">
+                                    <div class="mmg-titleWrapper"><span class="mmg-title mmg-canSort " title="积分变动时间">积分变动时间</span>
+                                        <div class="mmg-sort"></div>
+                                        <div class="mmg-colResize"></div>
+                                    </div>
+                                    <input class="_mmgrid_search_input" type="text" name="orderTime_like" style="display:none;" value="筛选...">
+                                </th>
+                                <th class="mmg11d87-col1 " rowspan="1" colspan="1" data-colindex="1">
+                                    <div class="mmg-titleWrapper"><span class="mmg-title mmg-canSort " title="流水号">流水号</span>
+                                        <div class="mmg-sort"></div>
+                                        <div class="mmg-colResize"></div>
+                                    </div>
+                                    <input class="_mmgrid_search_input" type="text" name="orderNo_like" style="display:none;" value="筛选...">
+                                </th>
+                                <th class="mmg11d87-col2 " rowspan="1" colspan="1" data-colindex="2">
+                                    <div class="mmg-titleWrapper"><span class="mmg-title mmg-canSort " title="类型">类型</span>
+                                        <div class="mmg-sort"></div>
+                                        <div class="mmg-colResize"></div>
+                                    </div>
+                                    <input class="_mmgrid_search_input" type="text" name="orderType_like" style="display:none;" value="筛选...">
+                                </th>
+                                <th class="mmg11d87-col3 " rowspan="1" colspan="1" data-colindex="3">
+                                    <div class="mmg-titleWrapper"><span class="mmg-title mmg-canSort " title="积分变动">积分变动</span>
+                                        <div class="mmg-sort"></div>
+                                        <div class="mmg-colResize"></div>
+                                    </div>
+                                    <input class="_mmgrid_search_input" type="text" name="pointAmt_like" style="display:none;" value="筛选...">
+                                </th>
+                                <th class="mmg11d87-col4 " rowspan="1" colspan="1" data-colindex="4">
+                                    <div class="mmg-titleWrapper"><span class="mmg-title mmg-canSort " title="发生门店">发生门店</span>
+                                        <div class="mmg-sort"></div>
+                                        <div class="mmg-colResize"></div>
+                                    </div>
+                                    <input class="_mmgrid_search_input" type="text" name="storeName_like" style="display:none;" value="筛选...">
+                                </th>
+                                <th class="mmg11d87-col5  last" rowspan="1" colspan="1" data-colindex="5">
+                                    <div class="mmg-titleWrapper"><span class="mmg-title mmg-canSort " title="门店所属商圈">门店所属商圈</span>
+                                        <div class="mmg-sort"></div>
+                                        <div class="mmg-colResize"></div>
+                                    </div>
+                                    <input class="_mmgrid_search_input" type="text" name="storePlaza_like" style="display:none;" value="筛选...">
+                                </th>
+                            </tr>
+                        </thead>
+                    </table>
+                </form>
+            </div>
+            <div class="mmg-colResizePointer"></div>
+            <div class="mmg-colResizePointer-before"></div>
+            <div class="mmg-backboard">
+                <a class="mmg-btnBackboardUp"></a>
+                <h1>显示列</h1>
+                <label>
+                    <input type="checkbox" checked="checked"><span title="积分变动时间">积分变动时间</span></label>
+                <label>
+                    <input type="checkbox" checked="checked"><span title="流水号">流水号</span></label>
+                <label>
+                    <input type="checkbox" checked="checked"><span title="类型">类型</span></label>
+                <label>
+                    <input type="checkbox" checked="checked"><span title="积分变动">积分变动</span></label>
+                <label>
+                    <input type="checkbox" checked="checked"><span title="发生门店">发生门店</span></label>
+                <label>
+                    <input type="checkbox" checked="checked"><span title="门店所属商圈">门店所属商圈</span></label>
+            </div>
+            <div class="mmg-bodyWrapper" style="height: auto; width: auto;">
+                <table id="mmg" class="mmg mmg-body" style="width: 1171px;">
+                    <tbody></tbody>
+                </table>
+            </div>
+            <a class="mmg-btnBackboardDn" style="top: 35px; display: none;"></a>
+            <div class="mmg-message" style="display: none;">你的查询条件错误或查询结果不存在，请重新查询！</div>
+            <div class="mmg-mask mmg-transparent" style="display: none;"></div>
+            <div class="mmg-loading" style="left: 569.5px; top: 25.5px; display: none;">
+                <div class="mmg-loadingImg"></div>
+            </div>
+        </div>
+        <div id="pg" style="text-align: right;" class="mmPaginator">
+            <input type="button" class="btn btn-info" value="导出Excel" id="btnExport">
+            <div class="totalCountLabel">共<span>0</span>条记录</div>
+            <ul class="pageList">
+                <li class="prev disable"><a>«</a></li>
+                <li class="active"><a>1</a></li>
+                <li class="next disable"><a title="下一页">»</a></li>
+            </ul>
+            <div class="limit">
+                <select>
+                    <option value="10">每页10条</option>
+                    <option value="20">每页20条</option>
+                    <option value="50">每页50条</option>
+                    <option value="100">每页100条</option>
+                    <option value="200">每页200条</option>
+                    <option value="300">每页300条</option>
+                    <option value="500">每页500条</option>
+                    <option value="1000">每页1000条</option>
+                </select>
+            </div>
+        </div>
+    </main>
+    <div class="pull-left" style="margin-top:-33px;" id="batchActions"></div>
+</div>
