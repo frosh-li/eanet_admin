@@ -70,7 +70,7 @@ authsControllers.controller('authsUserAdd', ['$http','$scope','AuthUser','AuthGr
 
     $scope.grouplists = AuthGroup.query();
 
-    $scope.formData = {username:"", password:"", group:"", merchantId:"1"};
+    $scope.formData = {username:"", password:"", group:"", merchantID:"1"};
     
     if($routeParams.id){
         AuthUser.getOne({id : $routeParams.id}).$promise.then(function(res){
@@ -204,8 +204,6 @@ authsControllers.controller('authsGroupAdd', ['$http','$scope','AuthGroup','Auth
 
 authsControllers.controller('authsApiList', ['$http','$scope','AuthApi',
   function($http,$scope,AuthApi) {
-
-    console.log($scope);
 
     $scope.lists = AuthApi.query();
 
