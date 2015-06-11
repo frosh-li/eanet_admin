@@ -26,7 +26,7 @@ function createValidate(mod, name, msg, pat, fn, args){
                           validity = fn(value, ctrls, fnObj, attr[name], scope, element, val);
                           msg = fnObj.errMsg; //fnObj.errMsg是在fn里设置的
                       }else{
-                          validity = fn(value, ctrls);
+                          validity = fn(value, ctrls, scope);
                       }
                   }
                   
@@ -92,8 +92,8 @@ storeAppDirectivies.directive('errMsg', [function () {
 }]);
 
 createValidate(storeAppDirectivies, "isRepeat", "两次输入密码不相同！", false, 
-    function(value,ctrls){ 
-        return ctrls[1].$isEmpty(value) ||  value == $scope.formData.password ; 
+    function(value, ctrls, scope){
+        return ctrls[1].$isEmpty(value) ||  value == scope.$parent.$parent.formData.password ; 
     }
 );
 
@@ -139,4 +139,5 @@ createValidate(storeAppDirectivies, "isEnglish", "只能输入数字和英文字
 createValidate(storeAppDirectivies, "isChinese", "只能输入中文字符！", /^[\u0391-\uFFE5]+$/);
 createValidate(storeAppDirectivies, "isEmail", "请输入正确格式的EMAIL！", /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/);
 
+createValidate(storeAppDirectivies, "isPassword", "密码必须包含字符和数字！", /^(?=.*[0-9].*)(?=.*[a-zA-Z].*).{8,20}$/);
 

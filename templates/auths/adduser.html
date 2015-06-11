@@ -8,7 +8,7 @@
 		    <td style="width:150px">用户名<font color="red">*</font></td>
 		    <td colspan="2">
     		  <div err-Msg ng-model="errMsg" style="line-height:34px">
-            <input type="text" name="username" class="form-control" placeholder="请输入3-10个英文字符" Is-English Not-Empty style="width:400px;float:left" ng-model="formData.username">
+            <input type="text" name="username" class="form-control" placeholder="请输入3-10个英文字符" Is-English Min-Length="3" Max-Length="10" Not-Empty style="width:400px;float:left" ng-model="formData.username">
   			    <em class="error" ng-show="!form_data.username.$pristine && form_data.username.$invalid">{{errMsg}}</em>
           </div>
 		    </td>
@@ -17,7 +17,7 @@
 		    <td style="width:150px">用户密码<font color="red">*</font></td>
 		    <td colspan="2">
             <div err-Msg ng-model="errMsg" style="line-height:34px">
-                <input type="password" name="user_password" class="form-control" ng-model="formData.password" placeholder="以字母开头，长度在6-12之间，只能包含字符、数字和下划线。" Is-Password style="width:400px;float:left">
+                <input type="password" name="user_password" class="form-control" ng-model="formData.password" placeholder="以字母开头，长度在6-12之间，只能包含字符、数字和下划线。" Is-Password Min-Length="6" Max-Length="12" style="width:400px;float:left">
 		    	      <em class="error" ng-show="!form_data.user_password.$pristine && form_data.user_password.$invalid">{{errMsg}}</em>
             </div>
 		    </td>
