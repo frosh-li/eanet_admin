@@ -42,20 +42,24 @@
         <td style="width:150px">商户ID<font color="red">*</font></td>
         <td colspan="2">
             <div err-Msg ng-model="errMsg" style="line-height:34px">
-                <input type="text" name="merchantID" class="form-control" ng-model="formData.merchantID" placeholder="商户ID">
+                <input type="text" name="merchantID" Not-Empty class="form-control" ng-model="formData.merchantID" placeholder="商户ID" style="float:left">
+                <em class="error" ng-show="!form_data.merchantID.$pristine && form_data.merchantID.$invalid">{{errMsg}}</em>
+                <span style="cursor:pointer;margin-left:20px;color:#red" ng-click="merchantShow(true)">查询商户</span>
             </div>
         </td>
       </tr>
-      <tr>
+      <tr ng-show="merchantNameShow">
         <td style="width:150px">商户名称<font color="red">*</font></td>
         <td colspan="2">
             <div err-Msg ng-model="errMsg" style="line-height:34px">
-                <input type="text" name="merchantName" class="form-control" ng-model="formData.merchantName" ng-keyup="getMerchants()" placeholder="商户名称">
+                <input type="text" name="merchantName" class="form-control" ng-model="formData.merchantName" ng-keyup="getMerchants()" placeholder="商户名称" style="float:left">
+                <span style="cursor:pointer;margin-left:20px;color:#red" ng-click="merchantShow(false)">-</span>
             </div>
             <style>
                 .merchants{
                     position:absolute;
                     z-index:10000;
+                    width:299px;
                     padding: 10px;
                     border: 1px rgb(231, 212, 212) solid;
                     left: -16px;

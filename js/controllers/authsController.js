@@ -114,8 +114,13 @@ authsControllers.controller('authsUserAdd', ['$http','$scope','AuthUser','AuthGr
         });
     }
     
+    $scope.merchantShow = function(t){
+        $scope.merchantNameShow = t;
+    }
+    
     $scope.setMerchantId = function(id){
         $scope.formData.merchantID = id;
+        $scope.merchants = [];
     }
 
     $scope.processForm = function(){

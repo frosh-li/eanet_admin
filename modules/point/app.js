@@ -3,17 +3,16 @@ storeApp.config(['$routeProvider', function($routeProvider) {
 
     var domain = "/modules/point/";
 
+    // 动态加载js文件
     storeApp.asyncjs = function() {
         return ["$q", "$route", "$rootScope", function($q, $route, $rootScope) {
             var deferred = $q.defer();
             $script(domain + 'js/controllers.js', function() {
                 $script(domain + 'js/services.js', function() {
                     $script(domain + 'js/directives.js', function() {
-                        $script(domain + 'js/factories.js', function() {
-                            $script(domain + 'js/filters.js', function() {
-                                $rootScope.$apply(function() {
-                                    deferred.resolve();
-                                });
+                        $script(domain + 'js/filters.js', function() {
+                            $rootScope.$apply(function() {
+                                deferred.resolve();
                             });
                         });
                     });
@@ -23,6 +22,7 @@ storeApp.config(['$routeProvider', function($routeProvider) {
         }];
     }
 
+    // 注册路由
     $routeProvider
         .when('/point/account', {
             templateUrl: domain + '/views/account.html',
@@ -59,7 +59,7 @@ storeApp.config(['$routeProvider', function($routeProvider) {
                 load: storeApp.asyncjs()
             }
         })
-        .when('/point/monthReportDetails', {
+        .when('/point/monthReportDetails/:period', {
             templateUrl: domain + '/views/monthreportdetails.html',
             controller: 'monthreportdetails',
             resolve: {
