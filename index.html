@@ -18,7 +18,7 @@
     <link type="text/css" rel="stylesheet" href="static/mmgrid/src/theme/bootstrap/mmGrid-bootstrap.css" />
 <link rel="stylesheet" type="text/css" href="static/mmgrid/src/mmPaginator.css">
 <link rel="stylesheet" type="text/css" href="static/mmgrid/src/theme/bootstrap/mmPaginator-bootstrap.css">
-    
+
     <style type="text/css">
         @charset "UTF-8";
         [ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide{ display:none !important; }
@@ -80,7 +80,7 @@
         <div class="sidebar hidden-print">
             <ul class='nav nav-list'>
                 <li ng-repeat="list in lists.data">
-                    <a class="dropdown-toggle" node="409" href="#"><i class="icon-angle-right"></i><span class="menu-text">{{list.model}}</span><b class="arrow icon-angle-down"></b></a>
+                    <a class="dropdown-toggle" node="409"><i class="icon-angle-right"></i><span class="menu-text">{{list.model}}</span><b class="arrow icon-angle-down"></b></a>
                     <ul class='submenu'>
                         <li>
                             <a ng-repeat="api in list.innerApi" ng-if="api.isMenu=='true'" ng-href="#/{{list.code}}{{api.url}}" node="407"><i class="icon-angle-right"></i><span class="menu-text">{{api.name}}</span></a>
@@ -88,7 +88,7 @@
                     </ul>
                 </li>
                 <li>
-                    <a class="dropdown-toggle" node="489" href="#"><i class="icon-angle-right"></i><span class="menu-text">权限管理</span><b class="arrow icon-angle-down"></b></a>
+                    <a class="dropdown-toggle" node="489"><i class="icon-angle-right"></i><span class="menu-text">权限管理</span><b class="arrow icon-angle-down"></b></a>
                     <ul class='submenu'>
                         <li>
                             <a node="490" href="#/auths/listuser"><i class="icon-angle-right"></i><span class="menu-text">用户列表</span><b class="arrow icon-angle-down"></b></a>
