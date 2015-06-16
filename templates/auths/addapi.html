@@ -39,7 +39,7 @@
 									   <em class="error">{{errMsg}}</em>{{inputed}}/{{max}}
 					  			</td></tr>
 								<tr><td>URL：</td><td err-Msg ng-model="errMsg">
-									   <input type="text" value="" Not-Empty Start-Fxg ng-pattern="/^[/]{1}[A-Za-z0-9_/]+$/" class="url required" placeholder="/input" ng-model="item.url" name="url" maxlength="20">
+									   <input type="text" value="" Not-Empty Start-Fxg ng-pattern="/^[/]{1}[A-Za-z0-9_/]+$/" class="url required" placeholder="/input" ng-model="item.url" name="url" maxlength="100">
 									   <em class="error">{{errMsg}}</em>
 								</td></tr>
 								<tr><td>方法名：</td><td><select ng-model="item.method" ng-options="method as method for method in methods"></select></td></tr>
@@ -64,4 +64,3 @@
 		</table>
 	</form>
  </div>
-

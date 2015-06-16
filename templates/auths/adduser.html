@@ -33,8 +33,9 @@
 		  </tr>
 		  <tr>
 		    <td style="width:150px">所属权限组<font color="red">*</font></td>
-		    <td colspan="2">
-            <select name="group"  class="form-control" ng-model="formData.group" ng-options="group.name as group.name for group in grouplists.data" style="width:400px"></select>
+		    <td colspan="2" err-Msg ng-model="errMsg">
+            <select name="group" class="form-control" Not-Empty ng-model="formData.group" ng-options="group.name as group.name for group in grouplists.data" style="width:400px;float:left"></select>
+            <em class="error" ng-show="!form_data.group.$pristine && form_data.group.$invalid">{{errMsg}}</em>
 		    </td>
 		  </tr>
       <tr>
@@ -45,13 +46,38 @@
             </div>
         </td>
       </tr>
-          <tr>
-            <td align="center" style="background-color: #f7f7f7" colspan="3">
-                <input type="hidden" value="1" id="status" class="checkdom" name="status">
-          			<a id="save_file" class="btn btn-danger upBtn" ng-click="processForm()" ng-disabled="form_data.$invalid">提 交</a>
-          			<a id="submit_file" class="btn btn-danger upBtn" ng-click="goBack()">取消</a>
-            </td>
-          </tr>
-        </tbody>
-    </table>
+      <tr>
+        <td style="width:150px">商户名称<font color="red">*</font></td>
+        <td colspan="2">
+            <div err-Msg ng-model="errMsg" style="line-height:34px">
+                <input type="text" name="merchantName" class="form-control" ng-model="formData.merchantName" ng-keyup="getMerchants()" placeholder="商户名称">
+            </div>
+            <style>
+                .merchants{
+                    position:absolute;
+                    z-index:10000;
+                    padding: 10px;
+                    border: 1px rgb(231, 212, 212) solid;
+                    left: -16px;
+                    padding-right: 30px;
+                    background-color: #fff;
+                }
+                .merchants li{
+                    list-style:none;
+                    margin-left:0px;
+                    cursor:pointer
+                }
+            </style>
+            <ul class="merchants" ng-show="merchants.length"><li ng-repeat="merchant in merchants" ng-click="setMerchantId(merchant.merchantId)">{{merchant.merchantName}}</li></ul>
+        </td>
+      </tr>
+      <tr>
+        <td align="center" style="background-color: #f7f7f7" colspan="3">
+            <input type="hidden" value="1" id="status" class="checkdom" name="status">
+      			<a id="save_file" class="btn btn-danger upBtn" ng-click="processForm()" ng-disabled="form_data.$invalid">提 交</a>
+      			<a id="submit_file" class="btn btn-danger upBtn" ng-click="goBack()">取消</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </form>

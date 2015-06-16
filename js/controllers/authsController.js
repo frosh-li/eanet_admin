@@ -69,8 +69,9 @@ authsControllers.controller('authsUserAdd', ['$http','$scope','AuthUser','AuthGr
   function($http,$scope,AuthUser,AuthGroup,$routeParams,$location) {
 
     $scope.grouplists = AuthGroup.query();
+    $scope.merchants = [];
 
-    $scope.formData = {username:"", password:"", group:"", merchantID:"1"};
+    $scope.formData = {username:"", password:"", group:"", merchantID:"1", merchantName:""};
     
     if($routeParams.id){
         AuthUser.getOne({id : $routeParams.id}).$promise.then(function(res){
@@ -80,6 +81,41 @@ authsControllers.controller('authsUserAdd', ['$http','$scope','AuthUser','AuthGr
 
     $scope.selectChange = function(){
         console.log($scope.formData.group);
+    }
+    
+    var stime = 0,
+		checktime = 0;
+  	function wait(milli){
+  		var dtd = $.Deferred();
+  		setTimeout(function(){
+  			var now = new Date().getTime();
+  			if(now > milli + stime - 50){
+  				if(stime > checktime + 10){
+  					dtd.resolve();
+  					checktime = stime;
+  					return dtd;
+  				}
+  			}
+  		},milli);
+  		stime = new Date().getTime();
+  		return dtd.promise(); 
+  	}
+    
+    $scope.getMerchants = function(){
+        var urlApi = globalConfig.api + 'v1/cdaservice/bp/merchants';
+        var params = 'merchantName=' + $scope.formData.merchantName;
+        wait(500).done(function(){
+            $http.get(urlApi+"?"+params).then(function (response) {
+                $scope.merchants = [];
+                response.data.data.datas.forEach(function(m){
+                    $scope.merchants.push(m);
+                });
+            });
+        });
+    }
+    
+    $scope.setMerchantId = function(id){
+        $scope.formData.merchantID = id;
     }
 
     $scope.processForm = function(){
