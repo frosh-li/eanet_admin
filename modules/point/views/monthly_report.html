@@ -5,64 +5,50 @@
         </div>
     </div>
 </div>
-
-
 <h2 class="boxTitle">积分账户月报</h2>
-
 <div>
     <table class="table table-bordered">
-      <tbody><tr>
-                  <th>月份</th>
-                  <th>积分增加</th>
-                  <th>积分减少</th>
-                  <th>积分增减</th>
-                  <th>充值还款</th>
-                  <th>积分提现</th>
-                  <th>积分累计</th>
-                  <th>查看明细</th>
-              </tr>
+        <tbody>
             <tr>
-        <td>合计</td>
-        <td>0.00</td>
-        <td>0.00</td>
-        <td>0.00</td>
-        <td>0.00</td>
-        <td>0.00</td>
-        <td>0.00</td>
-        <td>
-                  </td>
-      </tr>
+                <th>月份</th>
+                <th>积分增加</th>
+                <th>积分减少</th>
+                <th>积分增减</th>
+                <th>充值还款</th>
+                <th>积分提现</th>
+                <th>积分累计</th>
+                <th>查看明细</th>
+            </tr>
             <tr>
-        <td>2015-04</td>
-        <td>0.00</td>
-        <td>0.00</td>
-        <td>0.00</td>
-        <td>0.00</td>
-        <td>0.00</td>
-        <td>0.00</td>
-        <td>
-                    <a href="#/point/monthReportDetails?month=2015-04&amp;total=0">查看明细</a>
-                  </td>
-      </tr>
-            <tr>
-        <td>2015-02</td>
-        <td>0.00</td>
-        <td>0.00</td>
-        <td>0.00</td>
-        <td>0.00</td>
-        <td>0.00</td>
-        <td>0.00</td>
-        <td>
-                    <a href="#/point/monthReportDetails?month=2015-02&amp;total=0">查看明细</a>
-                  </td>
-      </tr>
-          </tbody></table>
+                <td>合计</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>
+                </td>
+            </tr>
+            <tr ng-repeat="item in monthReportInfo.data.rwList">
+                <td>{{item.orderTime}}</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td>0.00</td>
+                <td><a href="#/point/monthReportDetails?month=2015-04&amp;total=0">查看明细</a></td>
+            </tr>
+        </tbody>
+    </table>
     <div>
-      <p style="color:#ccc;">
-        * 积分增加：所有引起积分账户增加的交易合计，积分减少：所有引起积分账户减少的交易合计<br>
-        * 积分增减 = 积分增加 - 积分减少<br>
-        * 积分累计 = 积分增加 - 积分减少 + 充值还款 - 积分提现<br>
-        * 如果当前积分账户余额已接近积分授信额度，请尽快充值<br>
-      </p>
+        <p style="color:#ccc;">
+            * 积分增加：所有引起积分账户增加的交易合计，积分减少：所有引起积分账户减少的交易合计
+            <br> * 积分增减 = 积分增加 - 积分减少
+            <br> * 积分累计 = 积分增加 - 积分减少 + 充值还款 - 积分提现
+            <br> * 如果当前积分账户余额已接近积分授信额度，请尽快充值
+            <br>
+        </p>
     </div>
 </div>

@@ -1,9 +1,9 @@
 'use strict'
 
 //账户总览
-storeApp.register.controller('account', ['$scope',
-    function($scope) {
-        $scope.userName = 'hello';
+storeApp.register.controller('account', ['$scope', 'accountService',
+    function($scope, accountService) {
+        $scope.accountInfo = accountService.query();
     }
 ]);
 
@@ -16,9 +16,9 @@ storeApp.register.controller('transactions', ['$scope',
 
 
 //积分月报
-storeApp.register.controller('monthlyreport', ['$scope',
-    function($scope) {
-
+storeApp.register.controller('monthlyreport', ['$scope', 'monthReportService',
+    function($scope, monthReportService) {
+        $scope.monthReportInfo = monthReportService.query();
     }
 ])
 
@@ -38,8 +38,8 @@ storeApp.register.controller('cashrecord', ['$scope',
 ])
 
 //月报明细
-storeApp.register.controller('monthreportdetails', ['$scope',
-    function($scope) {
+storeApp.register.controller('monthreportdetails', ['$scope', '$routeParams',
+    function($scope, $routeParams) {
 
     }
 ])
