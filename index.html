@@ -116,11 +116,12 @@
 
     <script src="js/config.js"></script>
     <script src="js/script.min.js"></script>
+    <script src="js/underscore.js"></script>
     <script src="js/bower_components/jquery/dist/jquery.js"></script>
+    
     <script src="js/bower_components/angular/angular.js"></script>
     <script src="js/bower_components/angular-route/angular-route.js"></script>
     <script src="js/bower_components/angular-resource/angular-resource.js"></script>
-
     <script src="js/bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="js/libs/bower_components/ng-table/ng-table.js"></script>
     <script src="js/libs/bower_components/heatmap/heatmap.js"></script>
@@ -134,7 +135,6 @@
     <script src="js/controllers/authsController.js"></script>
     <script src="js/controllers/mainController.js"></script>
     <!--autojs-->
-    <script src="js/underscore.js"></script>
     <script src="js/app.js"></script>
     <script>
         if(localStorage.getItem('modules')){
@@ -144,47 +144,49 @@
             }
         }
     </script>
+    
     <script>
-
-    $(function() {
-        $("body").on("click","div.module a h2",function() {
-            var current = $(this).parent().parent().find("h2");
-            var selected = "selected";
-            var expanded = "expaned";
-            var collapse = "collapse";
-            $("div.module a h2").removeClass(selected);
-            $(this).parent().parent().find("h3").toggle();
-            current.toggleClass(expanded);
-            current.toggleClass(collapse);
-            current.addClass(selected);
-        });
-        $('body').on("click",'.module a:first-child',function() {
-            var self = this;
-            $(this).parent().toggleClass('expanded');
-            if ($(this).attr('loaded') == 0) {
-                var module = $(this).attr('module');
-                $.ajax({
-                    url: globalConfig.api + module + (module === "auths" ? "" : "/common") + "/showMenu",
-                    success: function(data) {
-                        if (!data) {
-                            return;
+      $(function() {
+           $("body").on("click","div.module a h2",function() {
+                var current = $(this).parent().parent().find("h2");
+                var selected = "selected";
+                var expanded = "expaned";
+                var collapse = "collapse";
+                $("div.module a h2").removeClass(selected);
+                $(this).parent().parent().find("h3").toggle();
+                current.toggleClass(expanded);
+                current.toggleClass(collapse);
+                current.addClass(selected);
+           });
+           
+           $('body').on("click",'.module a:first-child',function() {
+                var self = this;
+                $(this).parent().toggleClass('expanded');
+                if ($(this).attr('loaded') == 0) {
+                    var module = $(this).attr('module');
+                    $.ajax({
+                        url: globalConfig.api + module + (module === "auths" ? "" : "/common") + "/showMenu",
+                        success: function(data) {
+                            if (!data) {
+                                return;
+                            }
+                            var menu = [];
+                            for (var i = 0; i < data.length; i++) {
+                                menu.push('<a href="#' + data[i]['url'] + '"><span>' + data[i]['name'] + '</span></a>');
+                            }
+    
+                            $(self).parent().append($(menu.join('')));
+                            $(self).attr('loaded', 1);
                         }
-                        var menu = [];
-                        for (var i = 0; i < data.length; i++) {
-                            menu.push('<a href="#' + data[i]['url'] + '"><span>' + data[i]['name'] + '</span></a>');
-                        }
-
-                        $(self).parent().append($(menu.join('')));
-                        $(self).attr('loaded', 1);
-                    }
-                })
-            }
+                    })
+                }
+           });
+    
+           $('body').on("click",'.dropdown-toggle',function(){
+               $(this).next().toggle();
+           });
+           
         });
-
-        $('body').on("click",'.dropdown-toggle',function(){
-            $(this).next().toggle();
-        });
-    });
     </script>
 </body>
 
