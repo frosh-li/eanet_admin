@@ -4,6 +4,10 @@ storeApp.config(['$routeProvider', function($routeProvider) {
     var domain = "/modules/point/";
 	var datePickerDomain="/static/jquery-ui/";
 
+    // 当前用户信息
+    storeApp.userInfo = JSON.parse(localStorage.getItem('uinfo'));
+
+    // 动态加载js文件
     storeApp.asyncjs = function() {
         return ["$q", "$route", "$rootScope", function($q, $route, $rootScope) {
             var deferred = $q.defer();
@@ -37,6 +41,13 @@ storeApp.config(['$routeProvider', function($routeProvider) {
         .when('/point/account', {
             templateUrl: domain + '/views/account.html',
             controller: 'account',
+            resolve: {
+                load: storeApp.asyncjs()
+            }
+        })
+        .when('/point/accountDrawCash', {
+            templateUrl: domain + '/views/drawcash.html',
+            controller: 'drawcash',
             resolve: {
                 load: storeApp.asyncjs()
             }

@@ -3,13 +3,7 @@
 //账户总览
 storeApp.register.controller('account', ['$scope', 'accountService',
     function($scope, accountService) {
-        // 获取商户ID
-        var merchantInfo = JSON.parse(localStorage.getItem('uinfo'));
-        var merchantId = 0;
-        if (typeof merchantInfo !== "undefined") {
-            merchantId = merchantInfo.merchantID;
-        }
-
+        
         $scope.currentPage = 1;
         $scope.totalPage = 1;
         $scope.pageSize = 10;
@@ -18,7 +12,7 @@ storeApp.register.controller('account', ['$scope', 'accountService',
 
         $scope.load = function() {
             $scope.accountInfo = accountService.query({
-                    merchantId: merchantId,
+                    merchantId: storeApp.userInfo.merchantID,
                     offset: $scope.currentPage,
                     limit: $scope.pageSize
                 },
@@ -79,6 +73,24 @@ storeApp.register.controller('account', ['$scope', 'accountService',
             $scope.currentPage = 1;
             $scope.load();
         };
+    }
+]);
+
+//账户提现
+storeApp.register.controller('drawcash', ['$scope', 'drawcashService',
+    function($scope, drawcashService) {
+        // 积分
+        $scope.point = '';
+        $scope.withdraw = function() {
+            $scope.drawResult = drawcashService.save({
+                merchantId: storeApp.userInfo.merchantID,
+                point: $scope.point,
+                operaterId: storeApp.userInfo.uid
+            }, function() {
+                // 操作成功
+
+            }, function() {});
+        }
     }
 ]);
 
