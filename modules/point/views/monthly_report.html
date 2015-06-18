@@ -21,24 +21,23 @@
             </tr>
             <tr>
                 <td>合计</td>
-                <td>0.00</td>
-                <td>0.00</td>
-                <td>0.00</td>
-                <td>0.00</td>
-                <td>0.00</td>
-                <td>0.00</td>
-                <td>
-                </td>
+                <td>{{monthReport.pointAdd}}</td>
+                <td>{{monthReport.pointReduce}}</td>
+                <td>{{balance(monthReport.pointAdd,monthReport.pointReduce) | number:2}}</td>
+                <td>{{monthReport.recharge}}</td>
+                <td>{{monthReport.withdraw}}</td>
+                <td>{{balance(monthReport.pointAdd,monthReport.pointReduce,monthReport.recharge,monthReport.withdraw)}}</td>
+                <td></td>
             </tr>
-            <tr ng-repeat="item in monthReportInfo.data.rwList">
-                <td>{{item.orderTime}}</td>
-                <td>0.00</td>
-                <td>0.00</td>
-                <td>0.00</td>
-                <td>0.00</td>
-                <td>0.00</td>
-                <td>0.00</td>
-                <td><a href="#/point/monthReportDetails/2015-04">查看明细</a></td>
+            <tr ng-repeat="item in monthReportInfo.data.detailList">
+                <td>{{item.period}}</td>
+                <td>{{item.pointAdd}}</td>
+                <td>{{item.pointReduce}}</td>
+                <td>{{balance(item.pointAdd,item.pointReduce)}}</td>
+                <td>{{item.recharge}}</td>
+                <td>{{item.withdraw}}</td>
+                <td>{{accumulate(item.pointAdd,item.pointReduce,item.recharge,item.withdraw)}}</td>
+                <td><a href="#/point/monthReportDetails/{{item.period}}">查看明细</a></td>
             </tr>
         </tbody>
     </table>

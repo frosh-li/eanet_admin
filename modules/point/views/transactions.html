@@ -9,8 +9,10 @@
     <form id="_CustomizedQueryForm" onsubmit="javascript:return false;" style="margin:0;">
         <div>
             积分变动时间：
-            <input type="text" name="startTime" class="datepicker hasDatepicker" style="height:30px;" value="2015-06-02" readonly="" id="dp1433829549644">&nbsp;&nbsp; 到&nbsp;&nbsp;
-            <input type="text" name="endTime" class="datepicker hasDatepicker" style="height:30px;" value="2015-06-09" readonly="" id="dp1433829549645">&nbsp;&nbsp;
+            <input type="text" name="startTime" class="datepicker" style="height:30px;" readonly
+                   value="{{earlyDay(-7) | date:'yyyy-MM-dd'}}">&nbsp;&nbsp; 到&nbsp;&nbsp;
+            <input type="text" name="endTime"  class="datepicker" style="height:30px;" readonly
+                   value="{{today | date:'yyyy-MM-dd'}}">&nbsp;&nbsp;
             <input type="button" id="_CustomizedQueryFormbutton" value="查询" class="btn btn-info">
             <input type="hidden" id="_CustomizedQueryFormSubmit">
         </div>

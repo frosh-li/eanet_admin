@@ -2,8 +2,8 @@
 storeApp.config(['$routeProvider', function($routeProvider) {
 
     var domain = "/modules/point/";
+	var datePickerDomain="/static/jquery-ui/";
 
-    // 动态加载js文件
     storeApp.asyncjs = function() {
         return ["$q", "$route", "$rootScope", function($q, $route, $rootScope) {
             var deferred = $q.defer();
@@ -11,16 +11,26 @@ storeApp.config(['$routeProvider', function($routeProvider) {
                 $script(domain + 'js/services.js', function() {
                     $script(domain + 'js/directives.js', function() {
                         $script(domain + 'js/filters.js', function() {
-                            $rootScope.$apply(function() {
-                                deferred.resolve();
-                            });
+                            $script(datePickerDomain+"ui/core.js", function () {
+                                $script(datePickerDomain+"ui/widget.js", function () {
+                                    $script(datePickerDomain+"ui/datepicker.js", function () {
+                                        $script(datePickerDomain+"ui/datepicker-zh-TW.js", function () {
+                                            $rootScope.$apply(function() {
+                                                deferred.resolve();
+                                            });
+                                        })
+                                    })
+                                })
+
+                            })
+
                         });
                     });
                 });
             });
             return deferred.promise;
         }];
-    }
+    };
 
     // 注册路由
     $routeProvider

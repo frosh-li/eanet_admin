@@ -27,16 +27,18 @@ storeApp.register.factory('accountService', ['$resource',
 //     }
 // ]);
 
+//积分月报
 storeApp.register.factory('monthReportService', ['$resource',
-    function($resource) {
-        return $resource('modules/point/temp/:month.json', {}, {
-            query: {
-                method: 'GET',
-                params: {
-                    month: 'monthreport'
-                },
-                isArray: false
-            }
+  function ($resource) {
+    return $resource(
+          globalConfig.api + 'point/pf/v1/reports/:periodType/:showType', {
+          periodType: "month", showType: "m"
+        }, {
+          query: {
+            method: 'GET',
+            params: {},
+            isArray: false
+          }
         })
-    }
-])
+  }
+]);
