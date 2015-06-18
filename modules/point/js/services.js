@@ -1,17 +1,17 @@
 'use strict';
 
-/* Services */
-
+//账户总览
 storeApp.register.factory('accountService', ['$resource',
-  function($resource){
-    return $resource(globalConfig.api + 'point/pf/v1/accounts/:merchantId/points', {}, {
-      query: {method:'GET', params:{}, isArray:false},
-      //get:{method:'GET', params: {ids: "@ids"}, isArray:false},//不用delete方法也不用这个了
-      // getOne:{method:'GET', params: {id: "@id"}, isArray:false},//为了优化请求地址，实际上应该是{id: "@id"}
-      // save: {method:'POST', isArray:false},
-      // update:{method:"PUT", isArray:false}
-    });
-  }]);
+    function($resource) {
+        return $resource(globalConfig.api + 'point/pf/v1/accounts/:merchantId/points', { merchantId:"@merchantId" }, {
+            query: {
+                method: 'GET',
+                params: {offset:"@offset",limit:"@limit"},
+                isArray: false
+            }
+        });
+    }
+]);
 
 // storeApp.register.factory('accountService', ['$resource',
 //     function($resource) {

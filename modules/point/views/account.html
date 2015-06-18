@@ -1,3 +1,72 @@
+<!--弹窗 开始-->
+<div id="brg" style="display: none;" ng-style="dialogStyle"></div>
+<div id="showdiv" style="top: 52px; display: none;" ng-style="dialogStyle">
+<div id="contentdiv" class="ui-draggable" style="left: -18.5px; top: 10px;">
+<div id="close" ng-click="dialogStyle={'display':'none'}">关闭</div>
+<div id="inputdiv">
+  <p style="text-align: left; font-size: 16px; font-weight: bold; margin-top: -10px; width: 100%; border-bottom: 1px solid rgb(238, 238, 238); padding-left: 10px;">充值</p>
+  <table class="recharge_tb">
+    <tbody><tr>
+      <td class="fir">充值方式：</td>
+      <td align="left">
+              <input type="radio" name="onoff" id="onoff_c" value="ONLINE" style="margin:0;">&nbsp;网上充值&nbsp;&nbsp;
+              <input type="radio" name="onoff" id="onoff_c" value="OFFLINE" style="margin:0;">&nbsp;线下交款&nbsp;&nbsp;
+            </td>
+    </tr>
+    <tr style="display:none;" id="offPayway">
+      <td class="fir">线下付款方式：</td>
+      <td align="left">
+      <select name="payChannel">
+              <option value="OFFLINE_CASH">现金</option> 
+              <option value="OFFLINE_TRANSFER">转账</option> 
+              <option value="OFFLINE_TT">电汇</option> 
+            </select>
+      </td>
+    </tr>
+    <tr>
+      <td class="fir">充值积分额：</td>
+      <td align="left">
+        <input name="point" type="text" style="height:30px;">&nbsp;积分
+      </td>
+    </tr>
+    <tr>
+      <td class="fir">手续费：</td>
+      <td align="left">
+       <span id="fee">0</span>% （由支付公司收取）
+      </td>
+    </tr>
+    <tr>
+      <td class="fir">需要付款额：</td>
+      <td align="left">
+        <span id="Payment">0</span>元
+      </td>
+    </tr>
+    <tr>
+      <td class="fir gray" valign="top">说明：</td>
+      <td align="left" class="gray">
+                   网上付款：积分额 * (1 + 1.2%)  = 付款额<br>
+                   每次充值最少 2000 积分<br>
+                   线下付款时须选择付款方式，且无手续费
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <br>
+        <input id="confirm_recharge" type="button" class="btn btn-danger" value="确定充值">&nbsp;&nbsp;<input type="button" class="btn btn-danger" id="close_" value="取消">
+      </td>
+    </tr>
+  </tbody></table>
+</div>
+</div>
+</div>
+<style>
+.recharge_tb td{height:35px;}
+.recharge_tb .fir{text-align:right;width:103px;}
+.gray{color:#ccc;}
+.none{display:none;}
+</style>
+<!--弹窗结束-->
+
 <div class="operate panel panel-default">
     <div class="panel-body" style="height: 50px">
         <div class="pull-left">
@@ -18,7 +87,7 @@
                 <td><span id="pointCredit">{{accountInfo.data.creditAmt}}</span></td>
                 <td><span id="pointBalance">{{accountInfo.data.balance}}</span></td>
                 <td><span id="pointValid">5,171.00</span></td>
-                <td><a class="btn btn-info" ng-click="recharges()">充值</a>&nbsp;<a class="btn btn-info" id="WithdrawCash">提现</a>
+                <td><a class="btn btn-info" ng-click="dialogStyle={'display':'block'}">充值</a>&nbsp;<a class="btn btn-info">提现</a>
             </tr>
         </tbody>
     </table>
@@ -159,25 +228,17 @@
                 <div class="mmg-loadingImg"></div>
             </div>
         </div>
-        <div id="pg" style="text-align: right;" class="mmPaginator">
+        <div id="pg" style="text-align: right;" class="mmPaginator" ng-show="accountInfo.data.totalCount>0">
             <input type="button" class="btn btn-info" value="导出Excel" id="btnExport">
-            <div class="totalCountLabel">共<span>12</span>条记录</div>
+            <div class="totalCountLabel">共<span>{{accountInfo.data.totalCount}}</span>条记录</div>
             <ul class="pageList">
-                <li class="prev disable"><a>«</a></li>
-                <li class="active"><a>1</a></li>
-                <li><a title="第2页">2</a></li>
-                <li class="next"><a title="下一页">»</a></li>
+                <li class="prev" ng-class="{true:'disable'}[currentPage==1]" ng-click="prev()"><a>«</a></li>
+                <li  ng-repeat="page in pages" class="" ng-class="{true:'active'}[page==currentPage]"><a href="javascript:void(0)" ng-click="loadPage(page)">{{page}}</a></li>
+                <li class="next" ng-class="{true:'disable'}[currentPage==totalPage]" ng-click="next()"><a title="下一页" javascript:"void(0)">»</a></li>
             </ul>
             <div class="limit">
-                <select>
-                    <option value="10">每页10条</option>
-                    <option value="20">每页20条</option>
-                    <option value="50">每页50条</option>
-                    <option value="100">每页100条</option>
-                    <option value="200">每页200条</option>
-                    <option value="300">每页300条</option>
-                    <option value="500">每页500条</option>
-                    <option value="1000">每页1000条</option>
+                <select ng-model="pageSize" ng-options="ps for ps in [10, 20, 100]" ng-change="changeLimit()">
+                <option value="{{pageSize}}">{{pageSize}}</option>
                 </select>
             </div>
         </div>
