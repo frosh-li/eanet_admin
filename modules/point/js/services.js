@@ -65,7 +65,9 @@ storeApp.register.factory('monthReportService', ['$resource',
           {
             query: {
               method: 'GET',
-              params: {},
+              params: {
+                merchantId:storeApp.userInfo.merchantID,
+              },
               isArray: false
           }
         })
