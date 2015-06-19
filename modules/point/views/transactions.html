@@ -7,23 +7,24 @@
 </div>
 <div style="background-color:#eee; border:#ddd 1px solid; width:100%; margin-bottom:20px;padding:30px 20px;">
     <form id="_CustomizedQueryForm" onsubmit="javascript:return false;" style="margin:0;">
+
         <div>
             积分变动时间：
             <input type="text" name="startTime" class="datepicker" style="height:30px;" readonly
-                   value="{{earlyDay(-7) | date:'yyyy-MM-dd'}}">&nbsp;&nbsp; 到&nbsp;&nbsp;
+                   ng-model="startTime">&nbsp;&nbsp; 到&nbsp;&nbsp;
             <input type="text" name="endTime"  class="datepicker" style="height:30px;" readonly
-                   value="{{today | date:'yyyy-MM-dd'}}">&nbsp;&nbsp;
-            <input type="button" id="_CustomizedQueryFormbutton" value="查询" class="btn btn-info">
-            <input type="hidden" id="_CustomizedQueryFormSubmit">
+                   ng-model="endTime">&nbsp;&nbsp;
+            <input type="button" ng-click="query()" value="查询" class="btn btn-info">
+            <input type="hidden" >
         </div>
     </form>
     <div style="padding:5px 0 10px 100px;">
-        <span class="timeSearch" role="today"><a href="#">今天</a></span>
-        <span class="timeSearch" role="three"><a href="#">最近3天</a></span>
-        <span class="timeSearch" role="seven"><a href="#">最近7天</a></span>
-        <span class="timeSearch" role="thirty"><a href="#">最近30天</a></span>
-        <span class="timeSearch" role="curmonth"><a href="#">本月</a></span>
-        <span class="timeSearch" role="lastmonth"><a href="#">上月</a></span>
+        <span class="timeSearch" ng-click="earlyDay(0)"><a>今天</a></span>
+        <span class="timeSearch" ng-click="earlyDay(-2)"><a>最近3天</a></span>
+        <span class="timeSearch" ng-click="earlyDay(-6)"><a>最近7天</a></span>
+        <span class="timeSearch" ng-click="earlyDay(-29)"><a>最近30天</a></span>
+        <span class="timeSearch" ng-click="earlyMonth(0)"><a>本月</a></span>
+        <span class="timeSearch" ng-click="earlyMonth(-1)"><a>上月</a></span>
     </div>
     <table class="table table-bordered" style="background-color:#fff;">
         <tbody>
@@ -36,12 +37,12 @@
                 <td>积分累计</td>
             </tr>
             <tr>
-                <td id="pointInc">0.00</td>
-                <td id="pointDec">0.00</td>
-                <td id="pointReg">0.00</td>
-                <td id="PointRecharge">0.00</td>
-                <td id="PointCash">0.00</td>
-                <td id="PointTotal">0.00</td>
+                <td>{{transactionData.result.pointAdd}}</td>
+                <td>{{transactionData.result.pointReduce}}</td>
+                <td>{{transactionData.result.pointBalance()}}</td>
+                <td>{{transactionData.result.recharge}}</td>
+                <td>{{transactionData.result.withdraw}}</td>
+                <td>{{transactionData.result.pointTotal()}}</td>
             </tr>
         </tbody>
     </table>
@@ -190,3 +191,7 @@
     </main>
     <div class="pull-left" style="margin-top:-33px;" id="batchActions"></div>
 </div>
+
+
+
+

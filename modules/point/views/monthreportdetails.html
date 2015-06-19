@@ -1,52 +1,89 @@
-<style>
-.left{float:left;}
-.rechar{ margin-right:20px;}
-.rechar p{font-weight:bold;margin-top:10px;}
-.table-bordered th, .table-bordered td {text-align:center;}
-</style>
-<h2 class="boxTitle">积分账户月度对账明细</h2>
-<div style="width:100%;">
-  <p>2015年04月积分累计：0.00<span style="margin-left:100px;">商户名称：青岛CBD万达广场1</span></p>
-  <div style="width:250px;" class="left rechar">
-    <p>积分增加</p>
-    <table class="table table-bordered">
-      <tbody><tr>
-        <th>类型</th>
-        <th>金额</th>
-      </tr>
-            <tr>
-        <td colspan="2" align="center">暂无数据</td>
-      </tr>
-          </tbody></table>
+<div class="row">
+  <div class="col-xs-12">
+    <style>
+      .left {
+        float: left;
+      }
+
+      .rechar {
+        margin-right: 20px;
+      }
+
+      .rechar p {
+        font-weight: bold;
+        margin-top: 10px;
+      }
+
+      .table-bordered th, .table-bordered td {
+        text-align: center;
+      }
+    </style>
+    <h2 class="boxTitle">积分账户月度对账明细</h2>
+    <div style="width:100%;">
+      <p>{{month}}月积分累计：0.00<span style="margin-left:100px;">商户名称：青岛CBD万达广场1</span></p>
+
+      <div style="width:250px;" class="left rechar">
+        <p>积分增加</p>
+        <table class="table table-bordered">
+          <tbody>
+          <tr>
+            <th>类型</th>
+            <th>金额</th>
+          </tr>
+          <tr ng-repeat="item in monthDetailInfo.data.pointAddList">
+            <td>{{item.type}}</td>
+            <td>{{item.pointAmt}}</td>
+          </tr>
+          <tr ng-show="pointReduceTotal">
+            <td colspan="2" align="center">暂无数据</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="width:250px;" class="left rechar">
+        <p>积分减少</p>
+        <table class="table table-bordered">
+          <tbody>
+          <tr>
+            <th>类型</th>
+            <th>金额</th>
+          </tr>
+          <tr ng-repeat="item in monthDetailInfo.data.pointReduceList">
+            <td>{{item.type}}</td>
+            <td>{{item.pointAmt}}</td>
+          </tr>
+          <tr ng-show="pointReduceTotal">
+            <td colspan="2" align="center">暂无数据</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="width:400px;" class="left rechar">
+        <p>充值还款提现</p>
+        <table class="table table-bordered">
+          <tbody>
+          <tr>
+            <th>时间</th>
+            <th>类型</th>
+            <th>金额</th>
+          </tr>
+          <tr ng-repeat="item in monthDetailInfo.data.rwList">
+            <td>{{item.orderTime}}</td>
+            <td>{{item.type}}</td>
+            <td>{{item.pointAmt}}</td>
+          </tr>
+          <tr ng-show="rwList">
+            <td colspan="3" align="center">暂无数据</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="clear:both;"></div>
+      <p><a class="btn btn-info" href="javascript:history.back()">返回</a></p>
+
+      <p style="color:red;">
+        * 如果数据有误，请尽快联系客服进行咨询，客服热线：400-950-6677
+      </p>
+    </div>
   </div>
-  <div style="width:250px;" class="left rechar">
-    <p>积分减少</p>
-    <table class="table table-bordered">
-      <tbody><tr>
-        <th>类型</th>
-        <th>金额</th>
-      </tr>
-            <tr>
-        <td colspan="2" align="center">暂无数据</td>
-      </tr>
-          </tbody></table>
-  </div>
-  <div style="width:400px;" class="left rechar">
-   <p>充值还款提现</p>
-    <table class="table table-bordered">
-      <tbody><tr>
-        <th>时间</th>
-        <th>类型</th>
-        <th>金额</th>
-      </tr>
-            <tr>
-        <td colspan="3" align="center">暂无数据</td>
-      </tr>
-          </tbody></table>
-  </div>
-  <div style="clear:both;"></div>
-  <p><a class="btn btn-info" href="javascript:history.back()">返回</a></p>
-  <p style="color:red;">
-    * 如果数据有误，请尽快联系客服进行咨询，客服热线：400-950-6677
-  </p>
 </div>
