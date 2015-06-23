@@ -2,78 +2,107 @@
 
 //账户总览
 storeApp.register.controller('account', ['$scope', 'accountService',
-  function($scope, accountService) {
+    function($scope, accountService) {
+        $scope.currentPage = 1;
+        $scope.totalPage = 1;
+        $scope.pageSize = 10;
+        $scope.pages = [];
+        $scope.endPage = 1;
 
-    $scope.currentPage = 1;
-    $scope.totalPage = 1;
-    $scope.pageSize = 10;
-    $scope.pages = [];
-    $scope.endPage = 1;
+        $scope.load = function() {
+            $scope.accountInfo = accountService.query({
+                    merchantId: storeApp.userInfo.merchantID,
+                    offset: $scope.currentPage,
+                    limit: $scope.pageSize
+                },
+                function() {
+                    // 数据返回成功
+                    $scope.totalCount = $scope.accountInfo.data.totalCount;
+                    $scope.totalPage = Math.ceil($scope.totalCount / $scope.pageSize);
+                    $scope.endPage = $scope.totalPage;
+                    //生成数字链接
+                    if ($scope.currentPage > 1 && $scope.currentPage < $scope.totalPage) {
+                        $scope.pages = [
+                            $scope.currentPage - 1,
+                            $scope.currentPage,
+                            $scope.currentPage + 1
+                        ];
+                    } else if ($scope.currentPage == 1 && $scope.totalPage > 1) {
+                        $scope.pages = [
+                            $scope.currentPage,
+                            $scope.currentPage + 1
+                        ];
+                    } else if ($scope.currentPage == $scope.totalPage && $scope.totalPage > 1) {
+                        $scope.pages = [
+                            $scope.currentPage - 1,
+                            $scope.currentPage
+                        ];
+                    }
+                    console.log($scope);
+                },
+                function() {
+                    // 数据返回失败
+                    console.log("response failed!");
+                }
+            );
+        };
 
-    $scope.load = function() {
-      $scope.accountInfo = accountService.query({
-            merchantId: storeApp.userInfo.merchantID,
-            offset: $scope.currentPage,
-            limit: $scope.pageSize
-          },
-          function() {
-            // 数据返回成功
-            $scope.totalCount = $scope.accountInfo.data.totalCount;
-            $scope.totalPage = Math.ceil($scope.totalCount / $scope.pageSize);
-            $scope.endPage = $scope.totalPage;
-            //生成数字链接
-            if ($scope.currentPage > 1 && $scope.currentPage < $scope.totalPage) {
-              $scope.pages = [
-                $scope.currentPage - 1,
-                $scope.currentPage,
-                $scope.currentPage + 1
-              ];
-            } else if ($scope.currentPage == 1 && $scope.totalPage > 1) {
-              $scope.pages = [
-                $scope.currentPage,
-                $scope.currentPage + 1
-              ];
-            } else if ($scope.currentPage == $scope.totalPage && $scope.totalPage > 1) {
-              $scope.pages = [
-                $scope.currentPage - 1,
-                $scope.currentPage
-              ];
+        $scope.load();
+
+        $scope.next = function() {
+            if ($scope.currentPage < $scope.totalPage) {
+                $scope.currentPage++;
+                $scope.load();
             }
-            console.log($scope);
-          },
-          function() {
-            // 数据返回失败
-            console.log("response failed!");
-          }
-      );
-    };
+        };
 
-    $scope.load();
+        $scope.prev = function() {
+            if ($scope.currentPage > 1) {
+                $scope.currentPage--;
+                $scope.load();
+            }
+        };
 
-    $scope.next = function() {
-      if ($scope.currentPage < $scope.totalPage) {
-        $scope.currentPage++;
-        $scope.load();
-      }
-    };
+        $scope.loadPage = function(page) {
+            $scope.currentPage = page;
+            $scope.load();
+        };
 
-    $scope.prev = function() {
-      if ($scope.currentPage > 1) {
-        $scope.currentPage--;
-        $scope.load();
-      }
-    };
-
-    $scope.loadPage = function(page) {
-      $scope.currentPage = page;
-      $scope.load();
-    };
-
-    $scope.changeLimit = function() {
-      $scope.currentPage = 1;
-      $scope.load();
-    };
-  }
+        $scope.changeLimit = function() {
+            $scope.currentPage = 1;
+            $scope.load();
+        };
+        // 充值
+        $scope.rechargeInfo = {
+            rechargePoint: "",
+            rechargePointMin: 2000,
+            onoff: "",
+            payChannel: "OFFLINE_CASH",
+            feeRate: 0,
+            fee: 0,
+            rechargePointWatch: function() {
+                var point = Number(this.rechargePoint);
+                if (this.rechargePoint != "") {
+                    if (isNaN(point)) {
+                        this.rechargePoint = this.rechargePoint.substring(0, this.rechargePoint.length - 1);
+                    } else {
+                        this.fee = (point * (1 + this.feeRate * 0.01)).toFixed(2);
+                    }
+                }
+            },
+            radioChange: function() {
+                this.rechargePoint = "";
+                this.feeRate = this.onoff == "ONLINE" ? 1.2 : 0;
+                this.fee = 0;
+            },
+            // 确定充值
+            confirmRecharge: function() {
+                if (Number(this.rechargePoint) < this.rechargePointMin) {
+                    alert('每次充值额最少' + this.rechargePointMin + '积分');
+                };
+            }
+        }
+    }
 ]);
 
 //账户提现

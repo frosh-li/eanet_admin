@@ -9,14 +9,14 @@
     <tbody><tr>
       <td class="fir">充值方式：</td>
       <td align="left">
-              <input type="radio" name="onoff" id="onoff_c" value="ONLINE" style="margin:0;">&nbsp;网上充值&nbsp;&nbsp;
-              <input type="radio" name="onoff" id="onoff_c" value="OFFLINE" style="margin:0;">&nbsp;线下交款&nbsp;&nbsp;
-            </td>
+          <input ng-click="offlineRechargeStyle={'display':'none'}" type="radio" name="onoff" id="onoff_c" value="ONLINE" style="margin:0;" ng-model="rechargeInfo.onoff" ng-change="rechargeInfo.radioChange()">&nbsp;网上充值&nbsp;&nbsp;
+          <input ng-click="offlineRechargeStyle={'display':''}" type="radio" name="onoff" id="onoff_c" value="OFFLINE" style="margin:0;" ng-model="rechargeInfo.onoff" ng-change="rechargeInfo.radioChange()">&nbsp;线下交款&nbsp;&nbsp;
+        </td>
     </tr>
-    <tr style="display:none;" id="offPayway">
+    <tr style="display:none;" ng-style="offlineRechargeStyle" id="offPayway">
       <td class="fir">线下付款方式：</td>
       <td align="left">
-      <select name="payChannel">
+      <select name="payChannel" style="width:206px" ng-model="rechargeInfo.payChannel">
               <option value="OFFLINE_CASH">现金</option> 
               <option value="OFFLINE_TRANSFER">转账</option> 
               <option value="OFFLINE_TT">电汇</option> 
@@ -26,19 +26,19 @@
     <tr>
       <td class="fir">充值积分额：</td>
       <td align="left">
-        <input name="point" type="text" style="height:30px;">&nbsp;积分
+        <input ng-model="rechargeInfo.rechargePoint" name="point" type="text" style="height:30px;" ng-change="rechargeInfo.rechargePointWatch()">&nbsp;积分
       </td>
     </tr>
     <tr>
       <td class="fir">手续费：</td>
       <td align="left">
-       <span id="fee">0</span>% （由支付公司收取）
+       <span id="fee">{{rechargeInfo.feeRate}}</span>% （由支付公司收取）
       </td>
     </tr>
     <tr>
       <td class="fir">需要付款额：</td>
       <td align="left">
-        <span id="Payment">0</span>元
+        <span id="Payment">{{rechargeInfo.fee}}</span>元
       </td>
     </tr>
     <tr>
@@ -52,7 +52,7 @@
     <tr>
       <td colspan="2">
         <br>
-        <input id="confirm_recharge" type="button" class="btn btn-danger" value="确定充值">&nbsp;&nbsp;<input type="button" class="btn btn-danger" id="close_" value="取消">
+        <input id="confirm_recharge" type="button" class="btn btn-danger" value="确定充值" ng-click="rechargeInfo.confirmRecharge()">&nbsp;&nbsp;<input type="button" class="btn btn-danger" id="close_" value="取消" ng-click="dialogStyle={'display':'none'}">
       </td>
     </tr>
   </tbody></table>
