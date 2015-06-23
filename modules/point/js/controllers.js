@@ -99,7 +99,10 @@ storeApp.register.controller('account', ['$scope', 'accountService',
             confirmRecharge: function() {
                 if (Number(this.rechargePoint) < this.rechargePointMin) {
                     alert('每次充值额最少' + this.rechargePointMin + '积分');
-                };
+                }
+                else{
+
+                }
             }
         }
     }
@@ -107,21 +110,37 @@ storeApp.register.controller('account', ['$scope', 'accountService',
 
 //账户提现
 storeApp.register.controller('drawcash', ['$scope', 'drawcashService',
-  function($scope, drawcashService) {
-    // 积分
-    $scope.point = '';
-    $scope.withdraw = function() {
-      $scope.drawResult = drawcashService.save({
-        merchantId: storeApp.userInfo.merchantID,
-        point: $scope.point,
-        operaterId: storeApp.userInfo.uid
-      }, function() {
-        // 操作成功
+    function($scope, drawcashService) {
+        // 积分
+        $scope.point = '';
+        $scope.pointMin = 5000;
 
-      }, function() {});
+        $scope.withdraw = function() {
+            if ($scope.point == '' || isNaN(Number($scope.point)) || Number($scope.point) < $scope.pointMin) {
+                alert('提现金额不能小于' + $scope.pointMin);
+                return;
+            }
+            $scope.drawResult = drawcashService.save({
+                merchantId: storeApp.userInfo.merchantID,
+                point: $scope.point,
+                operaterId: storeApp.userInfo.uid
+            }, function() {
+                // 操作成功
+                if ($scope.drawResult.status == 200) {
+                    alert("积分提现成功");
+                } else {
+                    alert($scope.drawResult.message);
+                }
+            }, function() {
+                alert("网络异常，请稍后重试");
+            });
+        }
     }
-  }
 ]);
+
+
+
+
 
 //交易明细
 storeApp.register.controller('transactions', ['$scope', 'transactionService','$filter','calculateService',

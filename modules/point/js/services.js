@@ -23,15 +23,23 @@ storeApp.register.factory('drawcashService', ['$resource',
       save: {
         method: 'POST',
         params: {
-          merchantId: "@merchantId",
-          point: "@point",
-          operaterId: "@operaterId"
+          
         },
         isArray: false
       }
     });
   }
 ]);
+
+//积分提现记录
+storeApp.register.factory('cashRecordService', ['$resource',
+    function($resource) {
+        return $resource(globalConfig + 'point/pv/v1/withdraws', {}, {
+
+        });
+    }
+]);
+
 
 //积分交易明细
 storeApp.register.factory('transactionService',['$resource',
