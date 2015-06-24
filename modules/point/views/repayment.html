@@ -169,36 +169,44 @@
             <div class="mmg-bodyWrapper" style="height: auto; width: auto;">
                 <table id="mmg" class="mmg mmg-body" style="width: 1171px;">
                     <tbody>
-                        <tr class="emptyRow">
-                            <td style="border: 0px;background: none;">&nbsp;</td>
+                        <tr class="emptyRow" ng-show="dataError">
+                            <td style="border: 0px;background: none;">
+                                <div style="text-align: center;">你的查询条件错误或查询结果不存在，请重新查询！</div>
+                            </td>
                         </tr>
+                        <tr ng-repeat="item in repaymentInfo.data.list">
+                            <td>{{item.createTime}}</td>
+                            <td>{{item.rechargeTime}}</td>
+                            <td>{{item.orderNo}}</td>
+                            <td>{{item.pointAmount}}</td>
+                            <td>{{item.payAmount}}</td>
+                            <td>{{item.orderStatus}}</td>
+                            <td>{{item.payType}}</td>
+                            <td>{{item.payChannel}}</td>
+                            <td>{{item.financeFlag}}</td>
+                            <td>
+                                <span class=""><a class="btn btn-info" href="/point/account/pay?orderNo=1435111045538&amp;payAmount=0.01&amp;payOrderNo=20150624095725001153">付款</a></span>
+                            </td>
+                        </tr>
+
                     </tbody>
                 </table>
             </div>
             <a class="mmg-btnBackboardDn" style="top: 35px; display: none;"></a>
-            <div class="mmg-message" style="left: 436px; top: 42px; display: block;">你的查询条件错误或查询结果不存在，请重新查询！</div>
-            <div class="mmg-mask mmg-transparent" style="display: none;"></div>
-            <div class="mmg-loading" style="left: 569.5px; top: 25.5px; display: none;">
-                <div class="mmg-loadingImg"></div>
-            </div>
+            <div loading></div>
         </div>
-        <div id="pg" style="text-align: right;" class="mmPaginator">
-            <div class="totalCountLabel">共<span>0</span>条记录</div>
+        <!--分页-->
+        <div id="pg" style="text-align: right;" class="mmPaginator" ng-show="repaymentInfo.data.total>0">
+            <input type="button" class="btn btn-info" value="导出Excel" id="btnExport">
+            <div class="totalCountLabel">共<span>{{repaymentInfo.data.total}}</span>条记录</div>
             <ul class="pageList">
-                <li class="prev disable"><a>«</a></li>
-                <li class="active"><a>1</a></li>
-                <li class="next disable"><a title="下一页">»</a></li>
+                <li class="prev" ng-class="{true:'disable'}[currentPage==1]" ng-click="prev()"><a>«</a></li>
+                <li  ng-repeat="page in pages" class="" ng-class="{true:'active'}[page==currentPage]"><a href="javascript:void(0)" ng-click="loadPage(page)">{{page}}</a></li>
+                <li class="next" ng-class="{true:'disable'}[currentPage==totalPage]" ng-click="next()"><a title="下一页" javascript:"void(0)">»</a></li>
             </ul>
             <div class="limit">
-                <select>
-                    <option value="10">每页10条</option>
-                    <option value="20">每页20条</option>
-                    <option value="50">每页50条</option>
-                    <option value="100">每页100条</option>
-                    <option value="200">每页200条</option>
-                    <option value="300">每页300条</option>
-                    <option value="500">每页500条</option>
-                    <option value="1000">每页1000条</option>
+                <select ng-model="pageSize" ng-options="ps for ps in [5, 10, 100]" ng-change="changeLimit()">
+                    <option value="{{pageSize}}">{{pageSize}}</option>
                 </select>
             </div>
         </div>

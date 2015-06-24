@@ -37,7 +37,7 @@
                 <td>{{item.recharge}}</td>
                 <td>{{item.withdraw}}</td>
                 <td>{{monthReportDataL.pointTotal($index)}}</td>
-                <td><a href="#/point/monthReportDetails/{{item.period}}">查看明细</a></td>
+                <td><a href="#/point/monthReportDetails/{{item.period}}/{{monthReportDataL.pointTotal($index)}}">查看明细</a></td>
             </tr>
         </tbody>
     </table>

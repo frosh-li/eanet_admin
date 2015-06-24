@@ -56,33 +56,33 @@
         <div class="mmGrid" style="width: auto; height: auto;">
             <style>
             .mmGrid .mmg11d87-col0 {
-                width: 196px;
-                max-width: 196px;
+                width: 148px;
+                max-width: 148px;
             }
-            
+
             .mmGrid .mmg11d87-col1 {
-                width: 195px;
-                max-width: 195px;
+                width: 147px;
+                max-width: 147px;
             }
-            
+
             .mmGrid .mmg11d87-col2 {
-                width: 195px;
-                max-width: 195px;
+                width: 147px;
+                max-width: 147px;
             }
-            
+
             .mmGrid .mmg11d87-col3 {
-                width: 195px;
-                max-width: 195px;
+                width: 147px;
+                max-width: 147px;
             }
-            
+
             .mmGrid .mmg11d87-col4 {
-                width: 195px;
-                max-width: 195px;
+                width: 147px;
+                max-width: 147px;
             }
-            
+
             .mmGrid .mmg11d87-col5 {
-                width: 195px;
-                max-width: 195px;
+                width: 147px;
+                max-width: 147px;
             }
             </style>
             <div class="mmg-headWrapper">
@@ -157,34 +157,35 @@
             </div>
             <div class="mmg-bodyWrapper" style="height: auto; width: auto;">
                 <table id="mmg" class="mmg mmg-body" style="width: 1171px;">
-                    <tbody></tbody>
+                    <tbody>
+                    <tr ng-repeat="item in transactionDataDetail">
+                        <td class="mmg11d87-col0">{{item.orderTime}}</td>
+                        <td class="mmg11d87-col1">{{item.orderNo}}</td>
+                        <td class="mmg11d87-col2">{{item.orderType}}</td>
+                        <td class="mmg11d87-col3">{{item.pointAmt}}</td>
+                        <td class="mmg11d87-col4">{{item.storeId}}</td>
+                        <td class="mmg11d87-col5">{{item.storeId}}</td>
+                    </tr>
+                    </tbody>
                 </table>
             </div>
             <a class="mmg-btnBackboardDn" style="top: 35px; display: none;"></a>
             <div class="mmg-message" style="display: none;">你的查询条件错误或查询结果不存在，请重新查询！</div>
-            <div class="mmg-mask mmg-transparent" style="display: none;"></div>
-            <div class="mmg-loading" style="left: 569.5px; top: 25.5px; display: none;">
-                <div class="mmg-loadingImg"></div>
-            </div>
+            <div loading></div>
         </div>
-        <div id="pg" style="text-align: right;" class="mmPaginator">
+
+        <!--分页-->
+        <div id="pg" style="text-align: right;" class="mmPaginator" ng-show="transactionData.totalCount>0">
             <input type="button" class="btn btn-info" value="导出Excel" id="btnExport">
-            <div class="totalCountLabel">共<span>0</span>条记录</div>
+            <div class="totalCountLabel">共<span>{{transactionData.totalCount}}</span>条记录</div>
             <ul class="pageList">
-                <li class="prev disable"><a>«</a></li>
-                <li class="active"><a>1</a></li>
-                <li class="next disable"><a title="下一页">»</a></li>
+                <li class="prev" ng-class="{true:'disable'}[currentPage==1]" ng-click="prev()"><a>«</a></li>
+                <li  ng-repeat="page in pages" class="" ng-class="{true:'active'}[page==currentPage]"><a href="javascript:void(0)" ng-click="loadPage(page)">{{page}}</a></li>
+                <li class="next" ng-class="{true:'disable'}[currentPage==totalPage]" ng-click="next()"><a title="下一页" javascript:"void(0)">»</a></li>
             </ul>
             <div class="limit">
-                <select>
-                    <option value="10">每页10条</option>
-                    <option value="20">每页20条</option>
-                    <option value="50">每页50条</option>
-                    <option value="100">每页100条</option>
-                    <option value="200">每页200条</option>
-                    <option value="300">每页300条</option>
-                    <option value="500">每页500条</option>
-                    <option value="1000">每页1000条</option>
+                <select ng-model="pageSize" ng-options="ps for ps in [10, 20, 100]" ng-change="changeLimit()">
+                    <option value="{{pageSize}}">{{pageSize}}</option>
                 </select>
             </div>
         </div>

@@ -80,7 +80,7 @@ storeApp.config(['$routeProvider', function($routeProvider) {
                 load: storeApp.asyncjs()
             }
         })
-        .when('/point/monthReportDetails/:period', {
+        .when('/point/monthReportDetails/:period/:pointTotal', {
             templateUrl: domain + '/views/monthreportdetails.html',
             controller: 'monthreportdetails',
             resolve: {

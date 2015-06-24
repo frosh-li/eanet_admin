@@ -121,6 +121,42 @@ storeApp.register.factory('monthDetailService', ['$resource',
   }
 ]);
 
+//充值还款记录
+storeApp.register.factory('repaymentService',['$resource',
+    function ($resource) {
+      return $resource(
+          globalConfig.api + 'point/pf/v1/recharges',
+          {},
+          {
+            query:{
+              method:'GET',
+              params:{},
+              isArray:false
+            }
+          }
+
+      )
+
+}]);
+
+//提现记录
+storeApp.register.factory('cashRecordService',['$resource',
+  function ($resource) {
+    return $resource(
+        globalConfig.api + 'point/pf/v1/withdraws',
+        {},
+        {
+          query:{
+            method:'GET',
+            params:{},
+            isArray:false
+          }
+        }
+
+    )
+
+  }]);
+
 //计算
 storeApp.register.factory('calculateService',[
     function () {

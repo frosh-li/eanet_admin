@@ -140,18 +140,26 @@
             <div class="mmg-bodyWrapper" style="height: auto; width: auto;">
                 <table id="mmg" class="mmg mmg-body" style="width: 1171px;">
                     <tbody>
-                        <tr class="emptyRow">
-                            <td style="border: 0px;background: none;">&nbsp;</td>
+                        <tr class="emptyRow" ng-show="dataError">
+                            <td style="border: 0px;background: none;">
+                                <div style="text-align: center">你的查询条件错误或查询结果不存在，请重新查询！</div>
+                            </td>
+                        </tr>
+                        <tr ng-repeat="item in repaymentInfo.data.list">
+                            <td>{{item.createTime}}</td>
+                            <td>{{item.auditTime}}</td>
+                            <td>{{item.payTime}}</td>
+                            <td>{{item.orderNo}}</td>
+                            <td>{{item.payAmount}}</td>
+                            <td>{{item.orderStatus}}</td>
+                            <td>{{item.payStatus}}</td>
+                            <td>操作</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <a class="mmg-btnBackboardDn" style="top: 35px; display: none;"></a>
-            <div class="mmg-message" style="left: 436px; top: 42px; display: block;">你的查询条件错误或查询结果不存在，请重新查询！</div>
-            <div class="mmg-mask mmg-transparent" style="display: none;"></div>
-            <div class="mmg-loading" style="left: 569.5px; top: 25.5px; display: none;">
-                <div class="mmg-loadingImg"></div>
-            </div>
+            <div loading></div>
         </div>
         <div id="pg" style="text-align: right;" class="mmPaginator">
             <div class="totalCountLabel">共<span>0</span>条记录</div>
