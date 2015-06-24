@@ -29,6 +29,59 @@ storeApp.register.factory('rechargeService', ['$resource',
     }
 ]);
 
+//积分充值确认页：获取订单详情
+storeApp.register.factory('rechargeConfirmService', ['$resource',
+    function($resource) {
+        return $resource(globalConfig.api + 'point/pf/v1/recharges/:orderNo', {orderNo: "@orderNo"}, {
+            query: {
+                method: "GET",
+                params: {},
+                isArray: false
+            }
+        });
+    }
+]);
+
+
+//获取积分充值的支付方式
+storeApp.register.factory('getPayTypeService', ['$resource', 
+  function($resource) {
+    return $resource(globalConfig.api + 'point/pay/v2/cashiers', {}, {
+        query: {
+            method: "GET",
+            params: {
+                partnerId: "@partnerId",
+                platformId: "@platformId",
+                channelId: "@channelId",
+                channelType: "@channelType"
+            },
+            isArray: false
+        }
+    });
+}]);
+
+// 获取支付URL
+storeApp.register.factory('getPayUrlService', ['$resource',
+    function($resource) {
+        return $resource(globalConfig.api + 'point/pay/v2/payUrls', {}, {
+            query: {
+                method: "GET",
+                params: {
+                    partnerId: "@partnerId",
+                    platformId: "@platformId",
+                    channelType: "@channelType",
+                    ip: "@ip",
+                    payOrderNos: "@payOrderNos",
+                    memberId: "@memberId",
+                    callbackUrl: "@callbackUrl"
+                },
+                isArray: false
+            }
+        });
+    }
+]);
+
+
 
 //积分提现
 storeApp.register.factory('drawcashService', ['$resource',

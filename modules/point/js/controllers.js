@@ -101,7 +101,7 @@ storeApp.register.controller('account', ['$scope', 'accountService', 'rechargeSe
                     alert('每次充值额最少' + this.rechargePointMin + '积分');
                     return;
                 }
-                
+
                 $scope.rechargeResult = rechargeService.save({
                     merchantId: storeApp.userInfo.merchantID,
                     onoff: this.onoff,
@@ -110,7 +110,14 @@ storeApp.register.controller('account', ['$scope', 'accountService', 'rechargeSe
                 }, function() {
                     if ($scope.rechargeResult.status == 200) {
                         // 充值成功
-
+                        if ($scope.rechargeInfo.onoff == "OFFLINE") {
+                            alert("操作成功");
+                            $scope.dialogStyle = {
+                                "display": "none"
+                            };
+                        } else {
+                            location.href = "/#/point/account/pay/" + $scope.rechargeResult.data.orderNo;
+                        }
                     } else {
                         alert($scope.rechargeResult.message);
                     }
@@ -121,6 +128,7 @@ storeApp.register.controller('account', ['$scope', 'accountService', 'rechargeSe
         }
     }
 ]);
+
 
 
 
@@ -513,8 +521,10 @@ storeApp.register.controller('monthreportdetails', ['$scope', '$routeParams', 'm
 ]);
 
 // 积分充值页
-storeApp.register.controller('pointrecharge', ['$scope',
-    function($scope) {
+storeApp.register.controller('rechargeconfirm', ['$scope', 'rechargeConfirmService', 'getPayTypeService', 'getPayUrlService',
+    function($scope, rechargeConfirmService, getPayTypeService, getPayUrlService) {
 
     }
 ]);
+
+
