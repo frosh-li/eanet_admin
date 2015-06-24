@@ -1,8 +1,8 @@
 'use strict';
 
 //账户总览
-storeApp.register.controller('account', ['$scope', 'accountService',
-    function($scope, accountService) {
+storeApp.register.controller('account', ['$scope', 'accountService', 'rechargeService',
+    function($scope, accountService, rechargeService) {
         $scope.currentPage = 1;
         $scope.totalPage = 1;
         $scope.pageSize = 10;
@@ -99,14 +99,30 @@ storeApp.register.controller('account', ['$scope', 'accountService',
             confirmRecharge: function() {
                 if (Number(this.rechargePoint) < this.rechargePointMin) {
                     alert('每次充值额最少' + this.rechargePointMin + '积分');
+                    return;
                 }
-                else{
+                
+                $scope.rechargeResult = rechargeService.save({
+                    merchantId: storeApp.userInfo.merchantID,
+                    onoff: this.onoff,
+                    point: this.rechargePoint,
+                    payChannel: this.payChannel
+                }, function() {
+                    if ($scope.rechargeResult.status == 200) {
+                        // 充值成功
 
-                }
+                    } else {
+                        alert($scope.rechargeResult.message);
+                    }
+                }, function() {
+                    alert("网络异常，请稍后重试");
+                });
             }
         }
     }
 ]);
+
+
 
 //账户提现
 storeApp.register.controller('drawcash', ['$scope', 'drawcashService',
@@ -256,8 +272,8 @@ storeApp.register.controller('repayment', ['$scope',
 ])
 
 //提现记录
-storeApp.register.controller('cashrecord', ['$scope',
-  function($scope) {
+storeApp.register.controller('cashrecord', ['$scope','cashRecordService',
+  function($scope,cashRecordService) {
 
   }
 ])
@@ -288,4 +304,11 @@ storeApp.register.controller('monthreportdetails', ['$scope', '$routeParams', 'm
         }
     );
   }
+]);
+
+// 积分充值页
+storeApp.register.controller('pointrecharge', ['$scope',
+    function($scope) {
+
+    }
 ]);

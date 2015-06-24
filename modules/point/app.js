@@ -86,6 +86,13 @@ storeApp.config(['$routeProvider', function($routeProvider) {
             resolve: {
                 load: storeApp.asyncjs()
             }
+        })
+        .when('/point/account/pay',{
+            templateUrl:domain+'/views/pointrecharge.html',
+            controller:'pointrecharge',
+            resolve:{
+                load:storeApp.asyncjs()
+            }
         });
 
 }]);

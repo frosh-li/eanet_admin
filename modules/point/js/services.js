@@ -16,15 +16,27 @@ storeApp.register.factory('accountService', ['$resource',
   }
 ]);
 
+//账户充值
+storeApp.register.factory('rechargeService', ['$resource',
+    function($resource) {
+        return $resource(globalConfig.api + 'point/pf/v1/recharges', {}, {
+            save: {
+                method: "POST",
+                params: {},
+                isArray: false
+            }
+        });
+    }
+]);
+
+
 //积分提现
 storeApp.register.factory('drawcashService', ['$resource',
   function($resource) {
     return $resource(globalConfig.api + 'point/pf/v1/withdraws', {}, {
       save: {
         method: 'POST',
-        params: {
-          
-        },
+        params: {},
         isArray: false
       }
     });
@@ -35,10 +47,17 @@ storeApp.register.factory('drawcashService', ['$resource',
 storeApp.register.factory('cashRecordService', ['$resource',
     function($resource) {
         return $resource(globalConfig + 'point/pv/v1/withdraws', {}, {
-
+            query: {
+                method: "GET",
+                params: {
+                  merchantId:"@merchantId"
+                },
+                isArray: false
+            }
         });
     }
 ]);
+
 
 
 //积分交易明细
