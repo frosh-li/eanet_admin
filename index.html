@@ -1,196 +1,103 @@
 <!DOCTYPE html>
-<html xmlns:ng="http://angularjs.org" ng-app="storeApp">
-<head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-    <title>飞凡智慧生活O2O开放平台商户管理中心</title>
-    <link rel="shortcut icon" href="favicon.ico">
-    <!--link type="text/css" rel="stylesheet" href="css/reset.css" /-->
-    <link type="text/css" rel="stylesheet" href="css/font-awesome.min.css" />
-    <link type="text/css" rel="stylesheet" href="js/libs/bower_components/ng-table/ng-table.css" />
-    <link type="text/css" rel="stylesheet" href="js/libs/bower_components//bootstrap/dist/css/bootstrap.css" />
-    <link rel="stylesheet" type="text/css" href="css/ace.min.css">
-    <link rel="stylesheet" href="css/ace-fonts.css" />
-    <link rel="stylesheet" href="css/ace-rtl.min.css" />
-    <link rel="stylesheet" href="css/ace-skins.min.css" />
-    <link type="text/css" rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" type="text/css" href="static/mmgrid/src/mmGrid.css">
-    <link type="text/css" rel="stylesheet" href="static/mmgrid/src/theme/bootstrap/mmGrid-bootstrap.css" />
-    <link rel="stylesheet" type="text/css" href="static/mmgrid/src/mmPaginator.css">
-    <link rel="stylesheet" type="text/css" href="static/mmgrid/src/theme/bootstrap/mmPaginator-bootstrap.css">
-    <link rel="stylesheet" type="text/css" href="css/draggable.css">
-	<link href="static/jquery-ui/themes/base/theme.css" rel="stylesheet">
-	<link href="static/jquery-ui/themes/base/datepicker.css" rel="stylesheet">
+<html ng-app="storeApp">
+    <head>
+        <title>e遨网</title>
+        <meta charset="utf-8" />
+        <!-- Bootstrap -->
+        <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+        <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+        <link href="vendors/easypiechart/jquery.easy-pie-chart.css" rel="stylesheet" media="screen">
+        <link href="js/libs/bower_components/ng-table/ng-table.min.css" rel="stylesheet" />
+        <link href="assets/styles.css" rel="stylesheet" media="screen">
+        <link href="assets/DT_bootstrap.css" rel="stylesheet" media="screen">
+        <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+        <!--[if lt IE 9]>
+            <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        <script src="vendors/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+    </head>
 
-    <style type="text/css">
-        @charset "UTF-8";
-        [ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide{ display:none !important; }
-        ng\\:form{ display:block; }.ng-animate-start{ border-spacing:1px 1px;-ms-zoom:1.0001; }.ng-animate-active{ border-spacing:0px 0px;-ms-zoom:1; }
+    <body>
+        <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container-fluid">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> <span class="icon-bar"></span>
+                     <span class="icon-bar"></span>
+                     <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="#">e遨网管理后台</a>
+                    <div class="nav-collapse collapse">
+                        <ul class="nav pull-right">
+                            <li class="dropdown">
+                                <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"> <i class="icon-user"></i> Vincent Gabriel <i class="caret"></i>
 
-        #ajaxLoading{
-            background-color:green;
-            color:white;
-            padding:5px 20px;
-            position: absolute;
-            top:0;
-            z-index: 10000;
-            width:300px;
-            left:50%;
-            margin-left:-150px;
-            text-align: center;
-
-        }
-    </style>
-
-</head>
-
-<body ng-controller = "mainController">
-    <div id="ajaxLoading" style="display:none;">Data Loading, Please Just Wait.....</div>
-    <div class="navbar navbar-default headerBox merchantHead" id="navbar">
-
-    <div class="navbar-container" id="navbar-container">
-        <div class="navbar-header pull-left headerPic">
-            <a href="###" class="navbar-brand"><img src="img/logoPic2.png" /></a><!-- /.brand -->
-            <span>飞凡智慧生活O2O开放平台商户管理中心</span>
-        </div><!-- /.navbar-header -->
-
-        <div class="pull-left headSelect">
-          <div class="selectBox">
-          </div>
-        </div>
-
-        <div class="navbar-header pull-right">
-          <form>
-            <div class="qkSearch" style="display:none">
-              <i class="searchIcon"></i>
-              <input type="text" placeholder="快速查询..." class="searchIn">
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a tabindex="-1" href="#">Profile</a>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <li>
+                                        <a tabindex="-1" href="login.html">Logout</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                    <!--/.nav-collapse -->
+                </div>
             </div>
-            <a href="/api/ucenter/logout?redirect=/login.html" class="loginOut merOut" >退出</a>
-          </form>
         </div>
-
-        <div class="pull-right leStation">
-      <div>{{role}}&nbsp;&nbsp;<span>{{username}}</span></div>
-          <a href="/system/sendletter"><i class="letterIcon"></i>站内信<em id="letter_num"></em></a>
-          <a href="/system/user/password">修改密码<em id="letter_num"></em></a>
-        </div>
-    </div><!-- /.container -->
-
-  </div>
-
-    <div class="main-container" id="main-container">
-        <div class="main-container-inner">
-        <div class="sidebar hidden-print">
-            <ul class='nav nav-list'>
-                <li ng-repeat="list in lists.data">
-                    <a class="dropdown-toggle" node="409"><i class="icon-angle-right"></i><span class="menu-text">{{list.model}}</span><b class="arrow icon-angle-down"></b></a>
-                    <ul class='submenu'>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span3" id="sidebar">
+                    <ul class="nav nav-list bs-docs-sidenav nav-collapse collapse">
                         <li>
-                            <a ng-repeat="api in list.innerApi" ng-if="api.isMenu=='true'" ng-href="#/{{list.code}}{{api.url}}" node="407"><i class="icon-angle-right"></i><span class="menu-text">{{api.name}}</span></a>
+                            <a href="#/comp_list"><i class="icon-chevron-right"></i> 企业管理</a>
+                        </li>
+                        <li>
+                            <a href="#/user_list"><i class="icon-chevron-right"></i> 用户管理</a>
+                        </li>
+                        <li>
+                            <a href="#/role_list"><i class="icon-chevron-right"></i> 角色管理</a>
                         </li>
                     </ul>
-                </li>
-                <li>
-                    <a class="dropdown-toggle" node="489"><i class="icon-angle-right"></i><span class="menu-text">权限管理</span><b class="arrow icon-angle-down"></b></a>
-                    <ul class='submenu'>
-                        <li>
-                            <a node="490" href="#/auths/listuser"><i class="icon-angle-right"></i><span class="menu-text">用户列表</span><b class="arrow icon-angle-down"></b></a>
-                            <a  node="490" href="#/auths/listgroup"><i class="icon-angle-right"></i><span class="menu-text">权限组列表</span><b class="arrow icon-angle-down"></b></a>
-                            <a node="490" href="#/auths/listapi"><i class="icon-angle-right"></i><span class="menu-text">访问API列表</span><b class="arrow icon-angle-down"></b></a>
+                </div>
 
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-
-            <div class="sidebar-collapse" id="sidebar-collapse">
-                <i class="icon-double-angle-left" data-icon1="icon-double-angle-left" data-icon2="icon-double-angle-right"></i>
+                <!--/span-->
+                <div class="span9" id="content" ng-view>
+                </div>
             </div>
+            <hr>
+            <footer>
+                <p>&copy; e邀网 2015</p>
+            </footer>
         </div>
-        <div class="main-content">
-            <div class="page-content " ng-view id="main">
-            </div>
-        </div>
-        </div>
-    </div>
-    <footer class="ffan-footer" style="text-align:center;margin-top:30px">
-        Copyright&nbsp;2013&nbsp;feifan.com&nbsp;ALL&nbsp;Rights&nbsp;Reserved&nbsp;万达信息科技有限公司版权所有&nbsp;京ICP备&nbsp;13032310-1&nbsp;客服热线400-950-6655
-    </footer>
+        <!--/.fluid-container-->
+        <script src="vendors/jquery-1.9.1.min.js"></script>
+        <script src="bootstrap/js/bootstrap.min.js"></script>
+        <script src="vendors/datatables/js/jquery.dataTables.min.js"></script>
+        <script src="assets/scripts.js"></script>
+        <script src="assets/DT_bootstrap.js"></script>
 
-    <script src="js/config.js"></script>
-    <script src="js/script.min.js"></script>
-    <script src="js/underscore.js"></script>
-    <script src="js/bower_components/jquery/dist/jquery.js"></script>
-    
-    <script src="js/bower_components/angular/angular.js"></script>
-    <script src="js/bower_components/angular-route/angular-route.js"></script>
-    <script src="js/bower_components/angular-resource/angular-resource.js"></script>
-    <script src="js/bower_components/angular-sanitize/angular-sanitize.js"></script>
-    <script src="js/libs/bower_components/ng-table/ng-table.js"></script>
-    <script src="js/libs/bower_components/heatmap/heatmap.js"></script>
-    <script src="js/ng-tasty-tpls.js"></script>
-    <script src="js/filters.js"></script>
-    <script src="js/directives.js"></script>
-    <script src="js/factories.js"></script>
+        <script src="js/config.js"></script>
+        <script src="js/bower_components/jquery/dist/jquery.js"></script>
 
-    <!--以下代码为JS自动生成-->
-    <script src="js/services/authsService.js"></script>
-    <script src="js/controllers/authsController.js"></script>
-    <script src="js/controllers/mainController.js"></script>
-    <!--autojs-->
-    <script src="js/app.js"></script>
-    <script>
-        if(localStorage.getItem('modules')){
-            var modules = JSON.parse(localStorage.getItem('modules'));
-            for(var  i = 0 ; i < modules.length ; i ++){
-                document.write('<script src="modules\/'+modules[i]+'\/app.js"><\/script>');
-            }
-        }
-    </script>
-    
-    <script>
-      $(function() {
-           $("body").on("click","div.module a h2",function() {
-                var current = $(this).parent().parent().find("h2");
-                var selected = "selected";
-                var expanded = "expaned";
-                var collapse = "collapse";
-                $("div.module a h2").removeClass(selected);
-                $(this).parent().parent().find("h3").toggle();
-                current.toggleClass(expanded);
-                current.toggleClass(collapse);
-                current.addClass(selected);
-           });
-           
-           $('body').on("click",'.module a:first-child',function() {
-                var self = this;
-                $(this).parent().toggleClass('expanded');
-                if ($(this).attr('loaded') == 0) {
-                    var module = $(this).attr('module');
-                    $.ajax({
-                        url: globalConfig.api + module + (module === "auths" ? "" : "/common") + "/showMenu",
-                        success: function(data) {
-                            if (!data) {
-                                return;
-                            }
-                            var menu = [];
-                            for (var i = 0; i < data.length; i++) {
-                                menu.push('<a href="#' + data[i]['url'] + '"><span>' + data[i]['name'] + '</span></a>');
-                            }
-    
-                            $(self).parent().append($(menu.join('')));
-                            $(self).attr('loaded', 1);
-                        }
-                    })
-                }
-           });
-    
-           $('body').on("click",'.dropdown-toggle',function(){
-               $(this).next().toggle();
-           });
-           
-        });
-    </script>
-</body>
+        <script src="js/bower_components/angular/angular.js"></script>
+        <script src="js/bower_components/angular-route/angular-route.js"></script>
+        <script src="js/bower_components/angular-resource/angular-resource.js"></script>
+        <script src="js/bower_components/angular-sanitize/angular-sanitize.js"></script>
+        <script src="js/libs/bower_components/ng-table/ng-table.js"></script>
+        <script src="js/ng-tasty-tpls.js"></script>
+        <script src="js/libs/ng-file-upload-shim.min.js"></script> <!-- for no html5 browsers support -->
+        <script src="js/libs/ng-file-upload.min.js"></script>
+        <!--以下代码为JS自动生成-->
+        <script src="js/filters.js"></script>
+        <script src="js/services/mainServices.js"></script>
+        <script src="js/controllers/mainController.js"></script>
+        <!--autojs-->
+        <script src="js/app.js"></script>
 
+
+    </body>
 </html>

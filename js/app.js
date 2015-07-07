@@ -4,14 +4,17 @@
 var storeApp = angular.module('storeApp', [
     'ngRoute',
     'ngResource',
+    /*
     'authsServices',
     'authsControllers',
     'storeAppFilters',
     'storeAppFactories',
-    'mainControllers',
+    */
+    'storeAppFilters',
     'ngTasty',
-    'storeAppDirectivies',
-    'mainControllers'
+    'mainControllers',
+    'mainServices',
+    'ngFileUpload'
     /*detectedControllerService*/
     //'couponServices',
     //'couponControllers'
@@ -23,49 +26,35 @@ storeApp.config(['$routeProvider','$httpProvider',
 
     [
       /*detectedRouters*/
-      {name: 'coupon', subName:'Coupon'}
+      {name: 'comp', subName:'Comp'},
+      {name: 'user', subName:'User'},
+      {name: 'role', subName:'Role'},
+      {name: 'comp_map', subName:'Comp_map'},
+
       /*endDetectedRouters*/
     ].forEach(function(router){
         $routeProvider.
             when('/'+router.name+'/'+router.subName.toLowerCase()+"/edit:id",{
-                templateUrl:'templates/'+router.name+"/"+router.subName.toLowerCase()+'/'+'create.html',
-                controller: router.name+router.subName+"Edit"
+                templateUrl:'views/'+router.name+"/"+'create.html',
+                controller: router.subName+"Edit"
             }).
             when('/'+router.name+'/'+router.subName.toLowerCase()+"/create",{
-                templateUrl:'templates/'+router.name+"/"+router.subName.toLowerCase()+'/'+'create.html',
-                controller: router.name+router.subName+"Create"
+                templateUrl:'views/'+router.name+"/"+'create.html',
+                controller: router.subName+"Create"
+            }).
+            when('/'+router.name+'_list/',{
+                templateUrl:'views/'+router.name+"/"+'list.html',
+                controller: router.subName+"List"
             })
     });
-
-    $routeProvider
-      .when('/auths/listuser',{
-        templateUrl:'templates/auths/listuser.html',
-        controller:'authsUserList'
-      }).when('/auths/adduser', {
-        templateUrl:'templates/auths/adduser.html',
-        controller: 'authsUserAdd'
-      }).when('/auths/edituser/:id',{
-        templateUrl:'templates/auths/adduser.html',
-        controller: 'authsUserAdd'
-      }).when('/auths/listgroup',{
-        templateUrl:'templates/auths/listgroup.html',
-        controller:'authsGroupList'
-      }).when('/auths/addgroup',{
-        templateUrl:'templates/auths/addgroup.html',
-        controller:'authsGroupAdd'
-      }).when('/auths/editgroup/:id',{
-        templateUrl:'templates/auths/addgroup.html',
-        controller:'authsGroupAdd'
-      }).when('/auths/listapi',{
-        templateUrl:'templates/auths/listapi.html',
-        controller:'authsApiList'
-      }).when('/auths/addapi',{
-        templateUrl:'templates/auths/addapi.html',
-        controller:'authsApiAdd'
-      }).when('/auths/editapi/:id',{
-        templateUrl:'templates/auths/addapi.html',
-        controller:'authsApiAdd'
-      })
+    $routeProvider.when('/companyRelate/:companyid',{
+        templateUrl:'views/companyRelate/list.html',
+        controller: 'companyRelateList'
+    });
+    $routeProvider.when('/companyRelate/setup/:companyid',{
+        templateUrl:'views/companyRelate/list_yd.html',
+        controller: 'companyRelateYdList'
+    });
 
       $httpProvider.defaults.transformRequest = function(data){
         if(typeof data === 'object'){
@@ -92,7 +81,7 @@ storeApp.config(['$routeProvider','$httpProvider',
             $httpProvider.defaults.headers.common['X-UID'] = localStorage.getItem('uid');
             */
             if(config.url.indexOf('.html') < 0 && config.url.indexOf('refreshtoken') < 0){
-              $("#ajaxLoading").html('数据加载中，请稍等').fadeIn(500);
+              //$("#ajaxLoading").html('数据加载中，请稍等').fadeIn(500);
             }
             return config;
           }
@@ -102,9 +91,9 @@ storeApp.config(['$routeProvider','$httpProvider',
       $httpProvider.responseInterceptors.push(function($q){
         return function(promise){
           return promise.then(function(response){
-            if(document.getElementById('ajaxLoading').style.display!='none'){
-              $("#ajaxLoading").html('数据加载完成').fadeOut(2000);
-            }
+            //if(document.getElementById('ajaxLoading').style.display!='none'){
+              //$("#ajaxLoading").html('数据加载完成').fadeOut(2000);
+            //}
             console.log(response);
             if(response.data && response.data.status == 302){
               console.log('需要登录');
@@ -132,21 +121,3 @@ storeApp.config(['$routeProvider','$httpProvider',
       // refresh token
   }
 ]);
-
-storeApp.config(function($sceDelegateProvider) {
-    $sceDelegateProvider.resourceUrlWhitelist([
-    // Allow same origin resource loads.
-      'self',
-    // Allow loading from our assets domain. Notice the difference between * and **.
-      '**']);
-});
-
-storeApp.config(function($controllerProvider, $compileProvider, $filterProvider, $provide) {
-    storeApp.register = {
-        controller: $controllerProvider.register,
-        directive: $compileProvider.directive,
-        filter: $filterProvider.register,
-        factory: $provide.factory,
-        service: $provide.service
-    };
-});
