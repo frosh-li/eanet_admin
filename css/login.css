@@ -1,0 +1,140 @@
+body {
+    font-family: "Myriad Pro", "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+    margin: 0;
+    background-color: #d4d4d4;
+}
+
+div.header {
+    background-color: #ffffff;
+    border-top: 10px solid #A90100;
+    height: 225px;
+    padding-top: 100px;
+}
+
+div.header div.logo {
+    margin: 0 auto;
+    width: 264px;
+    height: 169px;
+    background: url("../img/icon.png") no-repeat;
+    background-position: -191px -25px;
+}
+
+div.form {
+    margin: 0 auto;
+    margin-top: 74px;
+    width: 426px;
+    clear: both;
+}
+
+div.form div.input {
+    width: 264px;
+    float: left;
+    position: relative;
+}
+
+div.form div.input div.user-name,
+div.form div.input div.password {
+    margin-bottom: 4px;
+    padding-left: 38px;
+    background: url("../img/icon.png") no-repeat;
+}
+
+div.form div.input div.user-name {
+    background-position: -30px -347px;
+
+}
+
+div.form div.input div.password {
+    background-position: -30px -411px;
+}
+
+div.form div.input input {
+    padding: 0 6px;
+    width: 263px;
+    height: 38px;
+    border: none;
+}
+
+div.form div.action {
+    margin-left: 320px;
+    width: 126px;
+    height: 80px;
+}
+
+div.form div.action a {
+    color: #fff;
+    text-decoration: none;
+}
+
+div.form div.action div.sign-in {
+    height: 40px;
+    padding-top:16px;
+    background: url("../img/icon.png") no-repeat #A90100;
+    background-position: 56px -470px;
+    font-size: 22px;
+    text-align: left;
+    text-indent:16px;
+}
+
+div.form div.action div.sign-in:hover {
+    background-color: #DA1D07;
+}
+
+
+div.form div.action div.forget-password {
+    background-color: #8E8E8E;
+    height: 16px;
+    padding: 4px;
+    font-size: 12px;
+    text-align: center;
+}
+
+div.form div.action div.forget-password:hover {
+    background-color: #8D8D8D;
+}
+
+div.footer {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-top: 2px solid #9A9A9A;
+    background-color: #4B4B4B;
+    height: 26px;
+    padding-top: 14px;
+    text-align: center;
+    font-size: 12px;
+    color: #fff;
+}
+.error{
+    color: red;
+    position: absolute;
+    top: -23px;
+    font-size: 12px;
+    display: none;
+}
+
+div.forgetPassword div.input{
+    float:none;
+    margin:0 auto;
+    width:250px;
+}
+div.forgetPassword div.input input{
+    width:235px;
+}
+div.forgetPassword .btn{
+    border: 1px solid #ccc;
+    width: 250px;
+    margin-top: 40px;
+    background-color: #69b3f2;
+    height: 40px;
+    line-height: 40px;
+    color: white;
+    text-align: center;
+    border-radius: 10px;
+    margin: 40px auto 0;
+    cursor: pointer;
+}
+div.forgetPassword .btn span{
+    padding:0 6px;
+}

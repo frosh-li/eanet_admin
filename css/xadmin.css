@@ -1,0 +1,276 @@
+/* Sticky footer styles
+-------------------------------------------------- */
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  font-family: '微软雅黑';
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
+}
+ul{
+    list-style: none;
+}
+.w220{
+  width: 220px;
+}
+/* Custom page CSS
+-------------------------------------------------- */
+
+/* Not required for template or sticky footer method. */
+
+body > .container {
+  padding: 60px 15px 0;
+}
+.container .text-muted {
+  margin: 20px 0;
+}
+.footer > .container {
+  padding-right: 15px;
+  padding-left: 15px;
+}
+code {
+  font-size: 80%;
+}
+.btn{
+  line-height: 1;
+}
+.search-actions{
+  margin-top: 25px;
+  margin-left: 38px;
+}
+.center{
+  text-align: center;
+}
+.pointer{
+  cursor: pointer;
+}
+.caret {
+  border-bottom: none;
+}
+.caret-reverse {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  margin-left: 2px;
+  vertical-align: middle;
+  border-top: none;
+  border-bottom: 4px solid;
+  border-right: 4px solid rgba(0, 0, 0, 0);
+  border-left: 4px solid rgba(0, 0, 0, 0);
+}
+
+/* main of the page start */
+
+.ffan-header{
+    height: 80px;
+    background-color: rgb(22, 84, 112);
+    overflow: hidden;
+    font-size: 0;
+}
+.ffan-logo{
+    width: 610px;
+    background: url(http://sop.sit.ffan.com/Public/img/logoPic2.png) left center no-repeat;
+    margin: 0;
+    color: rgb(255, 255, 255);
+    font-size: 20px;
+    height: 80px;
+    line-height: 80px;
+    text-indent: 210px;
+    display: inline-block;
+}
+.ffan-user, .ffan-login-info{
+    display: inline-block;
+    vertical-align: top;
+    height: 80px;
+    line-height: 80px;
+    
+}   
+.ffan-user{
+    width: calc(100% - 610px);
+}
+.ffan-login-item{
+    color: rgb(214, 233, 241);
+    font-size: 12px;
+}
+.ffan-serach, .ffan-login{
+    display: inline-block;
+}
+.ffan-serach{
+    width: 204px;
+    height: 42px;
+    line-height: 42px;
+    background-color: rgb(255, 255, 255);
+    color: rgb(0,0,0);
+    font-size: 14px;
+    border-radius: 8px;
+    text-align: center;
+    position: relative;
+    padding-right: 22px;
+}
+.ffan-serach::after{
+    content: '';
+    display: block;
+    position: absolute;
+    top: 18px;
+    right: 15px;
+    border-top: rgb(10, 170, 222) 8px solid;
+    border-left: rgba(10, 170, 222, 0) 8px solid;
+    border-right: rgba(10, 170, 222, 0) 8px solid;
+}
+.ffan-login{
+    width: calc(100% - 220px);
+    text-align: right;
+}
+.ffan-login-info{
+    padding: 18px 20px 0 0;
+}
+.ffan-login-username, .ffan-login-links{
+    display: block;
+    height: 16px;
+    line-height: 16px;
+}
+.ffan-login-out{
+    width: 96px;
+    height: 38px;
+    line-height: 32px;
+    border: solid 2px rgb(45, 45, 45);
+    background-color: rgb(22, 84, 112);
+    font-size: 16px;
+    border-radius: 8px;
+    color: rgb(214, 233, 241);
+}
+
+.ffan-footer{
+    background-color: rgb(136, 136, 136);
+    border-top: solid 1px rgb(80, 80, 80);
+    color: rgb(80, 80, 80);
+    text-align: center;
+    height: 86px;
+    line-height: 86px;
+    font-size: 14px;
+}
+.ffan-content{
+    font-size: 0;
+    overflow: hidden;
+}
+.ffan-nav, .ffan-container{
+    font-size: 13px;
+    display: inline-block;
+    vertical-align: top;
+}
+.ffan-nav{
+    width: 190px;
+    padding-bottom: 9999px;
+    margin-bottom: -9999px;
+    background-color: rgb(80, 80, 80);
+}
+.ffan-nav-item,
+.ffan-nav-item2{
+    line-height: 60px;
+    background-color: rgb(80, 80, 80);
+}
+.ffan-nav-item>.ffan-nav-item-text{
+    color: rgb(255, 255, 255);
+    font-size: 16px;
+    font-weight: bold;
+    
+    display: block;
+    height: 60px;
+    line-height: 60px;
+    padding: 0 16px 0 12px;
+}
+.ffan-nav-item-menu{
+    padding-left: 0;
+    height: 0;
+}
+.active .ffan-nav-item-menu{
+    height: auto;
+}
+.ffan-nav-item2> .ffan-nav-item-text{
+    color: rgb(147, 153, 162);
+  height: 50px;
+  padding: 0 0 0 30px;
+  border-top: 1px solid rgb(67, 70, 74);
+  line-height: 50px;
+  font-size: 14px;
+  background-color: rgb(51, 51, 51);
+  display: block;
+}
+  
+.ffan-nav-item.active>.ffan-nav-item-text,
+.ffan-nav-item:hover>.ffan-nav-item-text{
+    border-left: solid 4px rgb(34, 148, 174);
+    padding-left: 8px;
+    background-color: rgb(51, 51, 51);
+}
+.ffan-nav-item2.active>.ffan-nav-item-text,
+.ffan-nav-item2:hover>.ffan-nav-item-text{
+    text-decoration: none;
+    color: rgb(255, 255, 255);
+}
+
+.arrow-right{
+      display: inline-block;
+      min-width: 30px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: normal;
+      font-style: normal;
+}
+
+.ffan-container{
+    padding: 0 20px;
+    width: calc(100% - 190px);
+    
+}
+.form-inline{
+    border: #CCC solid 1px;
+    padding: 8px;
+}
+th, td{
+    border: 1px solid rgb(221, 221, 221);
+}
+
+/* main of the page end */
+.ffan-order-lable{
+    width: 82px;
+}
+.order-h3{
+    background-color: rgb(22, 157, 217);
+    padding: 0 10px;
+    font-size: 16px;
+    color: rgb(255, 255, 255);
+    text-align: left;
+    height: 40px;
+    line-height: 40px;
+}
+.order-list-title{
+    padding-left: 0;
+    font-size: 0;
+}
+.order-list-title .btn{
+    background-color: rgb(171, 186, 195);
+    color: rgb(255, 255, 255);
+    height: 40px;
+    line-height: 28px;
+    vertical-align: top;
+    border-radius: 0;
+    margin-right: 1px;
+}
+.order-list-title .btn.btn-primary{
+    background-color: rgb(66, 139, 202);
+    border-color: rgb(53, 126, 189);    
+}
+.ffan-order-lInput{
+    margin-right: 20px;
+}

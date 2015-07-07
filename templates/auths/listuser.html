@@ -1,0 +1,27 @@
+<h3>用户列表 <a href="#/auths/adduser" style="margin-left:20px">新增用户</a></h3>
+
+<div tasty-table bind-resource-callback="getResource" bind-filters="filterBy">
+<table class="table table-bordered">
+	<tr>
+		<th>用户ID</th>
+		<th>名称</th>
+		<th>用户组</th>
+		<th>商户ID</th>
+		<th>上次登录</th>
+		<th>创建时间</th>
+		<th>操作</th>
+	</tr>
+	<tbody ng-repeat="list in rows">
+    <tr>
+		<td>{{list._id}}</td>
+		<td>{{list.username}}</td>
+		<td>{{list.group}}</td>
+		<td>{{list.merchantID}}</td>
+		<td>{{list.lastlogin}}</td>
+		<td>{{list.created}}</td>
+		<td><span style="color:green;cursor:pointer" ng-click="delUser(list._id,$index)">删除</span> <a href="#/auths/edituser/{{list._id}}">查看</a></td>
+    </tr>
+	</tbody>
+</table>
+<div tasty-pagination></div>
+</div>

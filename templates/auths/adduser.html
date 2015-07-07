@@ -1,0 +1,87 @@
+<form class="form-horizontal showcase-form" role="form" id="form_data" method="post" name="form_data" novalidate="">
+  <style>
+      .error{color:red}
+  </style>
+	<table class="table table-bordered comTable">
+  		<tbody>
+		  <tr>
+		    <td style="width:150px">用户名<font color="red">*</font></td>
+		    <td colspan="2">
+    		  <div err-Msg ng-model="errMsg" style="line-height:34px">
+            <input type="text" name="username" class="form-control" placeholder="请输入3-10个英文字符" Is-English Min-Length="3" Max-Length="10" Not-Empty style="width:400px;float:left" ng-model="formData.username">
+  			    <em class="error" ng-show="!form_data.username.$pristine && form_data.username.$invalid">{{errMsg}}</em>
+          </div>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td style="width:150px">用户密码<font color="red">*</font></td>
+		    <td colspan="2">
+            <div err-Msg ng-model="errMsg" style="line-height:34px">
+                <input type="password" name="user_password" class="form-control" ng-model="formData.password" placeholder="以字母开头，长度在6-12之间，只能包含字符、数字和下划线。" Is-Password Min-Length="6" Max-Length="12" style="width:400px;float:left">
+		    	      <em class="error" ng-show="!form_data.user_password.$pristine && form_data.user_password.$invalid">{{errMsg}}</em>
+            </div>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td style="width:150px">确认密码<font color="red">*</font></td>
+		    <td colspan="2">
+            <div err-Msg ng-model="errMsg" style="line-height:34px">
+                <input type="password" name="user_repeat_password" class="form-control" ng-model="repeat_password" placeholder="请输入相同密码" Is-Repeat="user_password" style="width:400px;float:left">
+		    	      <em class="error" ng-show="!form_data.user_repeat_password.$pristine && form_data.user_repeat_password.$invalid">{{errMsg}}</em>
+            </div>
+		    </td>
+		  </tr>
+		  <tr>
+		    <td style="width:150px">所属权限组<font color="red">*</font></td>
+		    <td colspan="2" err-Msg ng-model="errMsg">
+            <select name="group" class="form-control" Not-Empty ng-model="formData.group" ng-options="group.name as group.name for group in grouplists.data" style="width:400px;float:left"></select>
+            <em class="error" ng-show="!form_data.group.$pristine && form_data.group.$invalid">{{errMsg}}</em>
+		    </td>
+		  </tr>
+      <tr>
+        <td style="width:150px">商户ID<font color="red">*</font></td>
+        <td colspan="2">
+            <div err-Msg ng-model="errMsg" style="line-height:34px">
+                <input type="text" name="merchantID" Not-Empty class="form-control" ng-model="formData.merchantID" placeholder="商户ID" style="float:left">
+                <em class="error" ng-show="!form_data.merchantID.$pristine && form_data.merchantID.$invalid">{{errMsg}}</em>
+                <span style="cursor:pointer;margin-left:20px;color:#red" ng-click="merchantShow(true)">查询商户</span>
+            </div>
+        </td>
+      </tr>
+      <tr ng-show="merchantNameShow">
+        <td style="width:150px">商户名称<font color="red">*</font></td>
+        <td colspan="2">
+            <div err-Msg ng-model="errMsg" style="line-height:34px">
+                <input type="text" name="merchantName" class="form-control" ng-model="formData.merchantName" ng-keyup="getMerchants()" placeholder="商户名称" style="float:left">
+                <span style="cursor:pointer;margin-left:20px;color:#red;font-weight:bolder;font-size:20px" ng-click="merchantShow(false)">×</span>
+            </div>
+            <style>
+                .merchants{
+                    position:absolute;
+                    z-index:10000;
+                    width:299px;
+                    padding: 10px;
+                    border: 1px rgb(231, 212, 212) solid;
+                    left: -16px;
+                    padding-right: 30px;
+                    background-color: #fff;
+                }
+                .merchants li{
+                    list-style:none;
+                    margin-left:0px;
+                    cursor:pointer
+                }
+            </style>
+            <ul class="merchants" ng-show="merchants.length"><li ng-repeat="merchant in merchants" ng-click="setMerchantId(merchant.merchantId)">{{merchant.merchantName}}</li></ul>
+        </td>
+      </tr>
+      <tr>
+        <td align="center" style="background-color: #f7f7f7" colspan="3">
+            <input type="hidden" value="1" id="status" class="checkdom" name="status">
+      			<a id="save_file" class="btn btn-danger upBtn" ng-click="processForm()" ng-disabled="form_data.$invalid">提 交</a>
+      			<a id="submit_file" class="btn btn-danger upBtn" ng-click="goBack()">取消</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</form>

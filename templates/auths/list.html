@@ -1,0 +1,27 @@
+<h3>优惠券</h3>
+<table ng-table class="table table-bordered ng-table">
+<tr>
+	<th>优惠券ID</th>
+	<th>优惠券名称</th>
+	<th>优惠券类型</th>
+	<th>发放方式</th>
+	<th>券码生成方式</th>
+	<th>销售数量</th>
+	<th>销售期</th>
+	<th>有效期</th>
+	<th>状态</th>
+	<th>操作</th>
+</tr>
+<tr ng-repeat="coupon in coupons.data">
+	<td>{{coupon.id}}</td>
+	<td>{{coupon.name}}</td>
+	<td>{{coupon.type}}</td>
+	<td>{{coupon.sendType}}</td>
+	<td>{{coupon.genType}}</td>
+	<td>{{coupon.number}}</td>
+	<td>{{coupon.time}}</td>
+	<td>{{coupon.atime}}</td>
+	<td>{{coupon.state}}</td>
+	<td>查看 新增</td>
+</tr>
+</table>

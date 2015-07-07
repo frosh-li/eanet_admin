@@ -1,0 +1,66 @@
+<style>
+  .error{color:red}
+</style>
+
+<div ng-click="pos()">
+	<h2 class="boxTitle">API注册</h2>
+	<form class="form-horizontal showcase-form" role="form" id="form_data" method="post" name="form_data" novalidate="">
+		<table class="table table-bordered comTable">
+	  		<tbody>
+			  <tr>
+			    <td style="width:150px">模块标识<font color="red">*</font></td>
+			    <td colspan="2" err-Msg ng-model="errMsg">
+			      <input type="text" value="" class="code left" Not-Empty Is-English Min-Length="2" Max-Length="20" ng-model="formData.code" name="code" placeholder="请输入英文标识">
+				  <em class="error" ng-show="!form_data.code.$pristine && form_data.code.$invalid">{{errMsg}}</em>{{inputed}}/{{max}}
+			    </td>
+			  </tr>
+			  <tr>
+			    <td style="width:150px">模块名称<font color="red">*</font></td>
+			    <td colspan="2" err-Msg ng-model="errMsg">
+			      <input type="text" value="" class="model" Not-Empty Is-Chinese ng-model="formData.model" name="model" placeholder="请输入中文名称">
+				  <em class="error" ng-show="!form_data.model.$pristine && form_data.model.$invalid">{{errMsg}}</em>
+			    </td>
+			  </tr>
+			  <tr>
+			    <td style="width:150px">URI<font color="red">*</font></td>
+			    <td colspan="2">
+			      <input type="text" value="" class="uri required" ng-model="formData.uri" name="uri" placeholder="http://order.ffan.com/">
+			    </td>
+			  </tr>
+			  <tr>
+				<td colspan="2">
+					<table class="table table-bordered comTable" ng-repeat="item in formData.apilist">
+					  <tr>
+						<td style="width:150px">子模块<font color="red">*</font></td>
+						<td>
+					        <table style="height:130px;min-width: 420px;">
+						       	<tr><td>名称：</td><td err-Msg ng-model="errMsg">
+									   <input type="text" value="" Not-Empty Min-Length="3" Max-Length="30" class="name" placeholder="请输入中文名称" ng-model="item.name" name="name[]">
+									   <em class="error">{{errMsg}}</em>{{inputed}}/{{max}}
+					  			</td></tr>
+								<tr><td>URL：</td><td err-Msg ng-model="errMsg">
+									   <input type="text" value="" Not-Empty Start-Fxg class="url" placeholder="/input" ng-model="item.url" name="url" maxlength="100">
+									   <em class="error">{{errMsg}}</em>
+								</td></tr>
+								<tr><td>方法名：</td><td><select ng-model="item.method" ng-options="method as method for method in methods"></select></td></tr>
+								<tr><td>显示为菜单项：</td><td><input type="checkbox" class="isMenu" ng-model="item.isMenu" ng-checked="item.isMenu | boole"/></td></tr>
+							</table>
+						</td>
+						<td style="width:100px;text-align:center"><button style="margin:0 auto;width:30px;float:none" type="button" class="close" ng-click="delItem($index)">&times;</button></td>
+					  </tr>
+					</table>
+				</td>
+			  </tr>
+			  <tr><td colspan=2><button class="btn btn-default" ng-click="addItem()">添加一条</button></td></tr>
+	          <tr>
+	            <td align="center" style="background-color: #f7f7f7" colspan="3">
+	              <input type="hidden" value="1" id="status" class="checkdom" name="status">
+					<a id="save_file" class="btn btn-danger upBtn" ng-click="processForm()" ng-disabled="form_data.$invalid">保 存</a>
+					<a id="submit_file" class="btn btn-danger upBtn" ng-click="cancel()">取消</a>
+	            </td>
+	          </tr>
+			  <tr style="display:none;" id="error_tr"><td align="center" id="error_td" style="background-color: #f7f7f7" colspan="3"></td></tr>
+			</tbody>
+		</table>
+	</form>
+ </div>

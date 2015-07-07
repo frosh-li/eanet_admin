@@ -1,0 +1,16 @@
+sample todo
+  ok 状态筛选
+  ok 单个/批量更新操作
+  统计图表
+
+feature
+  页面级查看权限机制
+  smarty模板 (TP3.1 => 3.2)
+  
+bug: 重名字段无法筛选
+	ERR: 1052:Column 'name' in where clause is ambiguous
+
+代码重构优化
+	!addRowLink 通用表格单个操作简化（不需添加 js）
+	事物封装，整个操作作为一个事务，全部成功后 commit
+	excel导出同步，excel导入

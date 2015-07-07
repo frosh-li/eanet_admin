@@ -1,0 +1,239 @@
+<!-- div 层样式  -->
+<link rel="stylesheet" href="__PUBLIC__/css/draggable.css">
+<script src="__PUBLIC__/mmgrid/examples/js/vendor/jquery-1.9.1.min.js"></script>
+<link rel="stylesheet" href="__PUBLIC__/css/draggable.css">
+<script src="__PUBLIC__/js/jquery-ui-1.10.3.min.js"></script>
+
+<link rel="stylesheet" href="__PUBLIC__/jquery-ui/themes/base/all.css">
+
+<style>
+#xlsUploadBox iframe {width: 96px; height: 44px; border: none;}
+#certificateBatchsBox {
+	display: none;
+	background: none repeat scroll 0 0 #fff;
+	margin: 0 auto;
+	padding-bottom: 20px;
+	position: relative;
+	width: 598px;
+}
+#closeCertificateBatchsBox {
+    color: black;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+    height: 40px;
+    line-height: 40px;
+    position: absolute;
+    right: 0;
+    text-align: center;
+    top: 0;
+    width: 40px;
+    z-index: 2;
+}
+#inputdiv{ 
+	min-height:150px;
+}
+.mmgPg {text-align: right;}
+</style>
+<script type="text/javascript">
+var couponId = '{=$couponId=}';
+var couponCodes = []; // 已导入的券码
+var couponImported = false; // 是否已导入券码，券码只能导入一次，导入成功之后就不能删除了
+
+$(function() {
+	$('#certificateBatchs').click(function() {		
+		$("#brg").show();
+		$("#certificateBatchsBox").show().position({my:"center",at:"center",of:window});
+		return false;
+	});
+	$("#closeCertificateBatchsBox").click(function(){
+		$("#cancelCertificateBatchs").click();
+		return false;
+	});
+	$("#cancelCertificateBatchs").click(function(){
+{=if $couponDetail.createCertificateType == 2=}
+		var md5 = $("#uploadedFile").find('div').attr("class");
+		if(md5) {
+			md5 = md5.split('_');
+			delete_xlsx_upload(md5[1]);
+		}
+		$("#xlsUploadBox").show();
+		$("#uploadedFile").hide();
+{=/if=}
+		$('#certificateBatchsAmount').val('');
+		$("#brg").hide();
+		$("#certificateBatchsBox").hide();
+		return false;
+	});
+	$('#certificateBatchsForm').submit(function() {	
+
+{=if $couponDetail.createCertificateType == 1=}
+		if(!$("#certificateBatchsAmount").val() || !/^\d{0,9}$/.test($("#certificateBatchsAmount").val())){ 
+			alert("请输入不大于9位数的整数！");
+			return false;
+		}
+
+		var totalNum = $('#certificateBatchsAmount').val();
+		var postData = {
+			productNo: couponId,
+			totalNum: totalNum
+			{=if $smarty.const.IS_MERCHANT || $couponDetail.vendibility == $smarty.const.COUPON_VENDIBLE_NO || $couponDetail.createCertificateType == $smarty.const.COUPON_CERTIFICATE_TYPE_IMPORT=}
+			, autoAssign: '1001'
+			{=/if=}
+		};
+{=elseif $couponDetail.createCertificateType == 2=}
+		if(JSON.stringify(couponCodes) == '[]') {
+			alert('已选择导入方式生成券码，必须提交券码有效的券码excel文件才能增加库存。');
+			return false;
+		}
+
+		var len = couponCodes.length;
+		var couponCode;
+		for (var i = 0; i < len; i++){ 
+			couponCode = couponCodes[i];
+			if(!/^ *\d{1,30}$/.test(couponCode)){ 
+				alert("文件券码只能为长度不能大于30位以内的整数。\n请检查 excel 的格式不能出现类似于科学计数法的单元格。\n错误条目内容如下：" + d);
+				return false;
+			}
+		}
+		
+		var totalNum = couponCodes.length;
+		var postData = {
+				productNo: couponId,
+				totalNum:  couponCodes.length,
+				couponNos: JSON.stringify(couponCodes)
+				{=if $smarty.const.IS_MERCHANT || $couponDetail.vendibility == $smarty.const.COUPON_VENDIBLE_NO || $couponDetail.createCertificateType == $smarty.const.COUPON_CERTIFICATE_TYPE_IMPORT=}
+				, autoAssign: '1001'
+				{=/if=}
+		};
+{=/if=}
+		$.post('/coupon/coupon/certificateBatch', postData, function(response) {
+			if(response.status == 200) {
+				window.location.href = window.location.href;
+			} else {
+				alert('增加库存失败：' + response.message);
+			}
+		});
+		
+		return false;
+	});
+});
+</script>
+{=include file="../../AbstractGrid/mmgrids4log_js.html"=}
+<div id="brg"></div>
+<div id="certificateBatchsBox" style="position:fixed;z-index:1000000">
+  <div class="popBg">
+    <h1 id="popTitle" class="popTitle">增加库存</h1>
+    <div id="closeCertificateBatchsBox">X</div>
+  </div>
+  <div id="inputdiv">
+	<form id="certificateBatchsForm">
+	  <table class="qulist">
+	  <tr>
+	    <td>
+{=if $couponDetail.createCertificateType == $smarty.const.COUPON_CERTIFICATE_TYPE_AUTO=}
+	    请输入此次要增加的库存数量：<input type="text" id="certificateBatchsAmount" name="certificateBatchsAmount">
+{=elseif $couponDetail.createCertificateType == $smarty.const.COUPON_CERTIFICATE_TYPE_IMPORT=}
+			<div id="uploadedFile">
+			 
+			</div>
+			<div id="xlsUploadBox">
+				<iframe class="imgiframe" src="/{=$smarty.const.XADMIN_APP_GROUP_SYSTEM=}/files/filesupload?p=0&inputType=xls,xlsx&inputName=md5&node=image_uploads_otherpics&fileSize=5242880&width=640&height=640&setType=true"></iframe>
+				<br /><span>注意：每次提交之后就不能修改已导入的数值，提交前可以修改。</span>
+<script type="text/javascript">
+function filesuploads_js_callback(msg, code, fid, md5, name, node, url, input_name, count) {
+	if(code != 0) {
+		alert(msg);
+		return false;
+	}
+
+	// get the coupon codes
+	var url = '/coupon/coupon/extractCouponCodes/fileName/' + md5;
+	$.get(url, {}, function(response) {
+		if(response.status == 200) {
+			if(response.data && $.isArray(response.data)) {
+				if(response.data.length > 300) {
+					alert('导入出错：一次只能导入300条记录，当前导入的为' + response.data.length + '条');
+					return false;
+				}
+				
+				$("#xlsUploadBox").hide();
+				$("#uploadedFile").show();
+				
+				var html = "<div class=\"div_"+md5+"\">\
+<span class=\"span_"+md5+"\">"+name+" 已上传并解析成功，共 " + response.data.length + " 条数据。</span>\
+<input type=\"hidden\" readonly name=\""+input_name+"\"  class=\""+input_name+"\"  value=\""+md5+"\">";
+				//coupon code 文件只允许导入一次，不能删了再导
+				if(!couponImported) {
+					html += "<a onclick=\"delete_xlsx_upload(\'"+md5+"\')\" class=\"btn btn-danger upBtn vebot\">删除</a></div>";
+				}
+				$('#uploadedFile').html(html);
+				
+				couponCodes = response.data;
+//				console.log(couponCodes);
+			} else {
+				couponCodes = [];
+			}
+		} else {
+			alert(response.msg);
+		}
+	}, 'json');
+}
+
+function delete_xlsx_upload(md5)
+{
+	if(couponImported) {
+		return false; // coupon code 文件只允许导入一次，不能删了再导
+	}
+	
+	$(".div_" + md5).remove();
+	$("#xlsUploadBox").show();
+	couponCodes = [];
+}
+</script>
+			</div>
+{=/if=}
+		</td>
+	  </tr>
+	</table>
+	  <button class="shangxian btn btn-danger upBtn" id="save_content">确定</button>
+	  <a class="shangxian btn btn-danger upBtn" id="cancelCertificateBatchs" href="#">取消</a>
+	</form>	
+  </div>
+</div>
+<h2 class="boxTitle">优惠券信息</h2>
+  <table class="table table-bordered comTable"> 
+    <tr>
+	  <td width="20%">优惠券ID</td>
+	  <td width="80%">{=$couponId=}</td>
+    </tr>	
+    <tr>
+	  <td>优惠券名称</td>
+	  <td>{=$title=}</td>
+    </tr>
+    <tr>
+	  <td>发放方式</td>
+	  <td>{=$vendibilityText=}</td>
+    </tr>
+	<tr>
+	  <td>券码生成方式</td>
+	  <td>{=$createCertificateTypeText=}</td>
+    </tr>
+	<tr>
+	  <td>总数量</td>
+	  <td>{=$totalNum=}&nbsp;&nbsp;&nbsp;&nbsp;<a id="certificateBatchs" href="#">{=if $couponDetail.createCertificateType == 1=}增加{=elseif $couponDetail.createCertificateType == 2=}导入{=/if=}</a></td>
+    </tr>
+	<tr>
+	  <td>已发出</td>
+	  <td>{=$soldNum=}</td>
+    </tr>
+	<tr>
+	  <td>剩余库存</td>
+	  <td>{=$stockNum=}</td>
+    </tr>
+  </table>
+<div class="tableBox">
+  <h2 class="boxTitle">库存操作记录</h2>
+   <table id="certificateBatchTable" class="mmg"></table>
+   <div id="certificateBatchPg" class="mmgPg"></div>
+</div>

@@ -1,0 +1,90 @@
+<div>
+	<h2 class="boxTitle">新建权限组</h2>
+	<form id="form_data" name="form_data" method="post" class="form-horizontal" novalidate="novalidate">
+		<table class="table table-bordered comTable">
+	  		<tbody>
+			  <tr>
+			    <td style="width:150px">权限组名称<font color="red">*</font></td>
+			    <td colspan="2" err-Msg ng-model="errMsg">
+			      	<input type="text" value="" class="name" Not-Empty Is-Chinese ng-model="formData.name" name="name" maxlength="20">
+				  	<em class="error" ng-show="!form_data.name.$pristine && form_data.name.$invalid">{{errMsg}}</em>
+			    </td>
+			  </tr>
+			  <tr>
+			    <td>API权限分配</td>
+			    <td colspan="2">
+					<style>
+						.tree{
+							padding-left: 0px;
+						}
+						
+						.tree:before{
+							display: none
+						}
+						
+						.tree ul {
+							margin: 0px;
+							list-style: none;
+							padding-left: 0;
+						}
+						
+						.tree li {
+							cursor: pointer;
+							padding-left: 1.3em;
+							color:#333;
+						}
+						
+					   .tree-open{
+							background:url(/img/tree-close.png) no-repeat left center;
+							padding-left:20px;
+						}
+						
+						.tree-close{
+							background:url(/img/tree-open.png) no-repeat left center;
+							padding-left:20px;
+						}
+						
+						.intermediate {
+							  opacity: 0.3;
+						}
+						
+					</style>
+					<div class="tree">
+  
+					  <ul>
+					    <li ng-repeat="api in formData.apilist" ng-model="formData.apilist" ng-class="{closed:vm.tree.isFolded(api)}">
+					      <div>
+					        <input type="checkbox" ng-model="api.checked" ng-checked="api.checked" ng-change="vm.tree.check(api, api.checked)" ng-class="{intermediate: vm.tree.isSemiChecked(api)}"/>
+					          <span ng-click="vm.tree.toggleFold(api)">
+					            <span ng-class="vm.tree.isFolded(api)?'tree-open':'tree-close'"></span>
+					            {{api.model}}
+					          </span>
+					      </div>
+					      <ul ng-class="{hidden: vm.tree.isFolded(api)}">
+					        <li ng-repeat="item in api.items" ng-class="{closed:vm.tree.isFolded(item)}">
+					          <input type="checkbox" ng-clecked="item.checked" ng-model="item.checked" ng-change="vm.tree.check(item, item.checked)" ng-class="{intermediate: vm.tree.isSemiChecked(item)}"/>
+					            <span ng-click="vm.tree.toggleFold(item)">
+					              <span ng-class="vm.tree.isFolded(item)?'tree-open':'tree-close'"></span>
+					              {{item.name}}
+					            </span>
+					        </li>
+					      </ul>
+					    </li>
+					  </ul>
+  
+					</div>
+					
+			    </td>
+			  </tr>
+	          <tr>
+	            <td align="center" style="background-color: #f7f7f7" colspan="3">
+	              <input type="hidden" value="1" id="status" class="checkdom" name="status">
+					<a id="save_file" class="btn btn-danger upBtn" ng-click="processForm()" ng-disabled="form_data.$invalid">保 存</a>
+					<a id="submit_file" class="btn btn-danger upBtn" href="/system/auth_group/index#a_opt">取消</a>
+	            </td>
+	          </tr>			  
+			  <tr style="display:none;" id="error_tr"><td align="center" id="error_td" style="background-color: #f7f7f7" colspan="3"></td></tr>
+			</tbody>
+		</table>
+	</form>
+ </div>
