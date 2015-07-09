@@ -332,13 +332,18 @@ mainControllers.controller('companyRelateYdList', ['$http','$route','ngTablePara
     }
 ]);
 
-mainControllers.controller('OrderList', ['$http','ngTableParams','$scope','$timeout','$resource',
-    function($http,ngTableParams,$scope, $timeout,$resource) {
+mainControllers.controller('OrderList', ['$route','$http','ngTableParams','$scope','$timeout','$resource',
+    function($route,$http,ngTableParams,$scope, $timeout,$resource) {
+        $scope.routetype = $route.current.params.type;
+        $scope.active0 = $scope.routetype == 0 ? "active":"";
+        $scope.active1 = $scope.routetype == 1 ? "active":"";
+        $scope.active2 = $scope.routetype == 2 ? "active":"";
         var Api = $resource('/api/order/order/');
         $scope.tableParams = new ngTableParams({
             page: 1,            // show first page
             count: 10,          // count per page
-            type:2
+            type:2,
+            ordertype:$scope.routetype
         }, {
             total: 0,           // length of data
             getData: function($defer, params) {
@@ -389,12 +394,18 @@ mainControllers.controller('OrderList', ['$http','ngTableParams','$scope','$time
     }
 ]);
 
-mainControllers.controller('Yd_orderList', ['$http','ngTableParams','$scope','$timeout','$resource',
-    function($http,ngTableParams,$scope, $timeout,$resource) {
+mainControllers.controller('Yd_orderList', ['$route','$http','ngTableParams','$scope','$timeout','$resource',
+    function($route,$http,ngTableParams,$scope, $timeout,$resource) {
+        $scope.routetype = $route.current.params.type;
+        $scope.active0 = $scope.routetype == 0 ? "active":"";
+        $scope.active1 = $scope.routetype == 1 ? "active":"";
+        $scope.active2 = $scope.routetype == 2 ? "active":"";
+
         var Api = $resource('/api/order/order/');
         $scope.tableParams = new ngTableParams({
             page: 1,            // show first page
             count: 10,          // count per page
+            ordertype: $scope.routetype
         }, {
             total: 0,           // length of data
             getData: function($defer, params) {
@@ -537,6 +548,94 @@ mainControllers.controller('Yd_orderCreate', ["$document", "smartySuggestor", "$
 
     }
 ]);
+
+mainControllers.controller('setprice', [
+    '$resource',
+    'ngTableParams',
+    '$route',
+    "$document",
+    "smartySuggestor",
+    "$window",'$rootScope','$http','$scope','$timeout','OrderDetailFeed','OrderFeed',
+    function(
+        $resource,
+        ngTableParams,
+        $route,$document, smartySuggestor, $window,$rootScope,$http,$scope, $timeout, OrderDetailFeed, RoleFeed) {
+        $scope.orderid = $route.current.params.orderid;
+        $scope.companyid = $route.current.params.comp_id;
+        $scope.order_status = $route.current.params.order_status;
+
+        $scope.processForm = function(){
+            console.log($scope.formData);
+
+            var oid = [],price=[],amount = [];
+            $scope.formData.forEach(function(item){
+                oid.push(item.oid);
+                price.push(item.price),
+                amount.push(item.price*item.good_number)
+            });
+
+            $http.post('/api/order/autoprice', {orderid:$scope.orderid,amount:amount.join("|"),oid:oid.join("|"),price:price.join("|")}).success(function(ret){
+                console.log(ret);
+            });
+        };
+        var Api = $resource('/api/order/orderdetail/');
+        $scope.tableParams = new ngTableParams({
+            page: 1,            // show first page
+            count: 10,          // count per page
+            order_id: $scope.orderid
+        }, {
+            total: 0,           // length of data
+            getData: function($defer, params) {
+                // ajax request to api
+                Api.get(params.url(), function(data) {
+                    $timeout(function() {
+                        // update table params
+                        params.total(data.total);
+                        // set new data
+                        $scope.formData = [];
+                        data.result.forEach(function(item, index){
+                            $scope.formData.push({
+                                oid: item.oid,
+                                good_number:item.good_number,
+                                price: item.good_price||0,
+                                good_id: item.good_id
+                            });
+                        });
+                        $defer.resolve(data.result);
+                    }, 500);
+                });
+            }
+        });
+        $scope.del = function(id){
+            var orderdetail = new OrderDetailFeed({id: id});
+            orderdetail.$delete(function(ret){
+                console.log(ret);
+                if(ret.status == 500){
+                    alert('系统错误'+"\n"+ret.err);
+                    return;
+                }
+                alert('删除成功');
+                window.location.reload();
+            })
+        };
+        // 自动填充报价单
+        $scope.autoPrice = function(){
+            $http.get('/api/order/autoprice/'+$scope.orderid).success(function(datas){
+                var ret = datas.data;
+                $scope.formData.forEach(function(_,index){
+                    ret.forEach(function(r){
+                        if(r.good_id == _.good_id){
+                            $scope.formData[index].price = r.price;
+                        }
+                    })
+                });
+            });
+        };
+
+
+    }
+]);
+
 
 mainControllers.controller('orderItemAdd', [
     '$resource',

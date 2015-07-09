@@ -49,6 +49,10 @@ storeApp.config(['$routeProvider','$httpProvider',
             when('/'+router.name+'_list/',{
                 templateUrl:'views/'+router.name+"/"+'list.html',
                 controller: router.subName+"List"
+            }).
+            when('/'+router.name+'_list/:type',{
+                templateUrl:'views/'+router.name+"/"+'list.html',
+                controller: router.subName+"List"
             })
     });
     $routeProvider.when('/companyRelate/:companyid',{
@@ -66,6 +70,10 @@ storeApp.config(['$routeProvider','$httpProvider',
     $routeProvider.when('/add/orderItem/:orderid/:comp_id/:order_status',{
         templateUrl:'views/yd_order/add_item.html',
         controller: 'orderItemAdd'
+    });
+    $routeProvider.when('/setprice/orderItem/:orderid/:comp_id/:order_status',{
+        templateUrl:'views/order/setprice.html',
+        controller: 'setprice'
     });
 
       $httpProvider.defaults.transformRequest = function(data){
