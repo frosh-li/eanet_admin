@@ -52,4 +52,52 @@ storeAppFilters.filter('companyType', function() {
   };
 });
 
+storeAppFilters.filter('orderStatusFilter', function() {
+  return function(input) {
+    var ret="待处理";
+    switch(input){
+      case 1:
+        ret = "待处理";
+        break;
+      case 2:
+        ret = "药店提交";
+        break;
+      case 3:
+        ret = "已报价";
+        break;
+      case 4:
+        ret = "已发货";
+        break;
+      case 5:
+        ret = "已完成";
+        break;
+      case 6:
+        ret = "已导出";
+        break;
+      case 7:
+        ret = "待报价";
+        break;
+      case 8:
+        ret = "已确认";
+        break;
+    }
+    return ret;
+  };
+});
+
+storeAppFilters.filter('orderTypeFilter', function() {
+  return function(input) {
+    var ret="直接订单";
+    switch(input){
+      case 1:
+        ret = "直接订单";
+        break;
+      case 2:
+        ret = "询价订单";
+        break;
+    }
+    return ret;
+  };
+});
+
 

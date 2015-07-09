@@ -14,7 +14,8 @@ var storeApp = angular.module('storeApp', [
     'ngTasty',
     'mainControllers',
     'mainServices',
-    'ngFileUpload'
+    'ngFileUpload',
+    'angular-smarty'
     /*detectedControllerService*/
     //'couponServices',
     //'couponControllers'
@@ -30,12 +31,15 @@ storeApp.config(['$routeProvider','$httpProvider',
       {name: 'user', subName:'User'},
       {name: 'role', subName:'Role'},
       {name: 'comp_map', subName:'Comp_map'},
+      {name: 'item', subName:'Item'},
+      {name: 'yd_order', subName:'Yd_order'},
+      {name: 'order', subName:'Order'},
 
       /*endDetectedRouters*/
     ].forEach(function(router){
         $routeProvider.
             when('/'+router.name+'/'+router.subName.toLowerCase()+"/edit:id",{
-                templateUrl:'views/'+router.name+"/"+'create.html',
+                templateUrl:'views/'+router.name+"/"+'edit.html',
                 controller: router.subName+"Edit"
             }).
             when('/'+router.name+'/'+router.subName.toLowerCase()+"/create",{
@@ -54,6 +58,14 @@ storeApp.config(['$routeProvider','$httpProvider',
     $routeProvider.when('/companyRelate/setup/:companyid',{
         templateUrl:'views/companyRelate/list_yd.html',
         controller: 'companyRelateYdList'
+    });
+    $routeProvider.when('/view/orderItem/:orderid',{
+        templateUrl:'views/yd_order/list_item.html',
+        controller: 'orderItemView'
+    });
+    $routeProvider.when('/add/orderItem/:orderid/:comp_id/:order_status',{
+        templateUrl:'views/yd_order/add_item.html',
+        controller: 'orderItemAdd'
     });
 
       $httpProvider.defaults.transformRequest = function(data){

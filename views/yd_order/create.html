@@ -1,0 +1,69 @@
+<div class="span12">
+ <form class="form-horizontal">
+  <fieldset>
+    <legend>新建订单</legend>
+    <div class="control-group">
+      <label class="control-label" for="focusedInput">供货商</label>
+      <div class="controls" style="position:relative;">
+        <input type="text" smarty-input select="setSelected(x)"
+            index="selected" list-items="suggestions" close="suggestionPicked()"
+            selection-made="selectionMade" class="input-xlarge focused" ng-model="prefix"></input placeholder = '输入拼音快速选择' readonly>
+        <div smarty-suggestions-box style="width:300px;"></div>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="focusedInput">订货人</label>
+      <div class="controls">
+        <input ng-model="formData.order_oper" class="input-xlarge focused" id="focusedInput" type="text" value="" name="order_oper" readonly />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="focusedInput">订单备注</label>
+      <div class="controls">
+        <input ng-model="formData.order_beizu" class="input-xlarge focused" id="focusedInput" type="text" value="" name="order_beizu" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="focusedInput">订单日期</label>
+      <div class="controls">
+        <input ng-model="formData.order_date" class="input-xlarge focused" id="focusedInput" type="text" value="" name="order_date" />
+        <span class="help-inline">格式:20150305</span>
+      </div>
+
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="focusedInput">交货时间</label>
+      <div class="controls">
+        <input ng-model="formData.order_lastvaiddate" class="input-xlarge focused" id="focusedInput" type="text" value="" name="order_lastvaiddate" />
+        <span class="help-inline">格式:20150305</span>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label">订单类型</label>
+      <div class="controls">
+        <select name="role_type" ng-model="formData.order_type">
+          <option ng-repeat="status in order_type_list" value="{{status.val}}">{{status.name}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="focusedInput">企业编号</label>
+      <div class="controls">
+        <input ng-model="formData.comp_id" class="input-xlarge focused" id="focusedInput" type="text" value="" name="comp_id" readonly="" />
+      </div>
+    </div>
+    <h5>订单药品详单</h5>
+
+    <div class="control-group" ng-repeat="o_item in formData.orderDetail track by $index">
+      <label class="control-label" for="focusedInput">药品名称数量</label>
+      <div class="controls">
+        <input ng-model="formData.orderDetail[$index].itemid" class="input-xlarge focused" id="focusedInput" type="text" name="comp_id" readonly="" />
+        <input ng-model="formData.orderDetail[$index].itemcount" class="input-small focused" id="focusedInput" type="text" name="comp_id" placeholder="数量" />
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" ng-click="processForm()">提交</button>
+    </div>
+  </fieldset>
+</form>
+</div>

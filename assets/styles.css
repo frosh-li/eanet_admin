@@ -346,3 +346,42 @@ body {
   cursor: not-allowed;
   background-color: #fff;
 }
+
+.container-main {
+    width: 300px;
+}
+
+.container-autocomplete {
+
+    width: 200px;
+    position: relative;
+}
+
+.autocomplete-suggestions-menu {
+    position: absolute;
+  z-index: 1;
+  background-color: white;
+  border: 1px solid #ccc;
+  width: 100%;
+  border-radius: 0 0 5px 5px;
+  top: 29px;
+  padding: 6px;
+}
+
+.container-autocomplete input {
+    width: 100%;
+}
+
+.autocomplete-suggestions-menu p:hover {
+    cursor: default;
+}
+.autocomplete-suggestions-menu p{
+    margin:0;
+    padding:10px;
+}
+.autocomplete-suggestions-menu .selected {
+      color: #000;
+  background: #eee;
+  margin: 0;
+  padding: 10px;
+}

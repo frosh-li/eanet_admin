@@ -15,9 +15,10 @@
             <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
         <![endif]-->
         <script src="vendors/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+        <link href='js/bower_components/angular-smarty/angular-smarty.min.css' />
     </head>
 
-    <body>
+    <body ng-controller="baseController">
         <div class="navbar navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container-fluid">
@@ -29,7 +30,7 @@
                     <div class="nav-collapse collapse">
                         <ul class="nav pull-right">
                             <li class="dropdown">
-                                <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"> <i class="icon-user"></i> Vincent Gabriel <i class="caret"></i>
+                                <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"> <i class="icon-user"></i> {{user.realname}} <i class="caret"></i>
 
                                 </a>
                                 <ul class="dropdown-menu">
@@ -38,7 +39,7 @@
                                     </li>
                                     <li class="divider"></li>
                                     <li>
-                                        <a tabindex="-1" href="login.html">Logout</a>
+                                        <a tabindex="-1" href="javascript:///;" ng-click="logout();">Logout</a>
                                     </li>
                                 </ul>
                             </li>
@@ -52,14 +53,8 @@
             <div class="row-fluid">
                 <div class="span3" id="sidebar">
                     <ul class="nav nav-list bs-docs-sidenav nav-collapse collapse">
-                        <li>
-                            <a href="#/comp_list"><i class="icon-chevron-right"></i> 企业管理</a>
-                        </li>
-                        <li>
-                            <a href="#/user_list"><i class="icon-chevron-right"></i> 用户管理</a>
-                        </li>
-                        <li>
-                            <a href="#/role_list"><i class="icon-chevron-right"></i> 角色管理</a>
+                        <li ng-repeat='item in menus'>
+                            <a href="#/{{item.url}}"><i class="icon-chevron-right"></i> {{item.val}}</a>
                         </li>
                     </ul>
                 </div>
@@ -88,9 +83,12 @@
         <script src="js/bower_components/angular-resource/angular-resource.js"></script>
         <script src="js/bower_components/angular-sanitize/angular-sanitize.js"></script>
         <script src="js/libs/bower_components/ng-table/ng-table.js"></script>
+
         <script src="js/ng-tasty-tpls.js"></script>
         <script src="js/libs/ng-file-upload-shim.min.js"></script> <!-- for no html5 browsers support -->
         <script src="js/libs/ng-file-upload.min.js"></script>
+        <script src="js/libs/smarty-config.js"></script>
+        <script src="js/libs/smarty.js"></script>
         <!--以下代码为JS自动生成-->
         <script src="js/filters.js"></script>
         <script src="js/services/mainServices.js"></script>
