@@ -17,7 +17,8 @@ Date.prototype.Format = function (fmt) { //author: meizz
 }
 /* mainControllers */
 
-var mainControllers = angular.module('mainControllers', ['ngTable','ngResource']);
+var mainControllers = angular.module('mainControllers', ['ngTable','ngResource','storeAppDirectivies']);
+
 mainControllers.controller('baseController',['$scope','$rootScope','$http', function($scope,$rootScope, $http){
 
     $http.post('/api/user/loginStatus').success(function(ret){
@@ -107,6 +108,98 @@ mainControllers.controller('UserList', ['$http','$scope','$timeout','UserFeed',
         $scope.del = function(id){
             var role = new RoleFeed({id: id});
             role.$delete(function(ret){
+                console.log(ret);
+                if(ret.status == 500){
+                    alert('系统错误'+"\n"+ret.err);
+                    return;
+                }
+                alert('删除成功');
+                window.location.reload();
+            })
+        }
+    }
+]);
+
+mainControllers.directive("page", function() {
+// Removes the need for duplicating the scode that makes the suggestions list.
+    return {
+        restrict: "A",
+        templateUrl:"/views/common/pager.html"
+    };
+});
+
+mainControllers.controller('showAllMarket', ['$resource','$http','$scope','$timeout','UserFeed',
+    function($resource,$http,$scope, $timeout, UserFeed) {
+        var Api = $resource('/api/comp/comp');
+        $scope.page = 1;
+        $scope.count = 12;
+        $scope.total = 0;
+        $scope.list = [];
+        $scope.totalpage = 0;
+        $scope.pages = [];
+        function request(){
+            $scope.list = [];
+            $http.get('/api/items/market?page='+$scope.page+"&count="+$scope.count).success(function(ret){
+                console.log(ret);
+                $scope.$data = ret.result;
+                ret.result.forEach(function(item, index){
+                    $scope.list[Math.floor(index/4)] = $scope.list[Math.floor(index/4)] || [];
+                    $scope.list[Math.floor(index/4)].push(item);
+                });
+                $scope.total = ret.total;
+                $scope.totalpage = Math.ceil(ret.total/$scope.count);
+                buildPage();
+            });
+        }
+        function buildPage(){
+            var maxShow = 10;
+            var ret = [];
+            if($scope.totalpage <= maxShow){
+                for(var i = 1 ; i <= $scope.totalpage; i ++){
+                    if($scope.page == i){
+                        ret.push({
+                            active:"active",
+                            number: i
+                        });
+                    }else{
+                        ret.push({
+                            active:"",
+                            number: i
+                        });
+                    }
+                }
+            }else{
+                var page = $scope.page;
+                var minpage = page-5 > 0 ? (page-5):1;
+                var maxpage = page+5 >$scope.totalpage ? $scope.totalpage : (page+5);
+                for(var i = minpage ; i <= maxpage ; i++){
+                    if($scope.page == i){
+                        ret.push({
+                            active:"active",
+                            number: i
+                        });
+                    }else{
+                        ret.push({
+                            active:"",
+                            number: i
+                        });
+                    }
+                }
+            }
+            $scope.pages = ret;
+
+        }
+        $scope.gotoPage = function(page){
+            console.log(page,'-------');
+            $scope.page = page;
+            request();
+        }
+        $scope.request = request;
+        request();
+
+        $scope.del = function(id){
+            var item = new ItemFeed({id: id});
+            item.$delete(function(ret){
                 console.log(ret);
                 if(ret.status == 500){
                     alert('系统错误'+"\n"+ret.err);

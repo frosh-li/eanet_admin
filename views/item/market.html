@@ -1,0 +1,27 @@
+<div class="row-fluid">
+    <!-- block -->
+    <div class="block">
+        <div class="navbar navbar-inner block-header">
+            <div class="muted pull-left">产品列表</div>
+        </div>
+        <div class="block-content collapse in">
+            <ul class="thumbnails" ng-repeat = "data in list">
+                <li class="span3" ng-repeat="item in data">
+                    <div class="thumbnail">
+                        <img ng-src="static/images/{{item.good_img}}" />
+                        <div class="text-primary">{{item.good_name}}</div>
+                        <div class="center">{{item.good_gg}}</div>
+                        <div class="center">{{item.good_cp}}</div>
+                    </div>
+                </li>
+            </ul>
+
+
+            <div class="">
+                共{{totalpage}}页，{{total}}条数据，当前第{{page}}页
+            </div>
+            <div page="mypages" class="pagination pagination-centered"></div>
+        </div>
+    </div>
+    <!-- /block -->
+</div>

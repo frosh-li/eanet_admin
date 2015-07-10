@@ -4,6 +4,8 @@
 var storeApp = angular.module('storeApp', [
     'ngRoute',
     'ngResource',
+    'storeAppDirectivies',
+//    'localPager',
     /*
     'authsServices',
     'authsControllers',
@@ -15,7 +17,8 @@ var storeApp = angular.module('storeApp', [
     'mainControllers',
     'mainServices',
     'ngFileUpload',
-    'angular-smarty'
+    'angular-smarty',
+
     /*detectedControllerService*/
     //'couponServices',
     //'couponControllers'
@@ -74,6 +77,10 @@ storeApp.config(['$routeProvider','$httpProvider',
     $routeProvider.when('/setprice/orderItem/:orderid/:comp_id/:order_status',{
         templateUrl:'views/order/setprice.html',
         controller: 'setprice'
+    });
+    $routeProvider.when('/market_list/',{
+        templateUrl:'views/item/market.html',
+        controller: 'showAllMarket'
     });
 
       $httpProvider.defaults.transformRequest = function(data){
@@ -141,3 +148,4 @@ storeApp.config(['$routeProvider','$httpProvider',
       // refresh token
   }
 ]);
+

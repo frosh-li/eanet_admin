@@ -1,0 +1,9 @@
+<ul ng-if="totalpage > 1">
+	<li class="disabled"><a href="javascript:void(0)" ng-click="gotoPage(1)">首页</a></li>
+	<li ng-repeat="page in pages track by $index">
+		<a ng-class="page.active" href="javascript:void(0);" ng-click="gotoPage(page.number)">
+			{{page.number}}
+		</a>
+	</li>
+	<li class="disabled"><a href="javascript:void(0)" ng-click="gotoPage(totalpage)">尾页</a></li>
+</ul>
