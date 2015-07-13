@@ -1,5 +1,5 @@
 <div class="span12">
- <form class="form-horizontal">
+ <form class="form-horizontal" ng-show="showAdd">
   <fieldset>
     <legend>新增药品(订单号:{{orderid}})</legend>
     <div class="control-group">
@@ -19,6 +19,10 @@
     </div>
     <div class="form-actions">
       <button type="submit" class="btn btn-primary" ng-click="processForm()">提交</button>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <a class="" ngf-select ngf-multiple="single" ngf-change="upload($files)">批量上传</a>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      <a href="/static/order.xlsx" target="_blank">批量上传模板下载</a>
     </div>
   </fieldset>
 </form>
@@ -47,7 +51,7 @@
             <td>{{item.good_id}}</td>
             <td>{{item.good_name}}</td>
             <td>{{item.good_gg}}</td>
-            <td>{{item.good_gw}}</td>
+            <td>{{item.good_dw}}</td>
             <td>{{item.good_cp}}</td>
             <td>{{item.good_pzwh}}</td>
             <td>{{item.good_number}}</td>

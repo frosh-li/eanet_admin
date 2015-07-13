@@ -22,6 +22,23 @@ storeAppFilters.filter('roleTypeToCN', function() {
   };
 });
 
+
+
+storeAppFilters.filter('rejectFilter', function() {
+  return function(input) {
+    var ret="等待确认";
+    switch(input){
+      case 1:
+        ret = "等待确认";
+        break;
+      case 2:
+        ret = "已确认";
+        break;
+    }
+    return ret;
+  };
+});
+
 storeAppFilters.filter('userStateCN', function() {
   return function(input) {
   	var ret="正常";

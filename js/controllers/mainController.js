@@ -487,12 +487,51 @@ mainControllers.controller('OrderList', ['$route','$http','ngTableParams','$scop
     }
 ]);
 
-mainControllers.controller('Yd_orderList', ['$route','$http','ngTableParams','$scope','$timeout','$resource',
+mainControllers.controller('RejectOrderList', ['$route','$http','ngTableParams','$scope','$timeout','$resource',
     function($route,$http,ngTableParams,$scope, $timeout,$resource) {
         $scope.routetype = $route.current.params.type;
         $scope.active0 = $scope.routetype == 0 ? "active":"";
         $scope.active1 = $scope.routetype == 1 ? "active":"";
         $scope.active2 = $scope.routetype == 2 ? "active":"";
+        var Api = $resource('/api/order/rejectOrder/');
+        $scope.tableParams = new ngTableParams({
+            page: 1,            // show first page
+            count: 10,          // count per page
+            type:"supplie_id"
+        }, {
+            total: 0,           // length of data
+            getData: function($defer, params) {
+                // ajax request to api
+                Api.get(params.url(), function(data) {
+                    $timeout(function() {
+                        // update table params
+                        params.total(data.total);
+                        // set new data
+                        $defer.resolve(data.result);
+                    }, 500);
+                });
+            }
+        });
+        $scope.comfirmRejct = function(order_id){
+            $http.post('/api/order/rejectOrder').success(function(ret){
+                if(ret.status == 200){
+                    alert('确认拒收成功');
+                    window.location.reload();
+                }else{
+                    alert('确认拒收失败');
+                }
+            });
+        }
+    }
+]);
+
+mainControllers.controller('Yd_orderList', ['Upload','$route','$http','ngTableParams','$scope','$timeout','$resource',
+    function(Upload,$route,$http,ngTableParams,$scope, $timeout,$resource) {
+        $scope.routetype = $route.current.params.type;
+        $scope.active0 = $scope.routetype == 0 ? "active":"";
+        $scope.active1 = $scope.routetype == 1 ? "active":"";
+        $scope.active2 = $scope.routetype == 2 ? "active":"";
+        // $scope.active3 = $scope.routetype == 3 ? "active":"";
 
         var Api = $resource('/api/order/order/');
         $scope.tableParams = new ngTableParams({
@@ -538,6 +577,60 @@ mainControllers.controller('Yd_orderList', ['$route','$http','ngTableParams','$s
         };
     }
 ]);
+
+mainControllers.controller('rejectList', ['$route','$http','ngTableParams','$scope','$timeout','$resource',
+    function($route,$http,ngTableParams,$scope, $timeout,$resource) {
+        $scope.routetype = $route.current.params.type;
+        $scope.active0 = $scope.routetype == 0 ? "active":"";
+        $scope.active1 = $scope.routetype == 1 ? "active":"";
+        $scope.active2 = $scope.routetype == 2 ? "active":"";
+        // $scope.active3 = $scope.routetype == 3 ? "active":"";
+
+        var Api = $resource('/api/order/rejectOrder/');
+        $scope.tableParams = new ngTableParams({
+            page: 1,            // show first page
+            count: 10          // count per page
+        }, {
+            total: 0,           // length of data
+            getData: function($defer, params) {
+                // ajax request to api
+                Api.get(params.url(), function(data) {
+                    $timeout(function() {
+                        // update table params
+                        params.total(data.total);
+                        // set new data
+                        $defer.resolve(data.result);
+                    }, 500);
+                });
+            }
+        });
+        $scope.del = function(id){
+            var role = new RoleFeed({id: id});
+            role.$delete(function(ret){
+                console.log(ret);
+                if(ret.status == 500){
+                    alert('系统错误'+"\n"+ret.err);
+                    return;
+                }
+                alert('删除成功');
+                window.location.reload();
+            })
+        }
+        // 提交订单，直接订单可以直接提交
+        $scope.submitOrder = function(order_id){
+            $http.post('/api/order/orderSubmit',{order_id: order_id}).success(function(ret){
+                if(ret.status == 500){
+                    alert(ret.err || ret.msg);
+                }else if(ret.status == 200){
+                    alert('提交订单成功');
+                    window.location.reload();
+                }
+            });
+        };
+    }
+]);
+
+
 
 mainControllers.controller('Yd_orderCreate', ["$document", "smartySuggestor", "$window",'$rootScope','$http','$scope','$timeout','OrderFeed','OrderFeed',
     function($document, smartySuggestor, $window,$rootScope,$http,$scope, $timeout, OrderFeed, RoleFeed) {
@@ -730,7 +823,7 @@ mainControllers.controller('setprice', [
 ]);
 
 
-mainControllers.controller('orderItemAdd', [
+mainControllers.controller('rejectItems', [
     '$resource',
     'ngTableParams',
     '$route',
@@ -743,7 +836,71 @@ mainControllers.controller('orderItemAdd', [
         $route,$document, smartySuggestor, $window,$rootScope,$http,$scope, $timeout, OrderDetailFeed, RoleFeed) {
         $scope.orderid = $route.current.params.orderid;
         $scope.companyid = $route.current.params.comp_id;
+        $scope.processForm = function(){
+            var oid = [],good_reject = [];
+            $scope.formData.forEach(function(item){
+                oid.push(item.oid);
+                good_reject.push(item.good_reject);
+            });
+
+            $http.post('/api/order/rejectItems', {orderid:$scope.orderid,good_reject:good_reject.join("|"),oid:oid.join("|")}).success(function(ret){
+                if(ret.status == 200){
+                    alert('拒收成功，请等待确认');
+                    window.history.back();
+                }else{
+                    alert('拒收失败，请刷新页面重试');
+                }
+
+            });
+        };
+        var Api = $resource('/api/order/orderdetail/');
+        $scope.tableParams = new ngTableParams({
+            page: 1,            // show first page
+            count: 10,          // count per page
+            order_id: $scope.orderid
+        }, {
+            total: 0,           // length of data
+            getData: function($defer, params) {
+                // ajax request to api
+                Api.get(params.url(), function(data) {
+                    $timeout(function() {
+                        // update table params
+                        params.total(data.total);
+                        // set new data
+                        $scope.formData = [];
+                        data.result.forEach(function(item, index){
+                            $scope.formData.push({
+                                oid: item.oid,
+                                good_reject: item.good_reject,
+                                good_id: item.good_id
+                            });
+                        });
+                        $defer.resolve(data.result);
+                    }, 500);
+                });
+            }
+        });
+
+    }
+]);
+
+mainControllers.controller('orderItemAdd', [
+    'Upload',
+    '$resource',
+    'ngTableParams',
+    '$route',
+    "$document",
+    "smartySuggestor",
+    "$window",'$rootScope','$http','$scope','$timeout','OrderDetailFeed','OrderFeed',
+    function(
+        Upload,
+        $resource,
+        ngTableParams,
+        $route,$document, smartySuggestor, $window,$rootScope,$http,$scope, $timeout, OrderDetailFeed, RoleFeed) {
+        $scope.orderid = $route.current.params.orderid;
+        $scope.companyid = $route.current.params.comp_id;
         $scope.order_status = $route.current.params.order_status;
+        $scope.showAdd = $scope.order_status == 1 ? true: false;
         // 需要调取对应批发企业有的数据
         smartySuggestor.setConfig({requestUrl:"/api/items/suggestHAS",params:{companyid:$scope.companyid}});
 
@@ -843,7 +1000,7 @@ mainControllers.controller('orderItemAdd', [
                 }
                 if(ret.status == 200){
                     alert('新增成功，即将返回列表页面');
-                    window.history.back();
+                    window.location.reload();
                 }
             });
         };
@@ -879,6 +1036,30 @@ mainControllers.controller('orderItemAdd', [
             })
         };
 
+        $scope.upload = function (files) {
+            if (files && files.length) {
+              for (var i = 0; i < files.length; i++) {
+                  var file = files[i];
+                  Upload.upload({
+                      url: 'api/order/multiOrders',
+                      fields: {'orderid': $scope.orderid},
+                      file: file
+                  }).progress(function (evt) {
+                      var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                      console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
+                  }).success(function (data, status, headers, config) {
+                      console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
+
+                      if(data.status == 200){
+                          alert('解析成功');
+                          window.location.reload();
+                      }else{
+                          alert(data.msg);
+                      }
+                  });
+              }
+            };
+        };
 
 
     }

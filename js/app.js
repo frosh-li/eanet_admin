@@ -78,10 +78,28 @@ storeApp.config(['$routeProvider','$httpProvider',
         templateUrl:'views/order/setprice.html',
         controller: 'setprice'
     });
+    $routeProvider.when('/reject/orderItem/:orderid/:comp_id',{
+        templateUrl:'views/yd_order/reject.html',
+        controller: 'rejectItems'
+    });
     $routeProvider.when('/market_list/',{
         templateUrl:'views/item/market.html',
         controller: 'showAllMarket'
     });
+    $routeProvider.when('/reject/list',{
+        templateUrl:'views/yd_order/reject_list.html',
+        controller: 'rejectList'
+    });
+    $routeProvider.when('/pf_reject',{
+        templateUrl:'views/order/reject_list.html',
+        controller: 'RejectOrderList'
+    });
+
+    $routeProvider.when('/viewreject/orderItem/:orderid/:comp_id',{
+        templateUrl:'views/yd_order/reject_view.html',
+        controller: 'rejectItems'
+    });
+
 
       $httpProvider.defaults.transformRequest = function(data){
         if(typeof data === 'object'){
@@ -141,6 +159,7 @@ storeApp.config(['$routeProvider','$httpProvider',
             //return $q.inject(response);
           },function(response){
             console.log('服务器内部错误');
+            alert('服务器开小差了');
             return $q.reject('服务器内部错误');
           });
         };

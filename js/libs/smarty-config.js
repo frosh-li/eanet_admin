@@ -31,7 +31,7 @@ app.service("smartyConfig", ["$http", "$filter", function($http, $filter) {
              return $filter("limitTo")(response.data.data, 10).map(function(item) {
                 if(item.good_id){
 
-                    return item.good_id+"|"+item.good_name;
+                    return item.good_id+"|"+item.good_name+"|"+item.good_cp+"|"+item.good_gg;
                 }else{
                     return item.id + "|" +item.name;
                 }
