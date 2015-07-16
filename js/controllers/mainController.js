@@ -1274,6 +1274,81 @@ mainControllers.controller('RoleCreate', ['$http','$scope','$timeout','RoleFeed'
     }
 ]);
 
+mainControllers.controller('CompCreate', ['$http','$scope','$timeout','CategoryService','ItemFeed',
+    function($http,$scope, $timeout, CategoryService,ItemFeed) {
+
+        $scope.lists = [];
+
+        $scope.formData = {
+            category_0: -1,
+            category_1: -1,
+            category_2: -1,
+            good_new: 0
+        };
+        $scope.categories_0 = [];
+        $scope.categories_1 = [];
+        $scope.categories_2 = [];
+        $scope.categories = CategoryService.query();
+        $scope.$watch('formData.category_0', function(){
+            $scope.formData.category_1 = -1;
+            $scope.formData.category_2 = -1;
+            if(parseInt($scope.formData.category_0) === -1){
+                $scope.categories_1 = [];
+                $scope.categories_2 = [];
+
+            }else{
+                // console.log($scope.categories.data, $scope.formData.category_0);
+
+                $scope.categories.data && $scope.categories.data.forEach(function(item){
+                    if(item.id === parseInt($scope.formData.category_0)){
+                        console.log(item.children);
+                        $scope.categories_1 = item.children;
+                    }
+                });
+            }
+        });
+
+        $scope.$watch('formData.category_1', function(){
+            $scope.formData.category_2 = -1;
+            if(parseInt($scope.formData.category_1) === -1){
+                $scope.categories_2 = [];
+
+            }else{
+                // console.log($scope.categories.data, $scope.formData.category_0);
+
+                $scope.categories_1 && $scope.categories_1.forEach(function(item){
+                    if(item.id === parseInt($scope.formData.category_1)){
+                        console.log(item.children);
+                        $scope.categories_2 = item.children;
+                    }
+                });
+            }
+        });
+
+        $scope.processForm = function(){
+
+            $scope.formData.good_cat = $scope.formData.category_2;
+            delete $scope.formData.category_0;
+            delete $scope.formData.category_1;
+            delete $scope.formData.category_2;
+            console.log($scope.formData);
+            //return ;
+            var item = new ItemFeed($scope.formData);
+            item.$save(function(ret){
+                if(ret.err){
+                    alert(ret.err.message);
+                    return;
+                }
+                if(ret.status == 200){
+                    alert('新增成功，即将返回列表页面');
+                    window.history.back();
+                }
+            });
+        }
+
+    }
+]);
+
 mainControllers.controller('RoleEdit', ['$http','$scope',
     function($http,$scope) {
         $scope.lists = [];

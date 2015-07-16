@@ -96,3 +96,5 @@ mainServices.factory('CategoryService', ['$resource',
     });
   }
 ]);
+
+
