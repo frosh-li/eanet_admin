@@ -37,6 +37,7 @@ storeApp.config(['$routeProvider','$httpProvider',
       {name: 'item', subName:'Item'},
       {name: 'yd_order', subName:'Yd_order'},
       {name: 'order', subName:'Order'},
+      {name: 'category', subName:'Category'},
 
       /*endDetectedRouters*/
     ].forEach(function(router){

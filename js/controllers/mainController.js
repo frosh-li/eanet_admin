@@ -1222,6 +1222,34 @@ mainControllers.controller('RoleList', ['$http','$scope','$timeout','RoleFeed',
     }
 ]);
 
+mainControllers.controller('CategoryList', ['$http','$scope','$timeout','CategoryService',
+    function($http,$scope, $timeout, CategoryService) {
+        $scope.categories = CategoryService.query();
+        $scope.formData={};
+        $scope.add = function(parentid, formDataId){
+            console.log(parentid, $scope.formData[parentid]);
+            if($scope.formData[parentid].trim() == ""){
+                alert('请输入分类名称');
+                return;
+            }
+            var category = new CategoryService({
+                cat_name: $scope.formData[parentid],
+                parent_id: parentid
+            });
+            category.$save(function(ret){
+                if(ret.err){
+                    alert(ret.err.message);
+                    return;
+                }
+                if(ret.status == 200){
+                    alert('新增成功，即将刷新列表');
+                    window.location.reload()
+                }
+            });
+        };
+    }
+]);
+
 mainControllers.controller('RoleCreate', ['$http','$scope','$timeout','RoleFeed',
     function($http,$scope, $timeout, RoleFeed) {
         $scope.lists = [];
