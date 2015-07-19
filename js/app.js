@@ -60,6 +60,10 @@ storeApp.config(['$routeProvider','$httpProvider',
                 controller: router.subName+"List"
             })
     });
+    $routeProvider.when('/hot_list/',{
+        templateUrl:'views/item/market.html',
+        controller: 'showAllMarket'
+    });
     $routeProvider.when('/companyRelate/:companyid',{
         templateUrl:'views/companyRelate/list.html',
         controller: 'companyRelateList'

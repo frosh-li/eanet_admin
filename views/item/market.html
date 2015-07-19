@@ -9,14 +9,21 @@
                 <li class="span3" ng-repeat="item in data">
                     <div class="thumbnail">
                         <img ng-src="static/images/{{item.good_img}}" />
-                        <div class="text-primary">{{item.good_name}}</div>
-                        <div class="center">{{item.good_gg}}</div>
-                        <div class="center">{{item.good_cp}}</div>
+                        <div class="text-primary">
+                            {{item.good_name}}
+                            <span class="text-warning" ng-if="item.good_new==1">新品</span>
+                        </div>
+                        <div class="center">剂量：{{item.good_gg}}</div>
+                        <div class="center">生产商：{{item.good_cp}}</div>
+                        <div class="center">价格：{{item.good_price}}</div>
+                        <div class="center">供应商：{{item.company_name}}</div>
+                        <div class="center">
+                            <input type="text" ng-model="formData[item.good_id]" value=1 />
+                            <a href="javascript:///" ng-click="buy(item.good_id, item.good_company,item.good_id)">购买</a>
+                        </div>
                     </div>
                 </li>
             </ul>
-
-
             <div class="">
                 共{{totalpage}}页，{{total}}条数据，当前第{{page}}页
             </div>

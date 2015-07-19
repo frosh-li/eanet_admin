@@ -152,18 +152,26 @@ mainControllers.directive("page", function() {
     };
 });
 
-mainControllers.controller('showAllMarket', ['$resource','$http','$scope','$timeout','UserFeed',
-    function($resource,$http,$scope, $timeout, UserFeed) {
+mainControllers.controller('showAllMarket', ['$route','$resource','$http','$scope','$timeout','UserFeed',
+    function($route, $resource,$http,$scope, $timeout, UserFeed) {
         var Api = $resource('/api/comp/comp');
+        var ifhot = $route.current.$$route.originalPath === '/hot_list/' ? true : false;
         $scope.page = 1;
         $scope.count = 12;
         $scope.total = 0;
         $scope.list = [];
         $scope.totalpage = 0;
         $scope.pages = [];
+        $scope.formData = {};
         function request(){
             $scope.list = [];
-            $http.get('/api/items/market?page='+$scope.page+"&count="+$scope.count).success(function(ret){
+            var url = '/api/items/market?page='+$scope.page+"&count="+$scope.count;
+            if(ifhot){
+                url += "&hot=1";
+            }else{
+                url += "&hot=0";
+            }
+            $http.get(url).success(function(ret){
                 console.log(ret);
                 $scope.$data = ret.result;
                 ret.result.forEach(function(item, index){
@@ -221,18 +229,32 @@ mainControllers.controller('showAllMarket', ['$resource','$http','$scope','$time
         $scope.request = request;
         request();
 
-        $scope.del = function(id){
-            var item = new ItemFeed({id: id});
-            item.$delete(function(ret){
-                console.log(ret);
-                if(ret.status == 500){
-                    alert('系统错误'+"\n"+ret.err);
-                    return;
-                }
-                alert('删除成功');
-                window.location.reload();
-            })
+        $scope.buy = function(item_id, supplie_id, good_id){
+            console.log(item_id);
+            console.log($scope.formData);
+            console.log($scope.formData[item_id]);
+            var number = parseInt($scope.formData[item_id]);
+            if(number > 0){
+                $scope.formData[item_id] = number;
+                $http.post('/api/order/master/',{
+                    supplie_id: supplie_id,
+                    good_id: good_id,
+                    number: number
+                })
+                .success(function(ret){
+                    if(ret.status == 200){
+                        alert('新增成功');
+                        console.log(ret);
+                    }else{
+                        alert(ret.msg || '未知错误');
+                    }
+                })
+            }else{
+                alert('请填写购买数量');
+            }
         }
+
+
     }
 ]);
 
