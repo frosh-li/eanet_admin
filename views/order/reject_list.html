@@ -2,23 +2,17 @@
     <!-- block -->
     <div class="block">
         <div class="navbar navbar-inner block-header">
-            <div class="muted pull-left">订单列表</div>
+            <div class="muted pull-left">订单列表s</div>
         </div>
         <div class="block-content collapse in">
             <div class="span12" style="min-height:1000px;">
-               <div class="table-toolbar">
+               <div class="table-toolbar"  ng-if="hideCreate === true">
                   <div class="btn-group">
                      <a href="#/yd_order/yd_order/create"><button class="btn btn-success">新增订单 <i class="icon-plus icon-white"></i></button></a>
                   </div>
-                  <div class="btn-group pull-right">
-                     <button data-toggle="dropdown" class="btn dropdown-toggle">Tools <span class="caret"></span></button>
-                     <ul class="dropdown-menu">
-                        <li><a href="#">从Excel导入</a></li>
-                     </ul>
-                  </div>
                </div>
                 <ul class="nav nav-tabs" id="myTab">
-                    <li class="{{active0}}"><a href="/#/order_list/0">全部订单</a></li>
+                    <!--li class="{{active0}}"><a href="/#/order_list/0">全部订单</a></li-->
                     <li class="{{active1}}"><a href="/#/order_list/1">直接订单</a></li>
                     <li class="{{active2}}"><a href="/#/order_list/2">询价订单</a></li>
                     <li class="active"><a href="/#/reject/list">拒收列表</a></li>

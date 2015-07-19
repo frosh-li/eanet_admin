@@ -358,7 +358,8 @@ app.factory('ngTableParams', ['$q', '$log', function ($q, $log) {
         this.url = function (asString) {
             asString = asString || false;
             var pairs = (asString ? [] : {});
-            for (var key in params) {
+            var params = this.$params;
+            for (var key in this.$params) {
                 if (params.hasOwnProperty(key)) {
                     var item = params[key],
                         name = encodeURIComponent(key);
@@ -479,6 +480,7 @@ var ngTableController = ['$scope', 'ngTableParams', '$timeout', function ($scope
     })();
 
     $scope.$watch('params.$params', function (newParams, oldParams) {
+        console.log('param cange')
         $scope.params.settings().$scope = $scope;
 
         if (!angular.equals(newParams.filter, oldParams.filter)) {

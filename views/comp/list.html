@@ -39,6 +39,9 @@
                         </tr>
                     </thead>
                     <tbody>
+                        <tr ng-if="$data.length < 1">
+                            <td colspan="8">查无数据</td>
+                        </tr>
                         <tr class="odd" ng-repeat="item in $data">
                             <td>{{item.id}}</td>
                             <td>{{item.type | companyType}}</td>

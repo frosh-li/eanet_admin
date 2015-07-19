@@ -66,20 +66,7 @@ mainControllers.controller('CompList', ['$resource','$scope','$timeout','ngTable
                     params[key] = $scope.search[key];
                 }
             }
-            $scope.tableParams = new ngTableParams(params, {
-                total: 0,           // length of data
-                getData: function($defer, params) {
-                    // ajax request to api
-                    Api.get(params.url(), function(data) {
-                        $timeout(function() {
-                            // update table params
-                            params.total(data.total);
-                            // set new data
-                            $defer.resolve(data.result);
-                        }, 500);
-                    });
-                }
-            });
+            $scope.tableParams.$params = params;
         }
         $scope.tableParams = new ngTableParams({
             page: 1,            // show first page
@@ -473,7 +460,8 @@ mainControllers.controller('OrderList', ['$route','$http','ngTableParams','$scop
             page: 1,            // show first page
             count: 10,          // count per page
             type:2,
-            ordertype:$scope.routetype
+            ordertype:$scope.routetype,
+            showHistory: 0
         }, {
             total: 0,           // length of data
             getData: function($defer, params) {
@@ -524,9 +512,62 @@ mainControllers.controller('OrderList', ['$route','$http','ngTableParams','$scop
     }
 ]);
 
+mainControllers.controller('OriginOrderList', ['$rootScope','$route','$http','ngTableParams','$scope','$timeout','$resource',
+    function($rootScope, $route,$http,ngTableParams,$scope, $timeout,$resource) {
+
+        var Api = $resource('/api/order/order/');
+        $scope.tableParams = new ngTableParams({
+            page: 1,            // show first page
+            count: 10,          // count per page
+            type:$rootScope.user.role_type-1,
+            ordertype:1,
+            showHistory: 1
+        }, {
+            total: 0,           // length of data
+            getData: function($defer, params) {
+                console.log(params.url());
+                // ajax request to api
+                Api.get(params.url(), function(data) {
+                    $timeout(function() {
+                        // update table params
+                        params.total(data.total);
+                        // set new data
+                        $defer.resolve(data.result);
+                    }, 500);
+                });
+            }
+        });
+        $scope.search = {
+            supplie_id: "",
+            supplie_name: "",
+            supplie_pingying: ""
+        };
+
+        $scope.psearch = function(){
+            var params = {
+                page: 1,            // show first page
+                count: 10,          // count per page
+                type:$rootScope.user.role_type-1,
+                ordertype:1,
+                showHistory: 1,
+                supplie_id: "",
+                supplie_name: "",
+                supplie_pingying: ""
+            };
+            for(var key in $scope.search){
+                if($scope.search.hasOwnProperty(key) && $scope.search[key] !=="" & $scope.search[key] !== -1){
+                    params[key] = $scope.search[key];
+                }
+            }
+            $scope.tableParams.$params = params;
+        }
+    }
+]);
+
 mainControllers.controller('RejectOrderList', ['$route','$http','ngTableParams','$scope','$timeout','$resource',
     function($route,$http,ngTableParams,$scope, $timeout,$resource) {
         $scope.routetype = $route.current.params.type;
+        $scope.hideCreate = $route.current.$$route.originalPath === '/pf_reject/' ? true: false;
         $scope.active0 = $scope.routetype == 0 ? "active":"";
         $scope.active1 = $scope.routetype == 1 ? "active":"";
         $scope.active2 = $scope.routetype == 2 ? "active":"";
@@ -534,7 +575,8 @@ mainControllers.controller('RejectOrderList', ['$route','$http','ngTableParams',
         $scope.tableParams = new ngTableParams({
             page: 1,            // show first page
             count: 10,          // count per page
-            type:"supplie_id"
+            type:"supplie_id",
+            showHistory: 0
         }, {
             total: 0,           // length of data
             getData: function($defer, params) {
@@ -574,7 +616,8 @@ mainControllers.controller('Yd_orderList', ['Upload','$route','$http','ngTablePa
         $scope.tableParams = new ngTableParams({
             page: 1,            // show first page
             count: 10,          // count per page
-            ordertype: $scope.routetype
+            ordertype: $scope.routetype,
+            showHistory: 0
         }, {
             total: 0,           // length of data
             getData: function($defer, params) {
