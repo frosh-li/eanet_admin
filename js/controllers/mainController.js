@@ -44,6 +44,43 @@ mainControllers.controller('baseController',['$scope','$rootScope','$http', func
 mainControllers.controller('CompList', ['$resource','$scope','$timeout','ngTableParams','Upload','CompFeed',
     function($resource,$scope, $timeout,ngTableParams,Upload, CompFeed) {
         var Api = $resource('/api/comp/comp/');
+        $scope.search = {
+            type: -1,
+            id: "",
+            name: "",
+            pingying: ""
+        };
+        $scope.company_type = [
+            {val: -1, name: '企业类型'},
+            {val: 1, name: '药店企业'},
+            {val: 2, name: '批发企业'}
+        ];
+        $scope.psearch = function(){
+            console.log($scope.search);
+            var params = {
+                page: 1,            // show first page
+                count: 10,          // count per page
+            };
+            for(var key in $scope.search){
+                if($scope.search.hasOwnProperty(key) && $scope.search[key] !=="" & $scope.search[key] !== -1){
+                    params[key] = $scope.search[key];
+                }
+            }
+            $scope.tableParams = new ngTableParams(params, {
+                total: 0,           // length of data
+                getData: function($defer, params) {
+                    // ajax request to api
+                    Api.get(params.url(), function(data) {
+                        $timeout(function() {
+                            // update table params
+                            params.total(data.total);
+                            // set new data
+                            $defer.resolve(data.result);
+                        }, 500);
+                    });
+                }
+            });
+        }
         $scope.tableParams = new ngTableParams({
             page: 1,            // show first page
             count: 10,          // count per page
@@ -525,14 +562,14 @@ mainControllers.controller('RejectOrderList', ['$route','$http','ngTableParams',
     }
 ]);
 
-mainControllers.controller('Yd_orderList', ['Upload','$route','$http','ngTableParams','$scope','$timeout','$resource',
-    function(Upload,$route,$http,ngTableParams,$scope, $timeout,$resource) {
+mainControllers.controller('Yd_orderList', ['Upload','$route','$http','ngTableParams','$scope','$timeout','$resource','OrderFeed',
+    function(Upload,$route,$http,ngTableParams,$scope, $timeout,$resource,OrderFeed) {
         $scope.routetype = $route.current.params.type;
         $scope.active0 = $scope.routetype == 0 ? "active":"";
         $scope.active1 = $scope.routetype == 1 ? "active":"";
         $scope.active2 = $scope.routetype == 2 ? "active":"";
         // $scope.active3 = $scope.routetype == 3 ? "active":"";
-
+        $scope.canCreate = true;
         var Api = $resource('/api/order/order/');
         $scope.tableParams = new ngTableParams({
             page: 1,            // show first page
@@ -547,14 +584,21 @@ mainControllers.controller('Yd_orderList', ['Upload','$route','$http','ngTablePa
                         // update table params
                         params.total(data.total);
                         // set new data
+
+                        data.result.forEach(function(item){
+                            if(item.order_type === 1 && item.order_status === 1){
+                                $scope.canCreate = false;
+                            }
+                        });
                         $defer.resolve(data.result);
+
                     }, 500);
                 });
             }
         });
         $scope.del = function(id){
-            var role = new RoleFeed({id: id});
-            role.$delete(function(ret){
+            var order = new OrderFeed({id: id});
+            order.$delete(function(ret){
                 console.log(ret);
                 if(ret.status == 500){
                     alert('系统错误'+"\n"+ret.err);
@@ -721,8 +765,8 @@ mainControllers.controller('Yd_orderCreate', ["$document", "smartySuggestor", "$
             }
             var order = new OrderFeed($scope.formData);
             order.$save(function(ret){
-                if(ret.err){
-                    alert(ret.err.message);
+                if(ret.msg){
+                    alert(ret.msg);
                     return;
                 }
                 if(ret.status == 200){
@@ -1125,7 +1169,7 @@ mainControllers.controller('orderItemView', ["$document", "smartySuggestor", "$w
         $scope.lists = [];
         $scope.order_type_list = [
             {val: 1, name:'直接订单'},
-            {val: 2, name:'询价'},
+            {val: 2, name:'询价订单'},
         ];
         $scope.formData = {
             supplie_id: "",
@@ -1160,6 +1204,54 @@ mainControllers.controller('orderItemView', ["$document", "smartySuggestor", "$w
                 }
                 if(ret.status == 200){
                     alert('新增成功，即将返回列表页面');
+                    window.history.back();
+                }
+            });
+        }
+
+    }
+]);
+
+mainControllers.controller('UserEdit', ['$route','$http','$scope','$timeout','UserFeed','RoleFeed',
+    function($route, $http,$scope, $timeout, UserFeed, RoleFeed) {
+        var uid = $route.current.params.id
+        $scope.lists = [];
+        $scope.roles = RoleFeed.query();
+        $scope.formData = {
+            username: "",
+            password: "",
+            realname: "",
+            comp_id: -1,
+            role_id: 1,
+            tel:"",
+            phone:"",
+            email: "",
+            state: 0
+        };
+        UserFeed.getOne({id: uid}, function(ret){
+            console.log('user', ret)
+            for(var key in ret.data){
+                if(ret.data.hasOwnProperty(key)){
+                    $scope.formData[key] = ret.data[key];
+
+                }
+            }
+            $scope.formData.password="";
+        });
+        $scope.processForm = function(){
+            console.log($scope.formData);
+            delete $scope.formData.id;
+            if($scope.formData.password == ""){
+                delete $scope.formData.password;
+            }
+            var user = new UserFeed($scope.formData);
+            user.$update({id: uid},function(ret){
+                if(ret.err){
+                    alert(ret.err.message);
+                    return;
+                }
+                if(ret.status == 200){
+                    alert('修改成功，即将返回列表页面');
                     window.history.back();
                 }
             });
@@ -1274,7 +1366,7 @@ mainControllers.controller('RoleCreate', ['$http','$scope','$timeout','RoleFeed'
     }
 ]);
 
-mainControllers.controller('CompCreate', ['$http','$scope','$timeout','CategoryService','ItemFeed',
+mainControllers.controller('ItemCreate', ['$http','$scope','$timeout','CategoryService','ItemFeed',
     function($http,$scope, $timeout, CategoryService,ItemFeed) {
 
         $scope.lists = [];
@@ -1349,8 +1441,203 @@ mainControllers.controller('CompCreate', ['$http','$scope','$timeout','CategoryS
     }
 ]);
 
+mainControllers.controller('ItemEdit', ['$route','$http','$scope','$timeout','CategoryService','ItemFeed',
+    function($route, $http,$scope, $timeout, CategoryService,ItemFeed) {
+        var itemid = $route.current.params.id;
+        $scope.lists = [];
+
+        $scope.formData = {
+            category_0: -1,
+            category_1: -1,
+            category_2: -1,
+            good_new: 0
+        };
+        $scope.categories = CategoryService.query();
+        if(itemid){
+            ItemFeed.get({id: itemid}, function(ret){
+                console.log('item feed get', ret);
+                for(var key in ret.data){
+                    if(ret.data.hasOwnProperty(key)){
+                        $scope.formData[key] = ret.data[key];
+                    }
+                }
+                //$scope.formData.category_2 = $scope.formData.good_cat;
+                $scope.categories.data.forEach(function(cat){
+
+                    cat.children.forEach(function(cat_1){
+                        cat_1.children.forEach(function(cat_2){
+
+                            if(cat_2.id === $scope.formData.good_cat){
+                                console.log('find current')
+                                $scope.formData.category_0 = cat.id;
+                                $timeout(function(){
+                                    $scope.formData.category_1 = cat_1.id;
+                                    $timeout(function(){
+                                        $scope.formData.category_2 = cat_2.id;
+                                    },500)
+                                },500)
+                            }
+                        });
+                    });
+                });
+            });
+            //console.log(query);
+        }
+        $scope.categories_0 = [];
+        $scope.categories_1 = [];
+        $scope.categories_2 = [];
+
+        $scope.$watch('formData.category_0', function(){
+            $scope.formData.category_1 = -1;
+            $scope.formData.category_2 = -1;
+            if(parseInt($scope.formData.category_0) === -1){
+                $scope.categories_1 = [];
+                $scope.categories_2 = [];
+
+            }else{
+                // console.log($scope.categories.data, $scope.formData.category_0);
+
+                $scope.categories.data && $scope.categories.data.forEach(function(item){
+                    if(item.id === parseInt($scope.formData.category_0)){
+                        console.log(item.children);
+                        $scope.categories_1 = item.children;
+                    }
+                });
+            }
+        });
+
+        $scope.$watch('formData.category_1', function(){
+            $scope.formData.category_2 = -1;
+            if(parseInt($scope.formData.category_1) === -1){
+                $scope.categories_2 = [];
+
+            }else{
+                // console.log($scope.categories.data, $scope.formData.category_0);
+
+                $scope.categories_1 && $scope.categories_1.forEach(function(item){
+                    if(item.id === parseInt($scope.formData.category_1)){
+                        console.log(item.children);
+                        $scope.categories_2 = item.children;
+                    }
+                });
+            }
+        });
+
+        $scope.processForm = function(){
+
+            $scope.formData.good_cat = $scope.formData.category_2;
+            delete $scope.formData.category_0;
+            delete $scope.formData.category_1;
+            delete $scope.formData.category_2;
+            console.log($scope.formData);
+            //return ;
+            var item = new ItemFeed($scope.formData);
+            var id = $scope.formData.good_id;
+            delete $scope.formData.good_id;
+            delete $scope.formData.good_company;
+            item.$update({id: id}, function(ret){
+                if(ret.err){
+                    alert(ret.err.message);
+                    return;
+                }
+                if(ret.status == 200){
+                    alert('修改成功，即将返回列表页面');
+                    window.history.back();
+                }
+            });
+        }
+
+    }
+]);
+
 mainControllers.controller('RoleEdit', ['$http','$scope',
     function($http,$scope) {
         $scope.lists = [];
+    }
+]);
+
+mainControllers.controller('PushCreate', ['$http','$scope','PushFeed',
+    function($http,$scope, PushFeed) {
+        $scope.formData = {
+            msg: ""
+        };
+        $scope.processForm = function(){
+            var push = new PushFeed($scope.formData);
+            push.$save(function(ret){
+                if(ret.err){
+                    alert(ret.err.message);
+                    return;
+                }
+                if(ret.status == 200){
+                    alert('新增成功，即将返回列表页面');
+                    window.history.back();
+                }
+            });
+        }
+    }
+]);
+
+mainControllers.controller('PushList', ['$http','$scope','PushFeed',
+    function($http,$scope, PushFeed) {
+        $scope.lists = PushFeed.query();
+        console.log($scope.lists);
+    }
+]);
+
+mainControllers.controller('CompCreate', ['$http','$scope','CompFeed',
+    function($http,$scope,CompFeed) {
+        $scope.formData = {
+            type: 1,
+            status: 0
+        };
+        $scope.processForm = function(){
+
+            console.log($scope.formData);
+            //return ;
+            var company = new CompFeed($scope.formData);
+            company.$save(function(ret){
+                if(ret.err){
+                    alert(ret.err.message);
+                    return;
+                }
+                if(ret.status == 200){
+                    alert('新增成功，即将返回列表页面');
+                    window.history.back();
+                }
+            });
+        }
+    }
+]);
+
+mainControllers.controller('CompEdit', ['$route','$http','$scope','CompFeed',
+    function($route,$http,$scope,CompFeed) {
+        var comp_id = $route.current.params.id
+        $scope.formData = {
+        };
+        CompFeed.getOne({id: comp_id}, function(ret){
+            console.log('user', ret)
+            for(var key in ret.data){
+                if(ret.data.hasOwnProperty(key)){
+                    $scope.formData[key] = ret.data[key];
+                }
+            }
+        });
+
+        $scope.processForm = function(){
+
+            console.log($scope.formData);
+            //return ;
+            var company = new CompFeed($scope.formData);
+            company.$update({id: comp_id}, function(ret){
+                if(ret.err){
+                    alert(ret.err.message);
+                    return;
+                }
+                if(ret.status == 200){
+                    alert('修改成功，即将返回列表页面');
+                    window.history.back();
+                }
+            });
+        }
     }
 ]);

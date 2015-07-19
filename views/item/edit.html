@@ -1,0 +1,120 @@
+<div class="span12">
+ <form class="form-horizontal">
+  <fieldset>
+    <legend>编辑药品</legend>
+    <div class="control-group">
+      <label class="control-label" for="good_name">药品名称</label>
+      <div class="controls">
+        <input ng-model="formData.good_name" class="input-xlarge focused" id="good_name" type="text" value="" name="good_name" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="good_tyname">通用名称</label>
+      <div class="controls">
+        <input ng-model="formData.good_tyname" class="input-xlarge focused" id="good_tyname" type="text" value="" name="good_tyname" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="good_gg">药品规格</label>
+      <div class="controls">
+        <input ng-model="formData.good_gg" class="input-xlarge focused" id="good_gg" type="text" value="" name="good_gg" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="good_dw">单位</label>
+      <div class="controls">
+        <input ng-model="formData.good_dw" class="input-xlarge focused" id="good_dw" type="text" value="" name="good_dw" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="good_cp">厂牌</label>
+      <div class="controls">
+        <input ng-model="formData.good_cp" class="input-xlarge focused" id="good_cp" type="text" value="" name="good_cp" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="good_pzwh">批准文号</label>
+      <div class="controls">
+        <input ng-model="formData.good_pzwh" class="input-xlarge focused" id="good_pzwh" type="text" value="" name="good_pzwh" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="good_dbzsl">包装数量</label>
+      <div class="controls">
+        <input ng-model="formData.good_dbzsl" class="input-xlarge focused" id="good_dbzsl" type="text" value="" name="good_dbzsl" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="good_jx">剂型</label>
+      <div class="controls">
+        <input ng-model="formData.good_jx" class="input-xlarge focused" id="good_jx" type="text" value="" name="good_jx" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="good_lsj">零售价</label>
+      <div class="controls">
+        <input ng-model="formData.good_lsj" class="input-xlarge focused" id="good_lsj" type="text" value="" name="good_lsj" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="good_pfj">批发价</label>
+      <div class="controls">
+        <input ng-model="formData.good_pfj" class="input-xlarge focused" id="good_pfj" type="text" value="" name="good_pfj" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="good_py">拼音编码</label>
+      <div class="controls">
+        <input ng-model="formData.good_py" class="input-xlarge focused" id="good_py" type="text" value="" name="good_py" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="good_tm">药品条码</label>
+      <div class="controls">
+        <input ng-model="formData.good_tm" class="input-xlarge focused" id="good_tm" type="text" value="" name="good_tm" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="good_price">采购价格</label>
+      <div class="controls">
+        <input ng-model="formData.good_price" class="input-xlarge focused" id="good_price" type="text" value="" name="good_price" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="good_img">药品图片</label>
+      <div class="controls">
+        <input ng-model="formData.good_img" class="input-xlarge focused" id="good_img" type="text" value="" name="good_img" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label">是否新品</label>
+      <div class="controls">
+        <select name="good_new" ng-model="formData.good_new">
+          <option value="0">否</option>
+          <option value="1">是</option>
+        </select>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label">药品分类</label>
+      <div class="controls">
+        <select name="category" ng-model="formData.category_0">
+          <option value="-1" selected>请选择一级分类</option>
+          <option value="{{cat.id}}" ng-repeat="cat in categories.data">{{cat.name}}</option>
+        </select>
+        <select name="category" ng-model="formData.category_1">
+          <option value="-1" selected>请选择二级分类</option>
+          <option value="{{cat.id}}" ng-repeat="cat in categories_1">{{cat.name}}</option>
+        </select>
+        <select name="category" ng-model="formData.category_2">
+          <option value="-1" selected>请选择三级分类</option>
+          <option value="{{cat.id}}" ng-repeat="cat in categories_2">{{cat.name}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" ng-click="processForm()">提交</button>
+    </div>
+  </fieldset>
+</form>
+</div>

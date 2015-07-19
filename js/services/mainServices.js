@@ -21,7 +21,21 @@ mainServices.factory('RoleFeed', ['$resource',
 mainServices.factory('ItemFeed', ['$resource',
   function($resource){
     return $resource('api/items/map/:id', {id:'@id',search:'@search'}, {
-      query: {method:'GET', params:{}, isArray:true},
+      query: {method:'GET', params:{}, isArray:false},
+      //get:{method:'GET', params: {ids: "@ids"}, isArray:false},//不用delete方法也不用这个了
+      getOne:{method:'GET', params: {id: "@id"}, isArray:false},//为了优化请求地址，实际上应该是{id: "@id"}
+      save: {method:'POST', isArray:false},
+      update:{method:"PUT", isArray:false},
+      delete: {method: "DELETE", params: {id:'@id'}}
+    });
+  }
+]);
+
+mainServices.factory('ItemDetailFeed', ['$resource',
+  function($resource){
+    return $resource('api/items/map/:id', {id:'@id',search:'@search'}, {
+      get: {method:'get'},
+      query: {method:'GET', params:{}, isArray:false},
       //get:{method:'GET', params: {ids: "@ids"}, isArray:false},//不用delete方法也不用这个了
       getOne:{method:'GET', params: {id: "@id"}, isArray:false},//为了优化请求地址，实际上应该是{id: "@id"}
       save: {method:'POST', isArray:false},
@@ -63,7 +77,20 @@ mainServices.factory('UserFeed', ['$resource',
     return $resource('api/user/user/:id', {id:'@id',search:'@search'}, {
       query: {method:'GET', params:{}, isArray:true},
       //get:{method:'GET', params: {ids: "@ids"}, isArray:false},//不用delete方法也不用这个了
-      getOne:{method:'GET', params: {id: "@id"}, isArray:false},//为了优化请求地址，实际上应该是{id: "@id"}
+      getOne:{method:'GET'},//为了优化请求地址，实际上应该是{id: "@id"}
+      save: {method:'POST', isArray:false},
+      update:{method:"PUT", isArray:false},
+      delete: {method: "DELETE", params: {id:'@id'}}
+    });
+  }
+]);
+
+mainServices.factory('PushFeed', ['$resource',
+  function($resource){
+    return $resource('api/push/push/:id', {id:'@id',search:'@search'}, {
+      query: {method:'GET', params:{}, isArray:true},
+      //get:{method:'GET', params: {ids: "@ids"}, isArray:false},//不用delete方法也不用这个了
+      getOne:{method:'GET'},//为了优化请求地址，实际上应该是{id: "@id"}
       save: {method:'POST', isArray:false},
       update:{method:"PUT", isArray:false},
       delete: {method: "DELETE", params: {id:'@id'}}

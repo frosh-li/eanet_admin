@@ -8,7 +8,7 @@
             <div class="span12" style="min-height:500px;">
                <div class="table-toolbar">
                   <div class="btn-group">
-                     <a href="#/comp/comp/create"><button class="btn btn-success">新建药品 <i class="icon-plus icon-white"></i></button></a>
+                     <a href="#/item/item/create"><button class="btn btn-success">新建药品 <i class="icon-plus icon-white"></i></button></a>
                   </div>
               </div>
                 <table ng-table='tableParams' cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
@@ -30,7 +30,10 @@
                             <td>{{item.good_cp}}</td>
                             <td>{{item.good_gg}}</td>
                             <td>{{item.good_dw}}</td>
-                            <td><button class="btn" ng-click="del(item.id)">删除</button></td>
+                            <td>
+                                <button class="btn" ng-click="del(item.good_id)">删除</button>
+                                <a href="#/item/edit/{{item.good_id}}" class="btn">修改</a>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

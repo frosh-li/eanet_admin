@@ -38,11 +38,12 @@ storeApp.config(['$routeProvider','$httpProvider',
       {name: 'yd_order', subName:'Yd_order'},
       {name: 'order', subName:'Order'},
       {name: 'category', subName:'Category'},
+      {name: 'push', subName:'Push'},
 
       /*endDetectedRouters*/
     ].forEach(function(router){
         $routeProvider.
-            when('/'+router.name+'/'+router.subName.toLowerCase()+"/edit:id",{
+            when('/'+router.name+'/'+"edit/:id",{
                 templateUrl:'views/'+router.name+"/"+'edit.html',
                 controller: router.subName+"Edit"
             }).

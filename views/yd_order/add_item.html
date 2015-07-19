@@ -20,7 +20,7 @@
     <div class="form-actions">
       <button type="submit" class="btn btn-primary" ng-click="processForm()">提交</button>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      <a class="" ngf-select ngf-multiple="single" ngf-change="upload($files)">批量上传</a>
+      <a class="" ngf-select ngf-multiple="false"  accept=".xls,.xlsx" ngf-accept="'.xls,.xlsx'"  ngf-change="upload($files)">批量上传</a>
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
       <a href="/static/order.xlsx" target="_blank">批量上传模板下载</a>
     </div>

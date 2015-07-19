@@ -8,19 +8,23 @@
             <div class="span12">
                <div class="table-toolbar">
                   <div class="btn-group">
-                     <!--a href="#/role/role/create"><button class="btn btn-success">新增企业 <i class="icon-plus icon-white"></i></button></a-->
-
-                    <button ngf-select ngf-multiple="single" ngf-change="upload($files)" class="btn btn-success">批量上传 <i class="icon-plus icon-white"></i></button>
-
+                    <button ngf-select ngf-multiple="false" accept=".xls,.xlsx" ngf-accept="'.xls,.xlsx'" ngf-change="upload($files)" class="btn btn-success">批量上传 <i class="icon-plus icon-white"></i></button>
+                    &nbsp;&nbsp;
                     <a href="/static/company.xlsx" target="_blank"><button class="btn btn-success">批量上传模板下载 <i class="icon-plus icon-white"></i></button></a>
-                  </div>
-                  <div class="btn-group pull-right">
-                     <button data-toggle="dropdown" class="btn dropdown-toggle">Tools <span class="caret"></span></button>
-                     <ul class="dropdown-menu">
-                        <li><a href="javascript:///;" ngf-select ngf-multiple="single" ngf-change="upload($files)">从Excel导入</a></li>
-                     </ul>
+                    <a href="#/comp/comp/create" class="btn">新建企业</a>
                   </div>
                </div>
+
+                <form class="form-inline">
+                <input type="text" class="input-small" ng-model="search.id" placeholder="企业ID">
+                <input type="text" class="input-small" ng-model="search.name" placeholder="企业名称">
+                <select ng-model = "search.type">
+                  <option ng-repeat="ctype in company_type" value="{{ctype.val}}">{{ctype.name}}</option>
+                </select>
+                <input type="text" class="input-small" ng-model="search.pingying" placeholder="拼音码">
+                <button type="submit" ng-click="psearch()" class="btn">搜索</button>
+                </form>
+
                 <table ng-table='tableParams' cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered">
                     <thead>
                         <tr>
@@ -47,6 +51,7 @@
                             <td>{{item.status | userStateCN}}</td>
                             <td>
                               <button class="btn" ng-click="del(item.id)">删除</button>
+                              <a href="#/comp/edit/{{item.id}}" class="btn">修改</button>
                               <a href="#/companyRelate/{{item.id}}" ng-if="item.type == 2" class="btn">合作药店</a>
                             </td>
                         </tr>

@@ -1,8 +1,7 @@
 <div class="span12">
  <form class="form-horizontal">
   <fieldset>
-    <legend>新建企业</legend>
-
+    <legend>编辑企业</legend>
     <div class="control-group">
       <label class="control-label" for="name">企业名称</label>
       <div class="controls">
@@ -12,10 +11,7 @@
     <div class="control-group">
       <label class="control-label" for="type">企业类型</label>
       <div class="controls">
-        <select name="status" ng-model="formData.type">
-          <option value="1">医药企业</option>
-          <option value="2">批发企业</option>
-        </select>
+        <input ng-model="formData.type" readonly="" class="input-xlarge focused" id="type" type="text" value="" name="shortname" />
       </div>
     </div>
     <div class="control-group">

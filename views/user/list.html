@@ -37,11 +37,14 @@
                             <td>{{item.username}}</td>
                             <td>{{item.realname}}</td>
                             <td>{{item.role_name}}</td>
-                            <td>{{item.comp_name}}</td>
+                            <td>{{item.comp_id}}</td>
                             <td>{{item.tel}} {{item.phone}}</td>
                             <td>{{item.email}}</td>
                             <td>{{item.state | userStateCN}}</td>
-                            <td><button class="btn" ng-click="del(item.id)">删除</button></td>
+                            <td>
+                                <button class="btn" ng-click="del(item.id)">删除</button>
+                                <a href="#/user/edit/{{item.id}}" class="btn">修改</a>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
