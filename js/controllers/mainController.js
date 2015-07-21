@@ -1277,21 +1277,27 @@ mainControllers.controller('orderItemView', ["$document", "smartySuggestor", "$w
     }
 ]);
 
-mainControllers.controller('UserEdit', ['$route','$http','$scope','$timeout','UserFeed','RoleFeed',
-    function($route, $http,$scope, $timeout, UserFeed, RoleFeed) {
-        var uid = $route.current.params.id
+mainControllers.controller('UserEdit', ['$rootScope','$route','$http','$scope','$timeout','UserFeed','RoleFeed',
+    function($rootScope, $route, $http,$scope, $timeout, UserFeed, RoleFeed) {
+        var uid = $route.current.params.id;
+        $scope.isSuperAdmin = $rootScope.user.role_type === 0 ? true : false;
         $scope.lists = [];
         $scope.roles = RoleFeed.query();
+        $scope.adminlist = [
+            {id: 0, name:'非'},
+            {id: 1, name:'是'}
+        ];
         $scope.formData = {
             username: "",
             password: "",
             realname: "",
-            comp_id: -1,
+            comp_id: $rootScope.user.comp_id,
             role_id: 1,
             tel:"",
             phone:"",
             email: "",
-            state: 0
+            state: 0,
+            isadmin:0
         };
         UserFeed.getOne({id: uid}, function(ret){
             console.log('user', ret)
@@ -1325,20 +1331,26 @@ mainControllers.controller('UserEdit', ['$route','$http','$scope','$timeout','Us
     }
 ]);
 
-mainControllers.controller('UserCreate', ['$http','$scope','$timeout','UserFeed','RoleFeed',
-    function($http,$scope, $timeout, UserFeed, RoleFeed) {
+mainControllers.controller('UserCreate', ['$rootScope','$http','$scope','$timeout','UserFeed','RoleFeed',
+    function($rootScope,$http,$scope, $timeout, UserFeed, RoleFeed) {
         $scope.lists = [];
         $scope.roles = RoleFeed.query();
+        $scope.isSuperAdmin = $rootScope.user.role_type === 0 ? true : false;
+        $scope.adminlist = [
+            {id: 0, name:'非'},
+            {id: 1, name:'是'}
+        ];
         $scope.formData = {
             username: "",
             password: "",
             realname: "",
-            comp_id: -1,
+            comp_id: $rootScope.user.comp_id,
             role_id: 1,
             tel:"",
             phone:"",
             email: "",
-            state: 0
+            state: 0,
+            isadmin: 0
         };
 
         $scope.processForm = function(){

@@ -39,6 +39,21 @@ storeAppFilters.filter('rejectFilter', function() {
   };
 });
 
+storeAppFilters.filter('isadmin', function() {
+  return function(input) {
+    var ret="非";
+    switch(input){
+      case 0:
+        ret = "非";
+        break;
+      case 1:
+        ret = "是";
+        break;
+    }
+    return ret;
+  };
+});
+
 storeAppFilters.filter('userStateCN', function() {
   return function(input) {
   	var ret="正常";
