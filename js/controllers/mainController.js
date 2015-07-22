@@ -1517,8 +1517,8 @@ mainControllers.controller('RoleCreate', ['$http','$scope','$timeout','RoleFeed'
     }
 ]);
 
-mainControllers.controller('ItemCreate', ['$http','$scope','$timeout','CategoryService','ItemFeed',
-    function($http,$scope, $timeout, CategoryService,ItemFeed) {
+mainControllers.controller('ItemCreate', ['Upload','$http','$scope','$timeout','CategoryService','ItemFeed',
+    function(Upload, $http,$scope, $timeout, CategoryService,ItemFeed) {
 
         $scope.lists = [];
 
@@ -1587,13 +1587,37 @@ mainControllers.controller('ItemCreate', ['$http','$scope','$timeout','CategoryS
                     window.history.back();
                 }
             });
-        }
+        };
+        $scope.upload = function (files) {
+            if (files && files.length) {
+              for (var i = 0; i < files.length; i++) {
+                  var file = files[i];
+                  Upload.upload({
+                      url: 'api/items/upload',
+                      file: file
+                  }).progress(function (evt) {
+                      var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                      console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
+                  }).success(function (data, status, headers, config) {
+                      console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
+
+                      if(data.status == 200){
+                          alert('解析成功');
+                          $scope.formData.good_img = data.path;
+                          // window.location.reload();
+                      }else{
+                          alert(data.msg);
+                      }
+                  });
+              }
+            };
+        };
 
     }
 ]);
 
-mainControllers.controller('ItemEdit', ['$route','$http','$scope','$timeout','CategoryService','ItemFeed',
-    function($route, $http,$scope, $timeout, CategoryService,ItemFeed) {
+mainControllers.controller('ItemEdit', ['Upload','$route','$http','$scope','$timeout','CategoryService','ItemFeed',
+    function(Upload, $route, $http,$scope, $timeout, CategoryService,ItemFeed) {
         var itemid = $route.current.params.id;
         $scope.lists = [];
 
@@ -1696,7 +1720,32 @@ mainControllers.controller('ItemEdit', ['$route','$http','$scope','$timeout','Ca
                     window.history.back();
                 }
             });
-        }
+        };
+
+        $scope.upload = function (files) {
+            if (files && files.length) {
+              for (var i = 0; i < files.length; i++) {
+                  var file = files[i];
+                  Upload.upload({
+                      url: 'api/items/upload',
+                      file: file
+                  }).progress(function (evt) {
+                      var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                      console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
+                  }).success(function (data, status, headers, config) {
+                      console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
+
+                      if(data.status == 200){
+                          alert('解析成功');
+                          $scope.formData.good_img = data.path;
+                          // window.location.reload();
+                      }else{
+                          alert(data.msg);
+                      }
+                  });
+              }
+            };
+        };
 
     }
 ]);
