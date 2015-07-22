@@ -27,7 +27,7 @@ mainControllers.controller('baseController',['$scope','$rootScope','$http', func
             $rootScope.menus = ret.menus;
             console.log($rootScope.user);
         }else{
-            alert('请登陆');
+            console.log('请登陆');
             //return;
             window.location = "/login.html";
         }
@@ -152,10 +152,81 @@ mainControllers.directive("page", function() {
     };
 });
 
-mainControllers.controller('showAllMarket', ['$route','$resource','$http','$scope','$timeout','UserFeed',
-    function($route, $resource,$http,$scope, $timeout, UserFeed) {
+mainControllers.controller('showAllMarket', ['CategoryService','$route','$resource','$http','$scope','$timeout','UserFeed',
+    function(CategoryService,$route, $resource,$http,$scope, $timeout, UserFeed) {
         var Api = $resource('/api/comp/comp');
         var ifhot = $route.current.$$route.originalPath === '/hot_list/' ? true : false;
+        $scope.filterData = {
+            category_0: -1,
+            category_1: -1,
+            category_2: -1,
+        };
+        $scope.catid = -1;
+        $scope.categories_0 = [{id:-1,name:'不限'}];
+        $scope.categories_1 = [{id:-1,name:'不限'}];
+        $scope.categories_2 = [{id:-1,name:'不限'}];
+        $scope.categories = CategoryService.query();
+        $scope.changeCat = function(level, id){
+            switch(level){
+                case 0:
+                    $scope.filterData.category_0 = id;
+                    break;
+                case 1:
+                    $scope.filterData.category_1 = id;
+                    break;
+                case 2:
+                    $scope.filterData.category_2 = id;
+                    break;
+            }
+            console.log($scope.filterData);
+            $scope.page = 1;
+            if($scope.filterData.category_2 > -1){
+                $scope.catid = $scope.filterData.category_2;
+            }else if($scope.filterData.category_1 > -1){
+                $scope.catid = $scope.filterData.category_1;
+            }else if($scope.filterData.category_0 > -1){
+                $scope.catid = $scope.filterData.category_0;
+            }
+            // $scope.catid = $scope.filterData.category_2 || $scope.filterData.category_1 || $scope.filterData.category_0;
+            console.log($scope.catid);
+            request();
+        }
+        $scope.$watch('filterData.category_0', function(){
+            $scope.filterData.category_1 = -1;
+            $scope.filterData.category_2 = -1;
+            if(parseInt($scope.filterData.category_0) === -1){
+                $scope.categories_1 = [{id:-1,name:'不限'}];
+                $scope.categories_2 = [{id:-1,name:'不限'}];
+
+            }else{
+                // console.log($scope.categories.data, $scope.formData.category_0);
+
+                $scope.categories.data && $scope.categories.data.forEach(function(item){
+                    if(item.id === parseInt($scope.filterData.category_0)){
+                        console.log(item.children);
+                        $scope.categories_1 = [{id:-1,name:'不限'}].concat(item.children);
+
+                    }
+                });
+            }
+        });
+
+        $scope.$watch('filterData.category_1', function(){
+            $scope.filterData.category_2 = -1;
+            if(parseInt($scope.formData.category_1) === -1){
+                $scope.categories_2 = [{id:-1,name:'不限'}];
+
+            }else{
+                // console.log($scope.categories.data, $scope.formData.category_0);
+
+                $scope.categories_1 && $scope.categories_1.forEach(function(item){
+                    if(item.id === parseInt($scope.filterData.category_1)){
+                        console.log(item.children);
+                        $scope.categories_2 = [{id:-1,name:'不限'}].concat(item.children);
+                    }
+                });
+            }
+        });
         $scope.page = 1;
         $scope.count = 12;
         $scope.total = 0;
@@ -166,6 +237,9 @@ mainControllers.controller('showAllMarket', ['$route','$resource','$http','$scop
         function request(){
             $scope.list = [];
             var url = '/api/items/market?page='+$scope.page+"&count="+$scope.count;
+            if($scope.catid > -1){
+                url+="&catid="+$scope.catid;
+            }
             if(ifhot){
                 url += "&hot=1";
             }else{
