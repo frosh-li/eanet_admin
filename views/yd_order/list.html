@@ -52,7 +52,6 @@
                                     <li ng-if="item.order_status == 1"><a href="javascript:///;" ng-click="del(item.order_id)">删除</a></li>
                                     <li ng-if="item.order_status == 1"><a href="javascript:///" ng-click="submitOrder(item.order_id)">提交订单</a></li>
                                     <li ng-if="item.order_status == 4"><a href="javascript:///" ng-click="submitOrder(item.order_id)">确认收货</a></li>
-                                    <li ng-if="item.order_status == 5 && item.order_reject == 0"><a href="#/reject/orderItem/{{item.order_id}}/{{item.supplie_id}}" >拒收货物</a></li>
                                   </ul>
                                 </div>
                                 <div class="btn-group" ng-if="item.order_type == 2">

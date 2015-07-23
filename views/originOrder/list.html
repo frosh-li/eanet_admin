@@ -47,11 +47,9 @@
                                 <td>{{item.comp_id}}</td>
                                 <td>
                                 <div class="btn-group" ng-if="item.order_type==1">
-
                                     <a href="#/add/orderItem/{{item.order_id}}/{{item.supplie_id}}/{{item.order_status}}" class="btn">查看</a>
-                                    <a href="/api/order/orderexcel/{{item.order_id}}" target="_blank" class="btn">导出EXCEL</a>
-                                    <li ng-if="item.order_status == 5 && item.order_reject == 0 && user.role_type == 2"><a href="#/reject/orderItem/{{item.order_id}}/{{item.supplie_id}}" >拒收货物</a></li>
-                                  </ul>
+                                    <a href="/api/order/orderexcel/{{item.order_id}}" target="_blank" class="btn">导出</a>
+                                    <a class="btn" ng-if="item.order_reject==0" href="#/reject/orderItem/{{item.order_id}}/{{item.supplie_id}}" >拒收</a>
                                 </div>
                                 </td>
                             </tr>
