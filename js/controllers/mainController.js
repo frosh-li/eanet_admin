@@ -703,7 +703,6 @@ mainControllers.controller('RejectOrderList', ['$route','$http','ngTableParams',
 mainControllers.controller('Yd_orderList', ['Upload','$route','$http','ngTableParams','$scope','$timeout','$resource','OrderFeed',
     function(Upload,$route,$http,ngTableParams,$scope, $timeout,$resource,OrderFeed) {
         $scope.routetype = $route.current.params.type;
-        $scope.active0 = $scope.routetype == 0 ? "active":"";
         $scope.active1 = $scope.routetype == 1 ? "active":"";
         $scope.active2 = $scope.routetype == 2 ? "active":"";
         // $scope.active3 = $scope.routetype == 3 ? "active":"";
