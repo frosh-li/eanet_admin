@@ -895,7 +895,7 @@ mainControllers.controller('Yd_orderCreate', ["$document", "smartySuggestor", "$
         $scope.lists = [];
         $scope.order_type_list = [
             {val: 1, name:'直接订单'},
-            {val: 2, name:'询价'},
+            {val: 2, name:'询价订单'},
         ];
         $scope.formData = {
             supplie_id: "",

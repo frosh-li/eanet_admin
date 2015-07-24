@@ -45,7 +45,7 @@
         <input ng-model="formData.comp_id" class="input-xlarge focused" id="focusedInput" type="text" value="" name="comp_id" readonly="" />
       </div>
     </div>
-    <h5>订单药品详单</h5>
+    <!--h5>订单药品详单</h5>
 
     <div class="control-group" ng-repeat="o_item in formData.orderDetail track by $index">
       <label class="control-label" for="focusedInput">药品名称数量</label>
@@ -53,9 +53,9 @@
         <input ng-model="formData.orderDetail[$index].itemid" class="input-xlarge focused" id="focusedInput" type="text" name="comp_id" readonly="" />
         <input ng-model="formData.orderDetail[$index].itemcount" class="input-small focused" id="focusedInput" type="text" name="comp_id" placeholder="数量" />
       </div>
-    </div>
+    </div-->
     <div class="form-actions">
-      <button type="submit" class="btn btn-primary" ng-click="processForm()">提交</button>
+      <button type="submit" class="btn btn-primary" ng-click="processForm()">保存</button>
     </div>
   </fieldset>
 </form>
