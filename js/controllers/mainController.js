@@ -155,6 +155,12 @@ mainControllers.directive("page", function() {
 mainControllers.controller('showAllMarket', ['CategoryService','$route','$resource','$http','$scope','$timeout','UserFeed',
     function(CategoryService,$route, $resource,$http,$scope, $timeout, UserFeed) {
         var Api = $resource('/api/comp/comp');
+        $scope.search = {
+            // supplie_id: "",
+            // supplie_name: "",
+            // supplie_pingying: ""
+            good_name: ''
+        };
         var ifhot = $route.current.$$route.originalPath === '/hot_list/' ? true : false;
         $scope.filterData = {
             category_0: -1,
@@ -213,7 +219,7 @@ mainControllers.controller('showAllMarket', ['CategoryService','$route','$resour
 
         $scope.$watch('filterData.category_1', function(){
             $scope.filterData.category_2 = -1;
-            if(parseInt($scope.formData.category_1) === -1){
+            if(parseInt($scope.filterData.category_1) === -1){
                 $scope.categories_2 = [{id:-1,name:'不限'}];
 
             }else{
@@ -239,6 +245,9 @@ mainControllers.controller('showAllMarket', ['CategoryService','$route','$resour
             var url = '/api/items/market?page='+$scope.page+"&count="+$scope.count;
             if($scope.catid > -1){
                 url+="&catid="+$scope.catid;
+            }
+            if($scope.search.good_name){
+                url+="&good_name="+encodeURIComponent($scope.search.good_name);
             }
             if(ifhot){
                 url += "&hot=1";
@@ -307,9 +316,11 @@ mainControllers.controller('showAllMarket', ['CategoryService','$route','$resour
             console.log(item_id);
             console.log($scope.formData);
             console.log($scope.formData[item_id]);
+
             var number = parseInt($scope.formData[item_id]);
             if(number > 0){
-                $scope.formData[item_id] = number;
+                //$scope.formData[item_id] = number;
+                $scope.formData[item_id] = "";
                 $http.post('/api/order/master/',{
                     supplie_id: supplie_id,
                     good_id: good_id,
@@ -317,7 +328,7 @@ mainControllers.controller('showAllMarket', ['CategoryService','$route','$resour
                 })
                 .success(function(ret){
                     if(ret.status == 200){
-                        alert('新增成功');
+                        // alert('新增成功');
                         console.log(ret);
                     }else{
                         alert(ret.msg || '未知错误');
@@ -328,6 +339,11 @@ mainControllers.controller('showAllMarket', ['CategoryService','$route','$resour
             }
         }
 
+
+        $scope.psearch = function(){
+            $scope.page = 1;
+            request();
+        }
 
     }
 ]);
@@ -897,10 +913,10 @@ mainControllers.controller('Yd_orderCreate', ["$document", "smartySuggestor", "$
                 alert('请输入正确订单日期');
                 return;
             }
-            if(!/^[0-9]{8}$/.test($scope.formData.order_lastvaiddate)){
-                alert('请输入正确的交货订单日期');
-                return;
-            }
+            // if(!/^[0-9]{8}$/.test($scope.formData.order_lastvaiddate)){
+            //     alert('请输入正确的交货订单日期');
+            //     return;
+            // }
             var order = new OrderFeed($scope.formData);
             order.$save(function(ret){
                 if(ret.msg){

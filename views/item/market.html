@@ -13,7 +13,8 @@
     }
     </style>
 <div class="row-fluid">
-    <div class="span12">
+    <div class="span12 block" style="padding-bottom:15px;">
+
         <div class="navbar navbar-inner block-header">
             <div class="muted pull-left">分类选择</div>
         </div>
@@ -44,10 +45,16 @@
         </div>
     </div>
     <!-- block -->
-    <div class="block">
-        <div class="navbar navbar-inner block-header">
+    <div class="block" style="margin-top:10px;clear:both">
+        <div class="navbar navbar-inner block-header" style="border-top:1px;">
             <div class="muted pull-left">产品列表</div>
         </div>
+        <form class="form-inline" style="margin-left:20px;margin-top:20px;">
+        <label>品名:</label><input type="text" class="input-small" ng-model="search.good_name" placeholder="品名">
+        &nbsp;&nbsp;&nbsp;&nbsp;
+
+        <button type="submit" ng-click="psearch()" class="btn">搜索</button>
+        </form>
         <div class="block-content collapse in">
             <ul class="thumbnails" ng-repeat = "data in list">
                 <li class="span3" ng-repeat="item in data">
@@ -62,7 +69,7 @@
                         <div class="center">价格：{{item.good_price}}</div>
                         <div class="center">供应商：{{item.company_name}}</div>
                         <div class="center">
-                            <input type="text" ng-model="formData[item.good_id]" value=1 />
+                            <input class="input-small" type="text" ng-model="formData[item.good_id]" value=1 />
                             <a href="javascript:///" ng-click="buy(item.good_id, item.good_company,item.good_id)">购买</a>
                         </div>
                     </div>
