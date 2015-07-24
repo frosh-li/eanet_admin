@@ -159,7 +159,8 @@ mainControllers.controller('showAllMarket', ['CategoryService','$route','$resour
             // supplie_id: "",
             // supplie_name: "",
             // supplie_pingying: ""
-            good_name: ''
+            good_name: '',
+            good_promotion:false
         };
         var ifhot = $route.current.$$route.originalPath === '/hot_list/' ? true : false;
         $scope.filterData = {
@@ -168,6 +169,7 @@ mainControllers.controller('showAllMarket', ['CategoryService','$route','$resour
             category_2: -1,
         };
         $scope.catid = -1;
+
         $scope.categories_0 = [{id:-1,name:'不限'}];
         $scope.categories_1 = [{id:-1,name:'不限'}];
         $scope.categories_2 = [{id:-1,name:'不限'}];
@@ -248,6 +250,9 @@ mainControllers.controller('showAllMarket', ['CategoryService','$route','$resour
             }
             if($scope.search.good_name){
                 url+="&good_name="+encodeURIComponent($scope.search.good_name);
+            }
+            if($scope.search.good_promotion){
+                url+="&good_promotion=1";
             }
             if(ifhot){
                 url += "&hot=1";

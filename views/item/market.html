@@ -51,6 +51,7 @@
         </div>
         <form class="form-inline" style="margin-left:20px;margin-top:20px;">
         <label>品名:</label><input type="text" class="input-small" ng-model="search.good_name" placeholder="品名">
+        <label>是否促销:</label><input type="checkbox" class="input-small" ng-model="search.good_promotion" placeholder="品名">
         &nbsp;&nbsp;&nbsp;&nbsp;
 
         <button type="submit" ng-click="psearch()" class="btn">搜索</button>
@@ -66,8 +67,11 @@
                         </div>
                         <div class="center">剂量：{{item.good_gg}}</div>
                         <div class="center">生产商：{{item.good_cp}}</div>
-                        <div class="center">价格：{{item.good_price}}</div>
+                        <div class="center">销售价：{{item.good_price}}</div>
+                        <div class="center">零售价：{{item.good_lsj}}</div>
+                        <div class="center">折率：{{item.good_price/item.good_lsj*100 | toInt}}</div>
                         <div class="center">供应商：{{item.company_name}}</div>
+                        <div class="center" ng-if="item.good_promotion">促销信息：{{item.good_promotion}}</div>
                         <div class="center">
                             <input class="input-small" type="text" ng-model="formData[item.good_id]" value=1 />
                             <a href="javascript:///" ng-click="buy(item.good_id, item.good_company,item.good_id)">购买</a>
