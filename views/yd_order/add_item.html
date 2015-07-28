@@ -61,7 +61,7 @@
             <td>{{item.good_price}}</td>
             <td>{{item.good_amount}}</td>
             <td>
-            <button class="btn" ng-click="del(item.oid)">删除</button>
+            <button ng-if="order_status == 1" class="btn" ng-click="del(item.oid)">删除</button>
             </td>
         </tr>
     </tbody>
