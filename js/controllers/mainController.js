@@ -1109,7 +1109,13 @@ mainControllers.controller('orderItemAdd', [
         $scope.showAdd = $scope.order_status == 1 ? true: false;
         // 需要调取对应批发企业有的数据
         smartySuggestor.setConfig({requestUrl:"/api/items/suggestHAS",params:{companyid:$scope.companyid}});
-
+        $scope.sortName = "品名排序";
+        var params = {
+            page: 1,            // show first page
+            count: 10,          // count per page
+            order_id: $scope.orderid,
+            sort: 0
+        };
 
         $scope.suggestions = [];
         $scope.prefix = "";
@@ -1211,11 +1217,7 @@ mainControllers.controller('orderItemAdd', [
             });
         };
         var Api = $resource('/api/order/orderdetail/');
-        $scope.tableParams = new ngTableParams({
-            page: 1,            // show first page
-            count: 10,          // count per page
-            order_id: $scope.orderid
-        }, {
+        $scope.tableParams = new ngTableParams(params, {
             total: 0,           // length of data
             getData: function($defer, params) {
                 // ajax request to api
@@ -1229,6 +1231,26 @@ mainControllers.controller('orderItemAdd', [
                 });
             }
         });
+        $scope.changeSort = function(){
+            var cparams = {
+                page: 1,            // show first page
+                count: 10,          // count per page
+                order_id: $scope.orderid
+            };
+            if($scope.sortName == "品名排序"){
+                cparams.sort = 1;
+                $scope.sortName = "默认排序";
+                $scope.tableParams.$params = cparams;
+
+            }else{
+                cparams.sort = 0;
+                $scope.sortName = "品名排序";
+                $scope.tableParams.$params = cparams;
+
+            }
+            console.log($scope.sortName);
+            // $scope.$apply();
+        }
         $scope.del = function(id){
             var orderdetail = new OrderDetailFeed({id: id});
             orderdetail.$delete(function(ret){
