@@ -162,6 +162,7 @@ mainControllers.controller('showAllMarket', ['CategoryService','$route','$resour
             good_name: '',
             good_promotion:false
         };
+        $scope.showTable = false;
         var ifhot = $route.current.$$route.originalPath === '/hot_list/' ? true : false;
         $scope.filterData = {
             category_0: -1,
@@ -266,6 +267,8 @@ mainControllers.controller('showAllMarket', ['CategoryService','$route','$resour
                     $scope.list[Math.floor(index/4)] = $scope.list[Math.floor(index/4)] || [];
                     $scope.list[Math.floor(index/4)].push(item);
                 });
+                $scope.tableData = ret.result;
+                console.log($scope.tableData);
                 $scope.total = ret.total;
                 $scope.totalpage = Math.ceil(ret.total/$scope.count);
                 buildPage();
