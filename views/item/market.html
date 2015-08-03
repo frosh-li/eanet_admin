@@ -51,11 +51,12 @@
         </div>
         <form class="form-inline" style="margin-left:20px;margin-top:20px;">
         <label>品名:</label><input type="text" class="input-small" ng-model="search.good_name" placeholder="品名">
-        <label>是否促销:</label><input type="checkbox" class="input-small" ng-model="search.good_promotion" placeholder="品名">
         &nbsp;&nbsp;&nbsp;&nbsp;
         <button type="submit" ng-click="psearch()" class="btn">搜索</button>
         <div class="pull-right">
         <label for="showtable">列表显示:</label><input id='showtable' type="checkbox" class="input-small" ng-model="showTable" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <label for="good_promotion">是否促销:</label><input type="checkbox" class="input-small" ng-model="search.good_promotion" id='good_promotion' placeholder="品名" ng-click="changePromotion()">
         </div>
         </form>
         <div class="block-content collapse in">

@@ -48,7 +48,7 @@
             <th>数量</th>
             <th>单价</th>
             <th>总价</th>
-            <th>操作</th>
+            <th>拒收数量</th>
         </tr>
     </thead>
     <tbody>
@@ -64,6 +64,7 @@
             <td>{{item.good_price}}</td>
             <td>{{item.good_amount}}</td>
             <td>
+			<div ng-if="order_status != 1">{{item.good_reject}}</div>
             <button ng-if="order_status == 1" class="btn" ng-click="del(item.oid)">删除</button>
             </td>
         </tr>

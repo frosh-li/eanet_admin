@@ -351,8 +351,11 @@ mainControllers.controller('showAllMarket', ['CategoryService','$route','$resour
         $scope.psearch = function(){
             $scope.page = 1;
             request();
-        }
-
+        };
+        $scope.changePromotion = function(){
+            $timeout($scope.psearch,100);
+            //$scope.psearch();
+        };
     }
 ]);
 
