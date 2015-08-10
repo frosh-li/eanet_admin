@@ -1857,6 +1857,68 @@ mainControllers.controller('CompCreate', ['$http','$scope','CompFeed',
     }
 ]);
 
+mainControllers.controller('SwiperList', ['Upload','$route','$http','$scope','SwiperService',
+    function(Upload, $route,$http,$scope,SwiperService) {
+        $scope.list = SwiperService.query({type:0});
+        $scope.upload = function (files, id) {
+          if (files && files.length) {
+              for (var i = 0; i < files.length; i++) {
+                  var file = files[i];
+                  Upload.upload({
+                      url: 'api/swiper/swiper',
+                      fields: {'username': $scope.username, id: id, type:0},
+                      file: file
+                  }).progress(function (evt) {
+                      var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                      console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
+                  }).success(function (data, status, headers, config) {
+                      console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
+
+                      if(data.status == 200){
+                          alert('更新成功');
+                          // window.location.reload();
+                          $scope.list = SwiperService.query({type:0});
+                      }else{
+                          alert(data.msg);
+                      }
+                  });
+              }
+          }
+      };
+    }
+]);
+
+mainControllers.controller('AdList', ['Upload','$route','$http','$scope','AdService',
+    function(Upload, $route,$http,$scope,AdService) {
+        $scope.list = AdService.query({type:1});
+        $scope.upload = function (files, id) {
+          if (files && files.length) {
+              for (var i = 0; i < files.length; i++) {
+                  var file = files[i];
+                  Upload.upload({
+                      url: 'api/swiper/swiper',
+                      fields: {'username': $scope.username, id: id, type: 1},
+                      file: file
+                  }).progress(function (evt) {
+                      var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                      console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
+                  }).success(function (data, status, headers, config) {
+                      console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
+
+                      if(data.status == 200){
+                          alert('更新成功');
+                          // window.location.reload();
+                          $scope.list = AdService.query({type:1});
+                      }else{
+                          alert(data.msg);
+                      }
+                  });
+              }
+          }
+      };
+    }
+]);
+
 mainControllers.controller('CompEdit', ['$route','$http','$scope','CompFeed',
     function($route,$http,$scope,CompFeed) {
         var comp_id = $route.current.params.id

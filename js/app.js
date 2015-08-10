@@ -39,7 +39,9 @@ storeApp.config(['$routeProvider','$httpProvider',
       {name: 'order', subName:'Order'},
       {name: 'category', subName:'Category'},
       {name: 'push', subName:'Push'},
-      {name: 'originOrder', subName:'OriginOrder'}
+      {name: 'originOrder', subName:'OriginOrder'},
+      {name: 'ad', subName:'Ad'},
+      {name: 'swiper', subName:'Swiper'},
       /*endDetectedRouters*/
     ].forEach(function(router){
         $routeProvider.

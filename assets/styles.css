@@ -385,3 +385,26 @@ body {
   margin: 0;
   padding: 10px;
 }
+#swiperlist,#adlist{
+  position: relative;
+}
+#swiperlist span, #adlist span{
+  position: absolute;
+    left: 118px;
+    top: 85px;
+    background-color: #f90;
+    color: white;
+    padding: 4px;
+    border-radius: 4px;
+    opacity: 0.5;
+    cursor: pointer;
+}
+#swiperlist,#adlist img{
+    margin:10px;
+    border: 1px solid #ccc;
+    padding:1px;
+    cursor: pointer;
+}
+#myadlist > div{
+  float:left;
+}

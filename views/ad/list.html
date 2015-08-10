@@ -1,0 +1,18 @@
+<div class="row-fluid">
+    <!-- block -->
+    <div class="">
+        <div>
+            <div>轮播图管理</div>
+            <div class="muted">图片尺寸请参照设计稿自身尺寸</div>
+        </div>
+        <!--div id="myadlist"-->
+            <div ng-repeat = "item in list" id="adlist">
+                <div>
+                    <img ng-src="{{item.src}}" width=300 ngf-select ngf-multiple="false" accept=".jpg,.png,.jpeg" ngf-accept="'.jpg,.png,.jpeg'" ngf-change="upload($files, item.id)"  />
+                    <span  ngf-select ngf-multiple="false" accept=".jpg,.png,.jpeg" ngf-accept="'.jpg,.png,.jpeg'" ngf-change="upload($files, item.id)" >点击更换图片</span>
+                </div>
+            </div>
+        <!--/div-->
+    </div>
+    <!-- /block -->
+</div>

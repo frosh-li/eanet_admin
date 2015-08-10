@@ -1,0 +1,18 @@
+<div class="row-fluid">
+    <!-- block -->
+    <div class="">
+        <div>
+            <div>轮播图管理</div>
+            <div class="muted">图片尺寸需要保持固定高宽比16:9</div>
+        </div>
+        <div class="mylist">
+        <div ng-repeat = "item in list" class="clearfix" id="swiperlist">
+            <div>
+                <img ng-src="{{item.src}}" width=300 ngf-select ngf-multiple="false" accept=".jpg,.png,.jpeg" ngf-accept="'.jpg,.png,.jpeg'" ngf-change="upload($files, item.id)"  />
+                <span  ngf-select ngf-multiple="false" accept=".jpg,.png,.jpeg" ngf-accept="'.jpg,.png,.jpeg'" ngf-change="upload($files, item.id)" >点击更换图片</span>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- /block -->
+</div>
