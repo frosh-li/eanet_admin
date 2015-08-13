@@ -18,16 +18,20 @@
                                 <div class="text-success">
                                     {{cat_level2.name}}
                                     &nbsp;&nbsp;&nbsp;&nbsp;
+
                                     <a href="javascript:///" ng-click="del(category.id)">删除分类</a>
                                 </div>
                                 <ul>
                                     <li ng-repeat="cat_level3 in cat_level2.children">
                                         {{cat_level3.name}}
+
                                         &nbsp;&nbsp;&nbsp;&nbsp;
+                                        {{cat_level3.icon}}
                                         <a href="javascript:///"  ng-click="del(cat_level3.id)">删除分类</a>
                                     </li>
                                     <li>
                                         <input type="text" ng-model='formData[cat_level2.id]' placeholder="输入分类名称" />
+                                        <input type="text" ng-model='formData[cat_level2.id]' placeholder="分类图标" />
                                         <a href="javascript:///"  ng-click="add(cat_level2.id)">确定新增</a>
                                     </li>
                                 </ul>
