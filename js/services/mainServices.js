@@ -13,7 +13,7 @@ mainServices.factory('RoleFeed', ['$resource',
       getOne:{method:'GET', params: {id: "@id"}, isArray:false},//为了优化请求地址，实际上应该是{id: "@id"}
       save: {method:'POST', isArray:false},
       update:{method:"PUT", isArray:false},
-      delete: {method: "DELETE", params: {id:'@id'}}
+      "delete": {method: "DELETE", params: {id:'@id'}}
     });
   }
 ]);
@@ -26,7 +26,7 @@ mainServices.factory('ItemFeed', ['$resource',
       getOne:{method:'GET', params: {id: "@id"}, isArray:false},//为了优化请求地址，实际上应该是{id: "@id"}
       save: {method:'POST', isArray:false},
       update:{method:"PUT", isArray:false},
-      delete: {method: "DELETE", params: {id:'@id'}}
+      "delete": {method: "DELETE", params: {id:'@id'}}
     });
   }
 ]);
@@ -40,7 +40,7 @@ mainServices.factory('ItemDetailFeed', ['$resource',
       getOne:{method:'GET', params: {id: "@id"}, isArray:false},//为了优化请求地址，实际上应该是{id: "@id"}
       save: {method:'POST', isArray:false},
       update:{method:"PUT", isArray:false},
-      delete: {method: "DELETE", params: {id:'@id'}}
+      "delete": {method: "DELETE", params: {id:'@id'}}
     });
   }
 ]);
@@ -53,7 +53,7 @@ mainServices.factory('OrderFeed', ['$resource',
       getOne:{method:'GET', params: {id: "@id"}, isArray:false},//为了优化请求地址，实际上应该是{id: "@id"}
       save: {method:'POST', isArray:false},
       update:{method:"PUT", isArray:false},
-      delete: {method: "DELETE", params: {id:'@id'}}
+      "delete": {method: "DELETE", params: {id:'@id'}}
     });
   }
 ]);
@@ -66,7 +66,7 @@ mainServices.factory('OrderDetailFeed', ['$resource',
       getOne:{method:'GET', params: {id: "@id"}, isArray:false},//为了优化请求地址，实际上应该是{id: "@id"}
       save: {method:'POST', isArray:false},
       update:{method:"PUT", isArray:false},
-      delete: {method: "DELETE", params: {id:'@id'}}
+      "delete": {method: "DELETE", params: {id:'@id'}}
     });
   }
 ]);
@@ -80,7 +80,7 @@ mainServices.factory('UserFeed', ['$resource',
       getOne:{method:'GET'},//为了优化请求地址，实际上应该是{id: "@id"}
       save: {method:'POST', isArray:false},
       update:{method:"PUT", isArray:false},
-      delete: {method: "DELETE", params: {id:'@id'}}
+      "delete": {method: "DELETE", params: {id:'@id'}}
     });
   }
 ]);
@@ -93,7 +93,7 @@ mainServices.factory('PushFeed', ['$resource',
       getOne:{method:'GET'},//为了优化请求地址，实际上应该是{id: "@id"}
       save: {method:'POST', isArray:false},
       update:{method:"PUT", isArray:false},
-      delete: {method: "DELETE", params: {id:'@id'}}
+      "delete": {method: "DELETE", params: {id:'@id'}}
     });
   }
 ]);
@@ -106,7 +106,7 @@ mainServices.factory('CompFeed', ['$resource',
       getOne:{method:'GET', params: {id: "@id"}, isArray:false},//为了优化请求地址，实际上应该是{id: "@id"}
       save: {method:'POST', isArray:false},
       update:{method:"PUT", isArray:false},
-      delete: {method: "DELETE", params: {id:'@id'}}
+      "delete": {method: "DELETE", params: {id:'@id'}}
     });
   }
 ]);
@@ -119,7 +119,7 @@ mainServices.factory('CategoryService', ['$resource',
       getOne:{method:'GET', params: {id: "@id"}, isArray:false},//为了优化请求地址，实际上应该是{id: "@id"}
       save: {method:'POST', isArray:false},
       update:{method:"PUT", isArray:false},
-      delete: {method: "DELETE", params: {id:'@id'}}
+      "delete": {method: "DELETE", params: {id:'@id'}}
     });
   }
 ]);
@@ -132,7 +132,7 @@ mainServices.factory('SwiperService', ['$resource',
       getOne:{method:'GET', params: {id: "@id"}, isArray:false},//为了优化请求地址，实际上应该是{id: "@id"}
       save: {method:'POST', isArray:false},
       update:{method:"PUT", isArray:false},
-      delete: {method: "DELETE", params: {id:'@id'}}
+      "delete": {method: "DELETE", params: {id:'@id'}}
     });
   }
 ]);
@@ -145,7 +145,7 @@ mainServices.factory('AdService', ['$resource',
       getOne:{method:'GET', params: {id: "@id"}, isArray:false},//为了优化请求地址，实际上应该是{id: "@id"}
       save: {method:'POST', isArray:false},
       update:{method:"PUT", isArray:false},
-      delete: {method: "DELETE", params: {id:'@id'}}
+      "delete": {method: "DELETE", params: {id:'@id'}}
     });
   }
 ]);

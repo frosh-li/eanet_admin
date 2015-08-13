@@ -59,7 +59,7 @@ mainControllers.controller('CompList', ['$resource','$scope','$timeout','ngTable
             console.log($scope.search);
             var params = {
                 page: 1,            // show first page
-                count: 10,          // count per page
+                count: 10          // count per page
             };
             for(var key in $scope.search){
                 if($scope.search.hasOwnProperty(key) && $scope.search[key] !=="" & $scope.search[key] !== -1){
@@ -70,7 +70,7 @@ mainControllers.controller('CompList', ['$resource','$scope','$timeout','ngTable
         }
         $scope.tableParams = new ngTableParams({
             page: 1,            // show first page
-            count: 10,          // count per page
+            count: 10          // count per page
         }, {
             total: 0,           // length of data
             getData: function($defer, params) {
@@ -167,7 +167,7 @@ mainControllers.controller('showAllMarket', ['CategoryService','$route','$resour
         $scope.filterData = {
             category_0: -1,
             category_1: -1,
-            category_2: -1,
+            category_2: -1
         };
         $scope.catid = -1;
 

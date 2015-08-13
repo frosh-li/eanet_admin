@@ -17,7 +17,7 @@ var storeApp = angular.module('storeApp', [
     'mainControllers',
     'mainServices',
     'ngFileUpload',
-    'angular-smarty',
+    'angular-smarty'
 
     /*detectedControllerService*/
     //'couponServices',

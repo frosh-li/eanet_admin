@@ -532,8 +532,8 @@ angular.module('ngTasty.component.table', [
         }
         scope.header.columns.forEach(function (column, index) {
           column.style = column.style || {};
-          if (!angular.isArray(column.class)) {
-            column.class = [];
+          if (!angular.isArray(column['class'])) {
+            column['class'] = [];
           }
           sortable = true;
           active = false;
@@ -573,7 +573,7 @@ angular.module('ngTasty.component.table', [
             'name': column.name,
             'active': active,
             'sortable': sortable,
-            'class': column.class,
+            'class': column['class'],
             'style': column.style,
             'isSorted': isSorted,
             'isSortedCaret': isSortedCaret
@@ -608,7 +608,7 @@ angular.module('ngTasty.component.table', [
         if (column.active) {
           listClassToShow.push('active');
         }
-        column.class.forEach(function getListClass (className) {
+        column['class'].forEach(function getListClass (className) {
           listClassToShow.push(className);
         });
         return listClassToShow;
