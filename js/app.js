@@ -5,24 +5,12 @@ var storeApp = angular.module('storeApp', [
     'ngRoute',
     'ngResource',
     'storeAppDirectivies',
-//    'localPager',
-    /*
-    'authsServices',
-    'authsControllers',
-    'storeAppFilters',
-    'storeAppFactories',
-    */
     'storeAppFilters',
     'ngTasty',
     'mainControllers',
     'mainServices',
     'ngFileUpload',
     'angular-smarty'
-
-    /*detectedControllerService*/
-    //'couponServices',
-    //'couponControllers'
-    /*endDetectedControllerService*/
 ]);
 
 storeApp.config(['$routeProvider','$httpProvider',
@@ -42,6 +30,7 @@ storeApp.config(['$routeProvider','$httpProvider',
       {name: 'originOrder', subName:'OriginOrder'},
       {name: 'ad', subName:'Ad'},
       {name: 'swiper', subName:'Swiper'},
+      {name: 'feedback', subName:'FeedBack'},
       /*endDetectedRouters*/
     ].forEach(function(router){
         $routeProvider.

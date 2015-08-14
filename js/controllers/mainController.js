@@ -41,6 +41,37 @@ mainControllers.controller('baseController',['$scope','$rootScope','$http', func
         });
     };
 }]);
+mainControllers.controller('FeedBackList', ['$timeout','FeedbackFeed','$resource', '$scope', 'ngTableParams', function($timeout, FeedbackFeed,$resource,$scope,ngTableParams){
+    var Api = $resource('/api/app/feedback/');
+    $scope.tableParams = new ngTableParams({
+        page: 1,            // show first page
+        count: 10          // count per page
+    }, {
+        total: 0,           // length of data
+        getData: function($defer, params) {
+            // ajax request to api
+            Api.get(params.url(), function(data) {
+                $timeout(function() {
+                    // update table params
+                    params.total(data.total);
+                    // set new data
+                    $defer.resolve(data.result);
+                }, 500);
+            });
+        }
+    });
+    $scope.remove = function(id){
+        var feedback = new FeedbackFeed({id: id});
+        feedback.$delete(function(ret){
+            if(ret.status == 500){
+                alert('系统错误'+"\n"+ret.err);
+                return;
+            }
+            alert('删除成功');
+            window.location.reload();
+        })
+    }
+}]);
 mainControllers.controller('CompList', ['$resource','$scope','$timeout','ngTableParams','Upload','CompFeed',
     function($resource,$scope, $timeout,ngTableParams,Upload, CompFeed) {
         var Api = $resource('/api/comp/comp/');
