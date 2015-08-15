@@ -746,7 +746,7 @@ mainControllers.controller('RejectOrderList', ['$route','$http','ngTableParams',
             }
         });
         $scope.comfirmRejct = function(order_id){
-            $http.post('/api/order/rejectOrder').success(function(ret){
+            $http.post('/api/order/rejectOrder',{order_id: order_id}).success(function(ret){
                 if(ret.status == 200){
                     alert('确认拒收成功');
                     window.location.reload();
