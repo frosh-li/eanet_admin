@@ -1982,3 +1982,27 @@ mainControllers.controller('CompEdit', ['$route','$http','$scope','CompFeed',
         }
     }
 ]);
+
+
+mainControllers.controller('appVerion', ['$route','$http','$scope','appVerionFeed',
+    function($route,$http,$scope,appVerionFeed) {
+
+        $scope.version = appVerionFeed.query();
+
+        $scope.processForm = function(){
+            var app = new appVerionFeed();
+            app.version = $scope.version.version;
+            app.$save(function(ret){
+                if(ret.err || ret.msg){
+                    alert(ret.err.message || ret.msg);
+                    return;
+                }
+                if(ret.status == 200){
+                    alert('修改成功');
+                    // window.history.back();
+                }
+            });
+        }
+    }
+]);
+

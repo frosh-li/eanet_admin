@@ -96,6 +96,11 @@ storeApp.config(['$routeProvider','$httpProvider',
         templateUrl:'views/yd_order/reject_view.html',
         controller: 'rejectItems'
     });
+    // 版本控制
+    $routeProvider.when('/appVersion/',{
+        templateUrl:'views/common/appVersion.html',
+        controller: 'appVerion'
+    });
 
 
       $httpProvider.defaults.transformRequest = function(data){

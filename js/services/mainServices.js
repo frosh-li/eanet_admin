@@ -30,6 +30,15 @@ mainServices.factory('ItemFeed', ['$resource',
     });
   }
 ]);
+mainServices.factory('appVerionFeed', ['$resource',
+  function($resource){
+    return $resource('api/app/getVersion', {id:'@id',search:'@search'}, {
+      query: {method:'GET', params:{}, isArray:false},
+      update:{method:"PUT", isArray:false}
+    });
+  }
+]);
+
 
 mainServices.factory('ItemDetailFeed', ['$resource',
   function($resource){
