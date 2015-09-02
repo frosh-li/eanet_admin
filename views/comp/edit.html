@@ -9,6 +9,12 @@
       </div>
     </div>
     <div class="control-group">
+      <label class="control-label" for="score">积分</label>
+      <div class="controls">
+        <input ng-model="formData.score" class="input-xlarge focused" id="score" type="text" value="" name="score" />
+      </div>
+    </div>
+    <div class="control-group">
       <label class="control-label" for="type">企业类型</label>
       <div class="controls">
         <input ng-model="formData.type" readonly="" class="input-xlarge focused" id="type" type="text" value="" name="shortname" />
@@ -89,6 +95,36 @@
         </select>
       </div>
       </div>
+      <div class="control-group">
+      <label class="control-label" for="kysj">开业时间</label>
+      <div class="controls">
+        <input ng-model="formData.kysj" placeholder="20150801" class="input-xlarge focused" id="kysj" type="text" value="" name="kysj" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="jymj">经营面积</label>
+      <div class="controls">
+        <input ng-model="formData.jymj" class="input-xlarge focused" id="jymj" type="text" value="" name="jymj" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="rjls">日均流水</label>
+      <div class="controls">
+        <input ng-model="formData.rjls" class="input-xlarge focused" id="rjls" type="text" value="" name="rjls" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="gyrs">雇员人数</label>
+      <div class="controls">
+        <input ng-model="formData.gyrs" class="input-xlarge focused" id="gyrs" type="text" value="" name="gyrs" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="jypz">经营品种数</label>
+      <div class="controls">
+        <input ng-model="formData.jypz" class="input-xlarge focused" id="jypz" type="text" value="" name="jypz" />
+      </div>
+    </div>
     </div>
     <div class="form-actions">
       <button type="submit" class="btn btn-primary" ng-click="processForm()">提交</button>
