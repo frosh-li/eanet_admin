@@ -31,6 +31,9 @@ storeApp.config(['$routeProvider','$httpProvider',
       {name: 'ad', subName:'Ad'},
       {name: 'swiper', subName:'Swiper'},
       {name: 'feedback', subName:'FeedBack'},
+      {name: 'comp_zizhi', subName:'Comp_zizhi'},
+      {name: 'relate_comp', subName:'Relate_comp'},
+
       /*endDetectedRouters*/
     ].forEach(function(router){
         $routeProvider.

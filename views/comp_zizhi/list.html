@@ -1,0 +1,18 @@
+<div class="row-fluid">
+    <!-- block -->
+    <div class="">
+        <div>
+            <div>资质管理</div>
+            <div class="muted">图片大小不可超过1M</div>
+        </div>
+        <div class="mylist">
+        <div ng-repeat = "item in list" class="clearfix" id="swiperlist">
+            <div>
+                <img ng-src="{{item.val}}" width=300 style="min-height:50px;" ngf-select ngf-multiple="false" accept=".jpg,.png,.jpeg" ngf-accept="'.jpg,.png,.jpeg'" ngf-change="upload($files, item.key)"  />
+                <span style="position:static;"  ngf-select ngf-multiple="false" accept=".jpg,.png,.jpeg" ngf-accept="'.jpg,.png,.jpeg'" ngf-change="upload($files, item.key)" >上传{{item.name}}</span>
+            </div>
+        </div>
+    </div>
+    </div>
+    <!-- /block -->
+</div>

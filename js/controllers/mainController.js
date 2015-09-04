@@ -19,12 +19,20 @@ Date.prototype.Format = function (fmt) { //author: meizz
 
 var mainControllers = angular.module('mainControllers', ['ngTable','ngResource','storeAppDirectivies']);
 
-mainControllers.controller('baseController',['$scope','$rootScope','$http', function($scope,$rootScope, $http){
-
+mainControllers.controller('baseController',function($scope,$rootScope, $http){
+    if(localStorage.getItem('user')){
+        $rootScope.user = JSON.parse(localStorage.getItem('user'));
+    }
+    if(localStorage.getItem('menus')){
+        $rootScope.menus = JSON.parse(localStorage.getItem('menus'));
+    }
+    console.log($rootScope.user);
     $http.post('/api/user/loginStatus').success(function(ret){
         if(ret.status == 200){
             $rootScope.user = ret.data;
+            localStorage.setItem('user', JSON.stringify(ret.data));
             $rootScope.menus = ret.menus;
+            localStorage.setItem('menus', JSON.stringify(ret.menus));
             console.log($rootScope.user);
         }else{
             console.log('请登陆');
@@ -38,9 +46,12 @@ mainControllers.controller('baseController',['$scope','$rootScope','$http', func
             if(ret.status == 200){
                 window.location = "/login.html";
             }
+            localStorage.removeItem('user');
+            localStorage.removeItem('menus');
         });
+
     };
-}]);
+});
 mainControllers.controller('FeedBackList', ['$timeout','FeedbackFeed','$resource', '$scope', 'ngTableParams', function($timeout, FeedbackFeed,$resource,$scope,ngTableParams){
     var Api = $resource('/api/app/feedback/');
     $scope.tableParams = new ngTableParams({
@@ -555,7 +566,8 @@ mainControllers.controller('companyRelateList', ['$http','$route','ngTableParams
                     window.location.reload();
                 }
             })
-        }
+        };
+
     }
 ]);
 
@@ -1863,6 +1875,75 @@ mainControllers.controller('PushList', ['$http','$scope','PushFeed',
     }
 ]);
 
+mainControllers.controller('Relate_compList',
+    function($http,$scope,$resource,ngTableParams,$timeout) {
+        $scope.status = -1;
+        var Api = $resource('/api/comp/apply/');
+        $scope.changeTab = function(status){
+            $scope.status = status;
+            $scope.params = {
+                page: 1,            // show first page
+                count: 10,          // count per page,
+                status: $scope.status
+            };
+            $scope.tableParams.data = [];
+
+            $scope.tableParams.$params = $scope.params;
+        }
+        $scope.actions = function(id, status){
+            console.log(id, status);
+            $http.post('/api/comp/action/',{
+                action:status == 2 ? 'accept':'reject',
+                id:id
+            }).success(function(data){
+                if(data.status == 200){
+                    alert('操作成功');
+                    window.location.reload();
+                }else{
+                    alert(data.err || data.msg);
+                }
+            });
+        };
+        $scope.tableParams = new ngTableParams({
+            page: 1,            // show first page
+            count: 10,          // count per page,
+            status: $scope.status
+        }, {
+            total: 0,           // length of data
+            getData: function($defer, params) {
+                // ajax request to api
+                Api.get(params.url(), function(data) {
+                    $timeout(function() {
+                        // update table params
+                        params.total(data.total);
+                        // set new data
+                        $defer.resolve(data.result);
+                    }, 500);
+                });
+            }
+        });
+
+        console.log($scope.tableParams);
+
+        $scope.applyStart = function(id, reapply){
+            var query = {id:id};
+            if(reapply){
+                query.reapply = 1;
+            }
+            $http.post('/api/comp/apply',query).success(function(ret){
+                if(ret.status == 200){
+                    alert('申请成功，请耐心等待');
+                    window.location.reload();
+                }else{
+                    alert(ret.msg || ret.err);
+                }
+            })
+        }
+    }
+);
+
+
+
 mainControllers.controller('CompCreate', ['$http','$scope','CompFeed',
     function($http,$scope,CompFeed) {
         $scope.formData = {
@@ -1949,6 +2030,79 @@ mainControllers.controller('AdList', ['Upload','$route','$http','$scope','AdServ
       };
     }
 ]);
+
+
+mainControllers.controller('Comp_zizhiList',
+    function(Upload, $route,$http,$scope, $rootScope, ZizhiService) {
+        function updateRet(ret){
+            $scope.list = [
+            {
+                key:"img_01",
+                'val':ret.data.img_01,
+                'name':"药品经营许可证（副本及变更情况）"
+            },
+            {
+                key:"img_02",
+                'val':ret.data.img_02,
+                'name':"营业执照、2014年度报告（竖版的）"
+            },
+            {
+                key:"img_03",
+                'val':ret.data.img_03,
+                'name':"GSP证书"
+            },
+            {
+                key:"img_04",
+                'val':ret.data.img_04,
+                'name':"法人授权委托书（需加盖药店公章、法人签字或盖章）"
+            },
+            {
+                key:"img_05",
+                'val':ret.data.img_05,
+                'name':"法人授权委托书中被委托人的身份证正反面复印件（采购员和收货员可以是同一个人）"
+            },
+            {
+                key:"img_06",
+                val:ret.data.img_06,
+                'name':"购货单位质量管理体系调查表（需加盖药店公章）*非必选"
+            }
+            ]
+        }
+        var a = ZizhiService.query({id: $rootScope.user.comp_id},function(ret){
+            updateRet(ret);
+        });
+
+        console.log('comp_id', $rootScope.user.comp_id);
+        $scope.upload = function (files, key) {
+          if (files && files.length) {
+              for (var i = 0; i < files.length; i++) {
+                  var file = files[i];
+                  Upload.upload({
+                      url: 'api/comp/zizhi',
+                      fields: {'id': $rootScope.user.comp_id,key:key},
+                      file: file
+                  }).progress(function (evt) {
+                      var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                      console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
+                  }).success(function (data, status, headers, config) {
+                      console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
+
+                      if(data.status == 200){
+                          alert('更新成功');
+                          // window.location.reload();
+                          var a = ZizhiService.query({id: $rootScope.user.comp_id},function(ret){
+                                updateRet(ret);
+                            });
+                      }else{
+                          alert(data.msg||data.err);
+                      }
+                  });
+              }
+          }
+      };
+    }
+);
+
 
 mainControllers.controller('CompEdit', ['$route','$http','$scope','CompFeed',
     function($route,$http,$scope,CompFeed) {
