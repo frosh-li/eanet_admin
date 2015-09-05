@@ -10,6 +10,8 @@
                 <div>
                     <img ng-src="{{item.src}}" width=300 ngf-select ngf-multiple="false" accept=".jpg,.png,.jpeg" ngf-accept="'.jpg,.png,.jpeg'" ngf-change="upload($files, item.id)"  />
                     <span  ngf-select ngf-multiple="false" accept=".jpg,.png,.jpeg" ngf-accept="'.jpg,.png,.jpeg'" ngf-change="upload($files, item.id)" >点击更换图片</span>
+                    <label>优先显示广告ID</label>
+                    <input type="text" ng-model="item.good_id" ng-blur="saveLink(item.id, item.good_id)" />
                 </div>
             </div>
         <!--/div-->

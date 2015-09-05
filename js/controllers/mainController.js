@@ -2160,7 +2160,14 @@ mainControllers.controller('AdList', ['Upload','$route','$http','$scope','AdServ
                   });
               }
           }
-      };
+        };
+        $scope.saveLink = function(id, good_id){
+            $http.put('/api/swiper/swiper/'+id,{
+                good_id:good_id
+            }).success(function(ret){
+                console.log(ret);
+            });
+        }
     }
 ]);
 
