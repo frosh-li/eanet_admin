@@ -1872,13 +1872,11 @@ mainControllers.controller('PushCreate', ['$http','$scope','PushFeed',
         $scope.processForm = function(){
             var push = new PushFeed($scope.formData);
             push.$save(function(ret){
-                if(ret.err){
-                    alert(ret.err.message);
-                    return;
-                }
                 if(ret.status == 200){
                     alert('新增成功，即将返回列表页面');
-                    window.history.back();
+                    // window.history.back();
+                }else{
+                    alert(ret.msg || ret.err);
                 }
             });
         }
@@ -1973,6 +1971,35 @@ mainControllers.controller('Relate_compList',
                     alert(ret.msg || ret.err);
                 }
             })
+        }
+    }
+);
+mainControllers.controller('Msg_configList',
+    function($http,$scope,$resource,ngTableParams,$timeout) {
+        $scope.list = []
+        function loadTable(){
+            $http.get('/api/push/config').success(function(ret){
+                $scope.list = ret;
+            });
+        }
+        loadTable()
+
+        $scope.saveData = function(key, value){
+            console.log(key,value);
+            if(!key || !value){
+                return;
+            }
+            var querystring = "upkey="+key+"&upval="+value;
+            var obj = {};
+            obj['upkey'] = key;
+            obj['upval'] = value;
+            $http.post('/api/push/config',obj).success(function(ret){
+                if(ret.status == 200){
+                    loadTable();
+                }else{
+                    alert(ret.msg || ret.err);
+                }
+            });
         }
     }
 );
