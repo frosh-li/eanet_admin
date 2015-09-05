@@ -1903,7 +1903,7 @@ mainControllers.controller('Relate_compList',
                 count: 10,          // count per page,
                 status: $scope.status
             };
-            $scope.tableParams.data = [];
+            $scope.tableParams.data.length = 0;
 
             $scope.tableParams.$params = $scope.params;
         }
@@ -1915,7 +1915,7 @@ mainControllers.controller('Relate_compList',
             }).success(function(data){
                 if(data.status == 200){
                     alert('操作成功');
-                    window.location.reload();
+                    $scope.tableParams.reload();
                 }else{
                     alert(data.err || data.msg);
                 }
@@ -1940,6 +1940,24 @@ mainControllers.controller('Relate_compList',
             }
         });
 
+        $scope.saveData = function(id, key, value){
+            console.log(id,key,value);
+            if(['deliveryman', 'salesman'].indexOf(key) < 0){
+                return;
+            }
+            if(!id || !value){
+                return;
+            }
+            var querystring = "upkey="+key+"&upval="+value;
+            $http.get('/api/comp/action/'+id+"?"+querystring).success(function(ret){
+                if(ret.status == 200){
+                    $scope.tableParams.reload();
+                }else{
+                    alert(ret.msg || ret.err);
+                }
+            });
+        }
+
         console.log($scope.tableParams);
 
         $scope.applyStart = function(id, reapply){
@@ -1950,7 +1968,7 @@ mainControllers.controller('Relate_compList',
             $http.post('/api/comp/apply',query).success(function(ret){
                 if(ret.status == 200){
                     alert('申请成功，请耐心等待');
-                    window.location.reload();
+                    $scope.tableParams.reload();
                 }else{
                     alert(ret.msg || ret.err);
                 }
