@@ -45,16 +45,17 @@
         </div>
         <div class="container-fluid">
             <div class="row-fluid">
-                <div class="span3" id="sidebar">
+                <div class="span2" id="sidebar">
                     <ul class="nav nav-list bs-docs-sidenav nav-collapse collapse">
-                        <li ng-repeat='item in menus'>
+                        <li ng-repeat='item in menus' style="position:relative;">
+                            <span ng-if="user.role_type == 1 && neworders > 0 && item.val=='订单管理'" style="position: absolute; top: 2px; right: 89px; color: white; background-color: rgb(255, 153, 0); border-radius: 50px; padding: 0px 7px; font-family: Arial; font-size: 12px;">{{neworders}}</span>
                             <a href="#/{{item.url}}"><i class="icon-chevron-right"></i> {{item.val}}</a>
                         </li>
                     </ul>
                 </div>
 
                 <!--/span-->
-                <div class="span9" id="content" ng-view>
+                <div class="span10" id="content" ng-view style="margin-left:10px;">
                 </div>
             </div>
             <hr>

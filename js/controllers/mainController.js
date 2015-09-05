@@ -27,6 +27,7 @@ mainControllers.controller('baseController',function($scope,$rootScope, $http){
         $rootScope.menus = JSON.parse(localStorage.getItem('menus'));
     }
     console.log($rootScope.user);
+    $rootScope.neworders = 0;
     $http.post('/api/user/loginStatus').success(function(ret){
         if(ret.status == 200){
             $rootScope.user = ret.data;
@@ -34,6 +35,22 @@ mainControllers.controller('baseController',function($scope,$rootScope, $http){
             $rootScope.menus = ret.menus;
             localStorage.setItem('menus', JSON.stringify(ret.menus));
             console.log($rootScope.user);
+            // 开始轮训是否有新订单
+            // 如果有新订单就停止轮训
+            if(ret.data.role_type == 1){
+                console.log('start get neworder');
+                var cinterval = setInterval(function(){
+                    $http.get('/api/app/neworder').success(function(ret){
+                        if(ret.status == 200){
+                            console.log('has new order');
+                            $rootScope.neworders = ret.total;
+                            clearInterval(cinterval);
+                        }
+                    });
+                },5000);
+            }
+
+
         }else{
             console.log('请登陆');
             //return;
@@ -1942,7 +1959,78 @@ mainControllers.controller('Relate_compList',
     }
 );
 
+mainControllers.controller('Ad_goodList',
+    function($http,$scope,$resource,ngTableParams,$timeout) {
+        $scope.tg = {
+            pos: 1,
+            good_id:""
+        }
 
+        var Api = $resource('/api/advise/list/');
+        $scope.changeTab = function(status){
+            $scope.tg.pos = status;
+            $scope.params = {
+                page: 1,            // show first page
+                count: 10,          // count per page,
+                pos: $scope.tg.pos
+            };
+            $scope.tableParams.data = [];
+
+            $scope.tableParams.$params = $scope.params;
+        }
+        function loadTable(){
+
+
+            $scope.tableParams = new ngTableParams({
+                page: 1,            // show first page
+                count: 10,          // count per page,
+                pos: $scope.tg.pos
+            }, {
+                total: 0,           // length of data
+                getData: function($defer, params) {
+                    // ajax request to api
+                    Api.get(params.url(), function(data) {
+                        $timeout(function() {
+                            // update table params
+                            params.total(data.total);
+                            // set new data
+                            $defer.resolve(data.result);
+                        }, 500);
+                    });
+                }
+            });
+            console.log($scope.tableParams);
+        }
+        loadTable()
+        console.log($scope.tableParams);
+        $scope.addnew = function(){
+            if(!/[0-9]+/.test($scope.tg.good_id)){
+                alert('请输入正确的商品ID');
+                return;
+            }
+            $http.post('/api/advise/list',$scope.tg).success(function(ret){
+                if(ret.status == 200){
+                    alert('新增成功');
+                    $scope.tg.good_id="";
+                    $scope.tableParams.reload();
+                }else{
+                    alert(ret.msg || ret.err);
+                }
+            })
+        }
+        $scope.delete = function(id){
+            $http.delete('/api/advise/list/'+id).success(function(ret){
+                if(ret.status == 200){
+                    alert('删除成功');
+                    $scope.tableParams.reload();
+                    $scope.tableParams.$params = $scope.params;
+                }else{
+                    alert(ret.msg || ret.err);
+                }
+            })
+        }
+    }
+);
 
 mainControllers.controller('CompCreate', ['$http','$scope','CompFeed',
     function($http,$scope,CompFeed) {

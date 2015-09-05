@@ -33,6 +33,7 @@ storeApp.config(['$routeProvider','$httpProvider',
       {name: 'feedback', subName:'FeedBack'},
       {name: 'comp_zizhi', subName:'Comp_zizhi'},
       {name: 'relate_comp', subName:'Relate_comp'},
+      {name: 'ad_good', subName:'Ad_good'},
 
       /*endDetectedRouters*/
     ].forEach(function(router){
