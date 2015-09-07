@@ -1864,12 +1864,16 @@ mainControllers.controller('RoleEdit', ['$http','$scope',
     }
 ]);
 
-mainControllers.controller('PushCreate', ['$http','$scope','PushFeed',
-    function($http,$scope, PushFeed) {
+mainControllers.controller('PushCreate',
+    function(Upload, $http,$scope, PushFeed) {
         $scope.formData = {
             msg: ""
         };
-        $scope.processForm = function(){
+        $scope.selectFile = function($files){
+            $scope.file = $files[0];
+        }
+        $scope.processForm = function($files){
+            /*
             var push = new PushFeed($scope.formData);
             push.$save(function(ret){
                 if(ret.status == 200){
@@ -1879,9 +1883,30 @@ mainControllers.controller('PushCreate', ['$http','$scope','PushFeed',
                     alert(ret.msg || ret.err);
                 }
             });
+            */
+            Upload.upload({
+                url: 'api/push/push',
+                fields: $scope.formData,
+                file: $scope.file
+            }).progress(function (evt) {
+                var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
+            }).success(function (data, status, headers, config) {
+                console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
+
+                if(data.status == 200){
+                    // alert('更新成功');
+                    // window.location.reload();
+                    alert('新增成功，即将返回列表页面');
+                    window.history.back();
+                    // $scope.list = SwiperService.query({type:0});
+                }else{
+                    alert(data.msg || data.err);
+                }
+            });
         }
     }
-]);
+);
 
 mainControllers.controller('PushList', ['$http','$scope','PushFeed',
     function($http,$scope, PushFeed) {
