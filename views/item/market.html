@@ -1,6 +1,6 @@
 <style>
     .topcat a, .topcat span{
-        margin:20px 20px 0 0;
+        margin:5px 20px 0 0;
         display:inline-block;
         text-decoration: none;
         padding:5px 12px;
@@ -51,6 +51,8 @@
         </div>
         <form class="form-inline" style="margin-left:20px;margin-top:20px;">
         <label>品名:</label><input type="text" class="input-small" ng-model="search.good_name" placeholder="品名">
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <label>供应商:</label><input type="text" class="input-small" ng-model="search.supplie_name" placeholder="供应商">
         &nbsp;&nbsp;&nbsp;&nbsp;
         <button type="submit" ng-click="psearch()" class="btn">搜索</button>
         <div class="pull-right">

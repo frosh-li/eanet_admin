@@ -216,7 +216,7 @@ mainControllers.controller('showAllMarket', ['CategoryService','$route','$resour
         var Api = $resource('/api/comp/comp');
         $scope.search = {
             // supplie_id: "",
-            // supplie_name: "",
+            supplie_name: "",
             // supplie_pingying: ""
             good_name: '',
             good_promotion:false
@@ -313,6 +313,9 @@ mainControllers.controller('showAllMarket', ['CategoryService','$route','$resour
             }
             if($scope.search.good_promotion){
                 url+="&good_promotion=1";
+            }
+            if($scope.search.supplie_name){
+                url+="&supplie_name="+encodeURIComponent($scope.search.supplie_name);
             }
             if(ifhot){
                 url += "&hot=1";

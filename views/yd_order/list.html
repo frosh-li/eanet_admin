@@ -22,26 +22,26 @@
                         <thead>
                             <tr>
                                 <th>订单编号</th>
-                                <th>供货商ID</th>
+                                <th>供应商</th>
                                 <th>下单人</th>
                                 <th>备注</th>
                                 <th>订单日期</th>
                                 <th>订单状态</th>
                                 <th>订单类型</th>
-                                <th>企业ID</th>
+
                                 <th>操作</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr class="odd" ng-repeat="item in $data">
                                 <td>{{item.order_id}}</td>
-                                <td>{{item.supplie_id}}</td>
+                                <td>{{item.name}}</td>
                                 <td>{{item.order_oper}}</td>
                                 <td>{{item.order_beizu}}</td>
                                 <td>{{item.order_date}}</td>
                                 <td>{{item.order_status | orderStatusFilter}}</td>
                                 <td>{{item.order_type | orderTypeFilter}}</td>
-                                <td>{{item.comp_id}}</td>
+
                                 <td>
                                 <div class="btn-group" ng-if="item.order_type == 1">
                                   <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle">操作<span class="caret"></span></button>
