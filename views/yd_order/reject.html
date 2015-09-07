@@ -19,6 +19,7 @@
             <th>单价</th>
             <th>总价</th>
             <th  width=50>拒收数量</th>
+            <th  width=50>拒收原因</th>
         </tr>
     </thead>
     <tbody>
@@ -35,6 +36,13 @@
             <td>{{item.good_amount}}</td>
             <td>
             <input class="span12" type="text" ng-model="formData[$index].good_reject" />
+            </td>
+            <td>
+                <select ng-model="formData[$index].reject_reason">
+                    <option ng-repeat="item in reject_reason_txt" value="{{item.key}}">
+                        {{item.val}}
+                    </option>
+                </select>
             </td>
         </tr>
     </tbody>

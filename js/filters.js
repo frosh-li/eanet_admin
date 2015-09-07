@@ -90,6 +90,22 @@ storeAppFilters.filter('companyType', function() {
   };
 });
 
+storeAppFilters.filter('rejectReason', function() {
+  return function(input) {
+    var ret="破损";
+    switch(input){
+      case 2:
+        ret = "货票不符";
+        break;
+      case 3:
+        ret = "近效期";
+        break;
+      case 4:
+        ret = "滞销"
+    }
+    return ret;
+  };
+});
 storeAppFilters.filter('orderStatusFilter', function() {
   return function(input) {
     var ret="待处理";

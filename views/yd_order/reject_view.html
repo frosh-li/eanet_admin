@@ -15,6 +15,7 @@
             <th>单价</th>
             <th>总价</th>
             <th width=50>拒收数量</th>
+            <th width=50>拒收原因</th>
         </tr>
     </thead>
     <tbody>
@@ -31,6 +32,9 @@
             <td>{{item.good_amount}}</td>
             <td>
             {{item.good_reject}}
+            </td>
+            <td>
+            {{item.reject_reason | rejectReason}}
             </td>
         </tr>
     </tbody>

@@ -1108,14 +1108,21 @@ mainControllers.controller('rejectItems', [
         $route,$document, smartySuggestor, $window,$rootScope,$http,$scope, $timeout, OrderDetailFeed, RoleFeed) {
         $scope.orderid = $route.current.params.orderid;
         $scope.companyid = $route.current.params.comp_id;
+        $scope.reject_reason_txt = [
+            {key: "1", val:'破损'},
+            {key: "2", val:'货票不符'},
+            {key: "3", val:'近效期'},
+            {key: "4", val:'滞销'}
+        ];
         $scope.processForm = function(){
-            var oid = [],good_reject = [];
+            var oid = [],good_reject = [],reject_reason=[];
             $scope.formData.forEach(function(item){
                 oid.push(item.oid);
                 good_reject.push(item.good_reject);
+                reject_reason.push(item.reject_reason);
             });
 
-            $http.post('/api/order/rejectItems', {orderid:$scope.orderid,good_reject:good_reject.join("|"),oid:oid.join("|")}).success(function(ret){
+            $http.post('/api/order/rejectItems', {orderid:$scope.orderid,good_reject:good_reject.join("|"),oid:oid.join("|"),reject_reason:reject_reason.join("|")}).success(function(ret){
                 if(ret.status == 200){
                     alert('拒收成功，请等待确认');
                     window.history.back();
@@ -1144,8 +1151,10 @@ mainControllers.controller('rejectItems', [
                             $scope.formData.push({
                                 oid: item.oid,
                                 good_reject: item.good_reject,
+                                reject_reason:item.reject_reason,
                                 good_id: item.good_id
                             });
+                            console.log($scope.formData);
                         });
                         $defer.resolve(data.result);
                     }, 500);
