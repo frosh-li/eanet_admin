@@ -1904,7 +1904,7 @@ mainControllers.controller('PushCreate',
                 var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
                 console.log('progress: ' + progressPercentage + '% ' + evt.config.file.name);
             }).success(function (data, status, headers, config) {
-                console.log('file ' + config.file.name + 'uploaded. Response: ' + data);
+                console.log('file uploaded. Response: ' + data);
 
                 if(data.status == 200){
                     // alert('更新成功');
