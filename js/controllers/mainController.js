@@ -28,6 +28,7 @@ mainControllers.controller('baseController',function($scope,$rootScope, $http){
     }
     console.log($rootScope.user);
     $rootScope.neworders = 0;
+    $rootScope.newapplys = 0;
     $http.post('/api/user/loginStatus').success(function(ret){
         if(ret.status == 200){
             $rootScope.user = ret.data;
@@ -39,7 +40,7 @@ mainControllers.controller('baseController',function($scope,$rootScope, $http){
             // 如果有新订单就停止轮训
             if(ret.data.role_type == 1){
                 console.log('start get neworder');
-                var cinterval = setInterval(function(){
+                setInterval(function(){
                     $http.get('/api/app/neworder').success(function(ret){
                         if(ret.status == 200){
                             console.log('has new order');
@@ -47,7 +48,16 @@ mainControllers.controller('baseController',function($scope,$rootScope, $http){
                             clearInterval(cinterval);
                         }
                     });
-                },5000);
+                },2000);
+                setInterval(function(){
+                    $http.get('/api/app/newapplys').success(function(ret){
+                        if(ret.status == 200){
+                            console.log('has new newapplys');
+                            $rootScope.newapplys = ret.total;
+                            clearInterval(cinterval);
+                        }
+                    });
+                },2000);
             }
 
 

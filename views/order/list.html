@@ -24,7 +24,8 @@
                                 <th>订单日期</th>
                                 <th>订单状态</th>
                                 <th>订单类型</th>
-
+                                <th>业务</th>
+                                <th>送货</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
@@ -37,6 +38,8 @@
                                 <td>{{item.order_date}}</td>
                                 <td>{{item.order_status | orderStatusFilter}}</td>
                                 <td>{{item.order_type | orderTypeFilter}}</td>
+                                <td>{{item.salesman}}</td>
+                                <td>{{item.deliveryman}}</td>
                                 <td>
                                 <div class="btn-group" ng-if="item.order_type==1">
                                   <button data-toggle="dropdown" class="btn btn-primary dropdown-toggle">操作 <span class="caret"></span></button>

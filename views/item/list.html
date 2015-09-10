@@ -20,6 +20,8 @@
                             <th>药厂</th>
                             <th>包装</th>
                             <th>单位</th>
+                            <th>批准文号</th>
+                            <th>操作</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -30,6 +32,7 @@
                             <td>{{item.good_cp}}</td>
                             <td>{{item.good_gg}}</td>
                             <td>{{item.good_dw}}</td>
+                            <td>{{item.good_pzwh}}</td>
                             <td>
                                 <button class="btn" ng-click="del(item.good_id)">删除</button>
                                 <a href="#/item/edit/{{item.good_id}}" class="btn">修改</a>

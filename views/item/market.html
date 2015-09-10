@@ -106,6 +106,7 @@
                         <div class="center">零售价：{{item.good_lsj}}</div>
                         <div class="center">折扣率：{{item.good_price/item.good_lsj*100 | toInt}}</div>
                         <div class="center">供应商：{{item.company_name}}</div>
+                        <div class="center">库存数量：{{item.good_inventory}}</div>
                         <div class="center" ng-if="item.good_promotion">促销信息：{{item.good_promotion}}</div>
                         <div class="center">
                             <input class="input-small" type="text" ng-model="formData[item.good_id]" value=1 />
