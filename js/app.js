@@ -166,7 +166,7 @@ storeApp.config(['$routeProvider','$httpProvider',
             //return $q.inject(response);
           },function(response){
             console.log('服务器内部错误');
-            alert('服务器开小差了');
+            // alert('服务器开小差了');
             return $q.reject('服务器内部错误');
           });
         };

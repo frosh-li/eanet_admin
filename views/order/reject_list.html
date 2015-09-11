@@ -2,7 +2,7 @@
     <!-- block -->
     <div class="block">
         <div class="navbar navbar-inner block-header">
-            <div class="muted pull-left">订单列表s</div>
+            <div class="muted pull-left">订单列表</div>
         </div>
         <div class="block-content collapse in">
             <div class="span12" style="min-height:1000px;">
@@ -45,6 +45,7 @@
                                 <td>
                                 <a href="#/viewreject/orderItem/{{item.order_id}}/{{item.supplie_id}}">查看</a>
                                 <a ng-if="item.order_reject == 1" href="javascript:///" ng-click="comfirmRejct(item.order_id);">确认</a>
+                                <a ng-if="item.order_reject == 1" href="/api/app/print?order_id={{item.order_id}}" target="_blank">打印</a>
                                 </td>
                             </tr>
                         </tbody>

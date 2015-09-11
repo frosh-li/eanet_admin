@@ -45,19 +45,17 @@ mainControllers.controller('baseController',function($scope,$rootScope, $http){
                         if(ret.status == 200){
                             console.log('has new order');
                             $rootScope.neworders = ret.total;
-                            clearInterval(cinterval);
                         }
                     });
-                },2000);
+                },5000);
                 setInterval(function(){
                     $http.get('/api/app/newapplys').success(function(ret){
                         if(ret.status == 200){
                             console.log('has new newapplys');
                             $rootScope.newapplys = ret.total;
-                            clearInterval(cinterval);
                         }
                     });
-                },2000);
+                },5000);
             }
 
 
@@ -797,6 +795,9 @@ mainControllers.controller('RejectOrderList', ['$route','$http','ngTableParams',
                 }
             });
         }
+        $scope.print = function(){
+            window.print();
+        }
     }
 ]);
 
@@ -1335,6 +1336,23 @@ mainControllers.controller('orderItemAdd', [
             }
             console.log($scope.sortName);
             // $scope.$apply();
+        }
+        $scope.updateMissing = function(order_id, oid, number){
+            console.log(order_id, oid, number);
+            number = parseInt(number);
+            if(number > 0){
+                $http.post('/api/order/updateMissing',{
+                    order_id:order_id,
+                    oid:oid,
+                    number:number
+                }).success(function(ret){
+                    if(ret.status == 200){
+                        alert('保存成功');
+                    }else{
+                        alert(ret.msg || ret.err);
+                    }
+                })
+            }
         }
         $scope.del = function(id){
             var orderdetail = new OrderDetailFeed({id: id});
