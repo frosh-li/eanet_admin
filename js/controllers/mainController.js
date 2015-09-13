@@ -409,7 +409,7 @@ mainControllers.controller('showAllMarket', ['CategoryService','$route','$resour
                         // alert('新增成功');
                         console.log(ret);
                     }else{
-                        alert(ret.msg || '未知错误');
+                        alert(ret.msg || ret. err || '未知错误');
                     }
                 })
             }else{
@@ -1286,10 +1286,7 @@ mainControllers.controller('orderItemAdd', [
                 return;
             }
 
-            if(!/^[0-9]{7}$/.test($scope.formData.good_id)){
-                alert('请选择正确的商品编号');
-                return;
-            }
+
             var order = new OrderDetailFeed($scope.formData);
             order.$save(function(ret){
                 if(ret.err){
@@ -2239,6 +2236,8 @@ mainControllers.controller('AdList', ['Upload','$route','$http','$scope','AdServ
 
 mainControllers.controller('Comp_zizhiList',
     function(Upload, $route,$http,$scope, $rootScope, ZizhiService) {
+        var comp_id = $route.current.params.type || $rootScope.user.comp_id;
+        console.log('comp_id', $route.current.params, comp_id);
         function updateRet(ret){
             $scope.list = [
             {
@@ -2273,7 +2272,7 @@ mainControllers.controller('Comp_zizhiList',
             }
             ]
         }
-        var a = ZizhiService.query({id: $rootScope.user.comp_id},function(ret){
+        var a = ZizhiService.query({id: comp_id},function(ret){
             updateRet(ret);
         });
 
@@ -2284,7 +2283,7 @@ mainControllers.controller('Comp_zizhiList',
                   var file = files[i];
                   Upload.upload({
                       url: 'api/comp/zizhi',
-                      fields: {'id': $rootScope.user.comp_id,key:key},
+                      fields: {'id': comp_id},
                       file: file
                   }).progress(function (evt) {
                       var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);

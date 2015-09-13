@@ -106,6 +106,10 @@ storeApp.config(['$routeProvider','$httpProvider',
         templateUrl:'views/common/appVersion.html',
         controller: 'appVerion'
     });
+    $routeProvider.when('/comp_zizhi_list/:comp_id',{
+        templateUrl:'views/comp_zizhi/list.html',
+        controller: 'Comp_zizhi'
+    });
 
 
       $httpProvider.defaults.transformRequest = function(data){
