@@ -550,6 +550,37 @@ mainControllers.controller('ItemList', ['ngTableParams','$resource',"ItemFeed","
                 window.location.reload();
             })
         }
+        // 过滤
+        $scope.localFilter = {
+            good_name: "",
+            good_cp:""
+        };
+        $scope.filter = function(){
+
+            var datas = $scope.tableParams.data;
+            if(datas.length > 0){
+            datas.forEach(function(item,index){
+                datas[index].__show = false;
+                var ifnone = true;
+                for(var key in $scope.localFilter){
+                    if($scope.localFilter[key] && item[key].indexOf($scope.localFilter[key]) > -1){
+                        datas[index].__show = true;
+                    }
+                    if($scope.localFilter[key]){
+                        ifnone = false;
+                    }
+                }
+                if(ifnone){
+                    datas[index].__show = true;
+                }
+            });
+            // $scope.tableParams.filter
+            console.log($scope.tableParams);
+            console.log($scope.tableParams.data);
+
+
+            }
+        }
     }
 ]);
 
