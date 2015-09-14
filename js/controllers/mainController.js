@@ -2039,6 +2039,31 @@ mainControllers.controller('Relate_compList',
                 }
             })
         }
+        // 过滤
+        $scope.localFilter = {
+            name: ""
+        };
+        $scope.filter = function(){
+
+            var datas = $scope.tableParams.data;
+            if(datas.length > 0){
+            datas.forEach(function(item,index){
+
+                for(var key in $scope.localFilter){
+                    if($scope.localFilter[key] && item[key].indexOf($scope.localFilter[key]) <0){
+                        datas[index].__show = false;
+                    }else{
+                        datas[index].__show = true;
+                    }
+                }
+            });
+            // $scope.tableParams.filter
+            console.log($scope.tableParams);
+            console.log($scope.tableParams.data);
+
+
+            }
+        }
     }
 );
 mainControllers.controller('Msg_configList',
