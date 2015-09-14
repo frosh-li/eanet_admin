@@ -1045,6 +1045,11 @@ mainControllers.controller('setprice', [
 
             $http.post('/api/order/autoprice', {orderid:$scope.orderid,amount:amount.join("|"),oid:oid.join("|"),price:price.join("|")}).success(function(ret){
                 console.log(ret);
+                if(ret.status == 200){
+                    alert('报价成功');
+                }else{
+                    alert(ret.msg || ret.err);
+                }
             });
         };
         var Api = $resource('/api/order/orderdetail/');
