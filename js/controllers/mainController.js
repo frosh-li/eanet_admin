@@ -2283,7 +2283,7 @@ mainControllers.controller('Comp_zizhiList',
                   var file = files[i];
                   Upload.upload({
                       url: 'api/comp/zizhi',
-                      fields: {'id': comp_id},
+                      fields: {'id': comp_id, key: key},
                       file: file
                   }).progress(function (evt) {
                       var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
