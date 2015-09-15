@@ -111,7 +111,7 @@ storeApp.config(['$routeProvider','$httpProvider',
         controller: 'Comp_zizhi'
     });
 
-
+      
       $httpProvider.defaults.transformRequest = function(data){
         if(typeof data === 'object'){
           var ret = [];
@@ -128,6 +128,11 @@ storeApp.config(['$routeProvider','$httpProvider',
           'request': function(config){
             $httpProvider.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
             $httpProvider.defaults.headers.put['Content-Type'] = 'application/x-www-form-urlencoded;charset=utf-8';
+            $httpProvider.defaults.headers.common['If-Modified-Since'] = 'Mon, 26 Jul 1997 05:00:00 GMT';
+            // extra
+            console.log($httpProvider.defaults.headers);
+            $httpProvider.defaults.headers.common['Cache-Control'] = 'no-cache';
+            $httpProvider.defaults.headers.common['Pragma'] = 'no-cache';
             /*
             $httpProvider.defaults.headers.post['X-TOKEN'] = localStorage.getItem('token');
             $httpProvider.defaults.headers.put['X-TOKEN'] = localStorage.getItem('token');

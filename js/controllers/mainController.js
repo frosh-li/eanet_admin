@@ -1336,6 +1336,7 @@ mainControllers.controller('orderItemAdd', [
             });
         };
         var Api = $resource('/api/order/orderdetail/');
+        
         $scope.tableParams = new ngTableParams(params, {
             total: 0,           // length of data
             getData: function($defer, params) {
@@ -2185,9 +2186,9 @@ mainControllers.controller('Ad_goodList',
                     alert(ret.msg || ret.err);
                 }
             })
-        }
-        $scope.delete = function(id){
-            $http.delete('/api/advise/list/'+id).success(function(ret){
+        };
+        $scope['delete'] = function(id){
+            $http['delete']('/api/advise/list/'+id).success(function(ret){
                 if(ret.status == 200){
                     alert('删除成功');
                     $scope.tableParams.reload();
