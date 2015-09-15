@@ -1326,7 +1326,7 @@ mainControllers.controller('orderItemAdd', [
             var order = new OrderDetailFeed($scope.formData);
             order.$save(function(ret){
                 if(ret.err){
-                    alert(ret.err.message);
+                    alert(ret.err.message || ret.err);
                     return;
                 }
                 if(ret.status == 200){
