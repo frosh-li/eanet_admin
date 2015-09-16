@@ -1336,7 +1336,7 @@ mainControllers.controller('orderItemAdd', [
             });
         };
         var Api = $resource('/api/order/orderdetail/');
-        
+
         $scope.tableParams = new ngTableParams(params, {
             total: 0,           // length of data
             getData: function($defer, params) {
@@ -1798,8 +1798,8 @@ mainControllers.controller('ItemCreate', ['Upload','$http','$scope','$timeout','
     }
 ]);
 
-mainControllers.controller('ItemEdit', ['Upload','$route','$http','$scope','$timeout','CategoryService','ItemFeed',
-    function(Upload, $route, $http,$scope, $timeout, CategoryService,ItemFeed) {
+mainControllers.controller('ItemEdit',
+    function(Upload, $route, $http,$scope, $timeout, CategoryService,ItemFeed,categories) {
         var itemid = $route.current.params.id;
         $scope.lists = [];
 
@@ -1809,7 +1809,8 @@ mainControllers.controller('ItemEdit', ['Upload','$route','$http','$scope','$tim
             category_2: -1,
             good_new: 0
         };
-        $scope.categories = CategoryService.query();
+        $scope.categories = categories;
+        console.log(categories);
         if(itemid){
             ItemFeed.get({id: itemid}, function(ret){
                 console.log('item feed get', ret);
@@ -1930,7 +1931,7 @@ mainControllers.controller('ItemEdit', ['Upload','$route','$http','$scope','$tim
         };
 
     }
-]);
+);
 
 mainControllers.controller('RoleEdit', ['$http','$scope',
     function($http,$scope) {

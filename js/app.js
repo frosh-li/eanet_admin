@@ -41,7 +41,13 @@ storeApp.config(['$routeProvider','$httpProvider',
         $routeProvider.
             when('/'+router.name+'/'+"edit/:id",{
                 templateUrl:'views/'+router.name+"/"+'edit.html',
-                controller: router.subName+"Edit"
+                controller: router.subName+"Edit",
+                resolve:router.name=="item" ? {
+                  categories: function(CategoryService){
+                    console.log('start resolve');
+                    return CategoryService.query();
+                  }
+                }:null
             }).
             when('/'+router.name+'/'+router.subName.toLowerCase()+"/create",{
                 templateUrl:'views/'+router.name+"/"+'create.html',
@@ -111,7 +117,7 @@ storeApp.config(['$routeProvider','$httpProvider',
         controller: 'Comp_zizhi'
     });
 
-      
+
       $httpProvider.defaults.transformRequest = function(data){
         if(typeof data === 'object'){
           var ret = [];
