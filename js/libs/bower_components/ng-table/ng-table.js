@@ -64,6 +64,7 @@ app.factory('ngTableParams', ['$q', '$log', function ($q, $log) {
     var isNumber = function (n) {
         return !isNaN(parseFloat(n)) && isFinite(n);
     };
+
     var ngTableParams = function (baseParameters, baseSettings) {
         var self = this,
             log = function () {
@@ -108,7 +109,11 @@ app.factory('ngTableParams', ['$q', '$log', function ($q, $log) {
                         params[key] = (isNumber(newParameters[key]) ? parseFloat(newParameters[key]) : newParameters[key]);
                     }
                 }
-                log('ngTable: set parameters', params);
+                console.log('ngTable: set parameters', params, newParameters);
+                if(newParameters.page){
+                    this.$params.page = params.page;
+                }
+
                 return this;
             }
             return params;
@@ -146,6 +151,7 @@ app.factory('ngTableParams', ['$q', '$log', function ($q, $log) {
          * @returns {Object|Number} Current page or `this`
          */
         this.page = function (page) {
+            console.log('click on page', page, angular.isDefined(page));
             return angular.isDefined(page) ? this.parameters({'page': page}) : params.page;
         };
 

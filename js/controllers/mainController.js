@@ -523,7 +523,9 @@ mainControllers.controller('ItemList', ['ngTableParams','$resource',"ItemFeed","
         var Api = $resource('/api/items/map/');
         $scope.tableParams = new ngTableParams({
             page: 1,            // show first page
-            count: 10          // count per page
+            count: 10,          // count per page
+            good_name:"",
+            good_cp:""
         }, {
             total: 0,           // length of data
             getData: function($defer, params) {
@@ -564,8 +566,9 @@ mainControllers.controller('ItemList', ['ngTableParams','$resource',"ItemFeed","
                 good_name: $scope.localFilter.good_name,
                 good_cp: $scope.localFilter.good_cp
             }
+            console.log('params',$scope.tableParams.params);
             $scope.tableParams.$params = nparam;
-
+            // $scope.tableParams.reloadPages();
         }
     }
 ]);
