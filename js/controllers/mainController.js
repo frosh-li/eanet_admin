@@ -108,8 +108,8 @@ mainControllers.controller('FeedBackList', ['$timeout','FeedbackFeed','$resource
         })
     }
 }]);
-mainControllers.controller('CompList', ['$resource','$scope','$timeout','ngTableParams','Upload','CompFeed',
-    function($resource,$scope, $timeout,ngTableParams,Upload, CompFeed) {
+mainControllers.controller('CompList',
+    function($http, $resource,$scope, $timeout,ngTableParams,Upload, CompFeed) {
         var Api = $resource('/api/comp/comp/');
         $scope.search = {
             type: -1,
@@ -190,8 +190,35 @@ mainControllers.controller('CompList', ['$resource','$scope','$timeout','ngTable
               }
           }
       };
+      $scope.recharge = {
+        comp_id: -1,
+        score:0,
+        name: ''
+      };
+      $scope.setRecharge = function(id, name){
+        $scope.recharge.comp_id = id;
+        $scope.recharge.comp_name = name;
+      };
+      $scope.modalhide = 'hide';
+      $scope.updateScore = function(){
+        if($scope.recharge.comp_id < 0 || $scope.recharge.score <= 0){
+            alert('请填写充值积分');
+            return;
+        }
+        console.log($scope.recharge);
+        $http.post('/api/recharge/recharge', $scope.recharge).success(function(ret){
+            console.log(ret.status);
+            if(ret.status == 200){
+                alert('充值成功');
+                $scope.modalhide = 'hide';
+                $('#recharge').modal('hide');
+            }else{
+                alert(ret.err || ret.msg);
+            }
+        })
+      }
     }
-]);
+);
 
 mainControllers.controller('UserList', ['$http','$scope','$timeout','UserFeed',
     function($http,$scope, $timeout, UserFeed) {

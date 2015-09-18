@@ -55,6 +55,7 @@
                             <td>
                               <button class="btn" ng-click="del(item.id)">删除</button>
                               <a href="#/comp/edit/{{item.id}}" class="btn">修改</button>
+                              <a href="javascript:///;" class="btn" data-toggle="modal" data-target="#recharge" ng-click="setRecharge(item.id, item.name)" >充值</button>
                               <a href="#/companyRelate/{{item.id}}" ng-if="item.type == 2" class="btn">合作药店</a>
                             </td>
                         </tr>
@@ -64,4 +65,23 @@
         </div>
     </div>
     <!-- /block -->
+</div>
+
+<!-- Modal -->
+<div class="modal {{modalhide}} fade" id="recharge" tabindex="-1" role="dialog">
+<div class="modal-header"><button class="close" type="button" data-dismiss="modal">×</button>
+<h3 id="myModalLabel">积分充值</h3>
+</div>
+<div class="modal-body">
+    <div class="form-group">
+      <label for="name">充值积分</label>
+      <input type="text" class="form-control" ng-model="recharge.score"
+         placeholder="充值积分">
+   </div>
+</div>
+<div class="modal-footer">
+
+<a href="javascript:///;" class="btn btn-primary" ng-click="updateScore(recharge.score)">提交</a>
+
+</div>
 </div>
