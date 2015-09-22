@@ -2116,6 +2116,34 @@ mainControllers.controller('Relate_compList',
         }
     }
 );
+
+mainControllers.controller('NoitemList',
+    function($http,$scope,$resource,ngTableParams,$timeout) {
+
+        var Api = $resource('/api/order/noitem/');
+
+        $scope.tableParams = new ngTableParams({
+            page: 1,            // show first page
+            count: 10          // count per page,
+
+        }, {
+            total: 0,           // length of data
+            getData: function($defer, params) {
+                // ajax request to api
+                Api.get(params.url(), function(data) {
+                    $timeout(function() {
+                        // update table params
+                        params.total(data.total);
+                        // set new data
+                        $defer.resolve(data.result);
+                    }, 500);
+                });
+            }
+        });
+    }
+);
+
+
 mainControllers.controller('Msg_configList',
     function($http,$scope,$resource,ngTableParams,$timeout) {
         $scope.list = []

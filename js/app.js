@@ -78,6 +78,10 @@ storeApp.config(['$routeProvider','$httpProvider',
         templateUrl:'views/yd_order/list_item.html',
         controller: 'orderItemView'
     });
+    $routeProvider.when('/noitem_list/',{
+        templateUrl:'views/yd_order/no_item.html',
+        controller: 'NoitemList'
+    });
     $routeProvider.when('/add/orderItem/:orderid/:comp_id/:order_status',{
         templateUrl:'views/yd_order/add_item.html',
         controller: 'orderItemAdd'
