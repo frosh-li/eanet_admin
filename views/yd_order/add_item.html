@@ -65,7 +65,11 @@
             <td>{{item.good_dw}}</td>
             <td>{{item.good_cp}}</td>
             <td>{{item.good_pzwh}}</td>
-            <td>{{item.good_number}}</td>
+            <td ng-if="order_status == 1 && user.role_type==2">
+                <input type="text" class="input-small" ng-model="item.good_number" style="width:20px;text-align:center;" />
+                <a href="javascript:///" ng-click="updateAmount(orderid, item.oid, item.good_number)">保存</a>
+            </td>
+            <td ng-if="!(order_status == 1 && user.role_type == 2)">{{item.good_number}}</td>
             <td>{{item.good_price}}</td>
             <td>{{item.good_amount}}</td>
             <td ng-if="user.role_type==1 && order_status==8">

@@ -1404,6 +1404,24 @@ mainControllers.controller('orderItemAdd', [
                 })
             }
         }
+        $scope.updateAmount = function(order_id, oid, number){
+            console.log(order_id, oid, number);
+            number = parseInt(number);
+            if(number > 0){
+                $http.post('/api/order/updateAmount',{
+                    order_id:order_id,
+                    oid:oid,
+                    number:number
+                }).success(function(ret){
+                    if(ret.status == 200){
+                        alert('保存成功');
+                    }else{
+                        alert(ret.msg || ret.err);
+                    }
+                })
+            }
+        }
+
         $scope.del = function(id){
             var orderdetail = new OrderDetailFeed({id: id});
             orderdetail.$delete(function(ret){
