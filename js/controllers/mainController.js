@@ -568,6 +568,10 @@ mainControllers.controller('ItemList', ['ngTableParams','$resource',"ItemFeed","
             }
         });
         $scope.del = function(id){
+            var a = window.confirm('确认删除？');
+            if(!a){
+                return;
+            }
             var item = new ItemFeed({id: id});
             item.$delete(function(ret){
                 console.log(ret);
