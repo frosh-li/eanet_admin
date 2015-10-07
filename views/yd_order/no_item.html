@@ -18,6 +18,7 @@
             <th>药品规格</th>
             <th>单位</th>
             <th>厂牌</th>
+            <th>供应商</th>
             <th>批准文号</th>
             <th>数量</th>
             <th>单价</th>
@@ -34,6 +35,7 @@
             <td>{{item.good_dw}}</td>
             <td>{{item.good_cp}}</td>
             <td>{{item.good_pzwh}}</td>
+            <td>{{item.name}}</td>
             <td ng-if="!(order_status == 1 && user.role_type == 2)">{{item.good_number}}</td>
             <td>{{item.good_price}}</td>
             <td>{{item.good_amount}}</td>

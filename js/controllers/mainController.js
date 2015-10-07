@@ -273,9 +273,12 @@ mainControllers.controller('showAllMarket', ['CategoryService','$route','$resour
             switch(level){
                 case 0:
                     $scope.filterData.category_0 = id;
+                    $scope.filterData.category_1 = -1;
+                    $scope.filterData.category_2 = -1;
                     break;
                 case 1:
                     $scope.filterData.category_1 = id;
+                    $scope.filterData.category_2 = -1;
                     break;
                 case 2:
                     $scope.filterData.category_2 = id;

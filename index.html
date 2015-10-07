@@ -30,7 +30,7 @@
                                 <a href="javascript:///;" role="button" class="dropdown-toggle" data-toggle="dropdown">
                                 <i class="icon-user"></i>
                                 {{user.company_name}} {{user.realname}}
-                                <span ng-if="user.role_type == 1">企业积分：{{user.score}}积分</span>
+                                <span ng-if="user.role_type != 0">企业积分：{{user.score}}积分</span>
                                  <i class="caret"></i>
 
                                 </a>
