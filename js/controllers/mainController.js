@@ -220,9 +220,27 @@ mainControllers.controller('CompList',
     }
 );
 
-mainControllers.controller('UserList', ['$http','$scope','$timeout','UserFeed',
-    function($http,$scope, $timeout, UserFeed) {
-        $scope.lists = UserFeed.query();
+mainControllers.controller('UserList', ['$resource','ngTableParams','$scope','$timeout','UserFeed',
+    function($resource,ngTableParams, $scope, $timeout, UserFeed) {
+        //$scope.lists = UserFeed.query();
+        var Api = $resource('/api/user/user/');
+        $scope.tableParams = new ngTableParams({
+            page: 1,            // show first page
+            count: 10          // count per page
+        }, {
+            total: 0,           // length of data
+            getData: function($defer, params) {
+                // ajax request to api
+                Api.get(params.url(), function(data) {
+                    $timeout(function() {
+                        // update table params
+                        params.total(data.total);
+                        // set new data
+                        $defer.resolve(data.result);
+                    }, 500);
+                });
+            }
+        });
         $scope.del = function(id){
             var role = new RoleFeed({id: id});
             role.$delete(function(ret){
